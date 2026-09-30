@@ -131,6 +131,7 @@
     border-radius:10px;padding:10px 12px;color:var(--accent);text-decoration:none;
     font-size:.86rem;font-weight:600;display:flex;align-items:center}
   .reltools .rt-list a:hover{border-color:var(--accent);text-decoration:underline}
+  .article-visual{margin:1.5rem 0 2rem;padding:0;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:var(--panel)}.article-visual img{display:block;width:100%;height:auto}.article-visual figcaption{padding:.7rem 1rem;color:var(--muted);font-size:.88rem;line-height:1.5}
 </style>
 </head>
 <body>
@@ -224,6 +225,7 @@
   <!-- ============ BLOCK 3 ============ -->
   <h2 class="blk"><span class="n">3</span>Why every JWT segment must be base64url</h2>
   <p class="blksub">This is the part almost every JWT decoder skips. Standard Base64 uses <code>+</code>, <code>/</code> and <code>=</code> — and all three are <em>meaningful characters in a URL, a query string and a cookie</em>. A JWT is built to travel in exactly those places, so it cannot use standard Base64. It uses the URL-safe variant instead. Here is the same token in both alphabets, live.</p>
+  <figure class="article-visual"><img src="/assets/percent-encoding/08-jwt.png" alt="JWT header, payload, and signature segments; the first two decode to JSON, and the signature verifies integrity rather than hiding data." loading="lazy" decoding="async"><figcaption>JWT segments are encoded for transport; encoding does not make their contents secret.</figcaption></figure>
 
   <div class="live">
     <div class="l"><span class="k">Your token, base64url (as sent)</span> <code id="lvUrl">—</code></div>

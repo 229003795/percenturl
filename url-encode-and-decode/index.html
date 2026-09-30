@@ -35,7 +35,8 @@ Encoded value: red%20%26%20blue%3Dgreen
 Complete URL:  https://example.com/search?q=red%20%26%20blue%3Dgreen</pre></div>
 <p>If you insert the raw text as <code>?q=red &amp; blue=green</code>, a query-string parser can interpret the ampersand as the start of another parameter. Encoding the value preserves the intended boundary.</p>
 <figure class="article-visual"><img src="/assets/percent-encoding/02-url-structure.png" alt="URL structure diagram highlighting which punctuation is a separator and which characters are data." loading="lazy" decoding="async"><figcaption>Keep URL separators such as /, ?, and & in place; encode the values between them.</figcaption></figure>
-<h2>Why a space can be <code>%20</code> or <code>+</code></h2>
+  <h2>Why a space can be <code>%20</code> or <code>+</code></h2>
+  <figure class="article-visual"><img src="/assets/percent-encoding/09-encoding-modes.png" alt="Component encoding uses %20 and %26 for data, form encoding uses plus for spaces, and decoding restores café." loading="lazy" decoding="async"><figcaption>The plus sign means space in form encoding; component encoding writes a space as %20.</figcaption></figure>
 <p><code>%20</code> is the percent-encoded UTF-8 byte for a space. A plus sign is a space marker in the form-encoding convention, but in an ordinary URL a literal <code>+</code> can mean plus. To represent an actual plus in form data, encode it as <code>%2B</code>.</p>
 <table><thead><tr><th>Original value</th><th>Percent style</th><th>Form style</th></tr></thead><tbody>
 <tr><td><code>a b</code></td><td><code>a%20b</code></td><td><code>a+b</code></td></tr>

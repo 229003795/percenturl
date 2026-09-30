@@ -104,6 +104,7 @@
     border-radius:10px;padding:10px 12px;color:var(--accent);text-decoration:none;
     font-size:.86rem;font-weight:600;display:flex;align-items:center}
   .reltools .rt-list a:hover{border-color:var(--accent);text-decoration:underline}
+  .article-visual{margin:1.5rem 0 2rem;padding:0;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:var(--panel)}.article-visual img{display:block;width:100%;height:auto}.article-visual figcaption{padding:.7rem 1rem;color:var(--muted);font-size:.88rem;line-height:1.5}
 </style>
 </head>
 <body>
@@ -185,6 +186,7 @@
   <!-- ============ BLOCK 3 ============ -->
   <h2 class="blk"><span class="n">3</span>How bad encoding breaks a UTM link</h2>
   <p class="blksub">The parameters are right, the campaign still reports wrong — because of how characters were (or were not) encoded. Every case below is a real failure mode, and none of them care which tool produced the link: a <b>UTM maker</b>, a <b>UTM generator</b>, a <b>url builder</b>, a <b>campaign URL builder</b> or the <b>Google campaign URL builder</b> will all hand you a broken link if the value is encoded wrongly. Encoding behaviour breaks the report — not the choice of tool.</p>
+  <figure class="article-visual"><img src="/assets/percent-encoding/05-utm-url.png" alt="UTM campaign URL made from a destination and source, medium, and campaign parameters." loading="lazy" decoding="async"><figcaption>Start the query once with ?, then separate encoded parameter values with &amp;.</figcaption></figure>
 
   <div class="fail">
     <h3>An <code>&amp;</code> inside a value ends the value and starts a new parameter</h3>

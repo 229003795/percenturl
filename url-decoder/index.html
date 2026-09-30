@@ -84,6 +84,7 @@
   .warn{color:#fbbf24;font-size:.8rem;margin:8px 0 0;min-height:1.2em}
   .faq .q{font-size:.95rem;color:var(--accent);font-weight:600;margin:16px 0 4px}
   .faq .a{font-size:.92rem;margin:0 0 4px}
+  .article-visual{margin:1.5rem 0 2rem;padding:0;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:var(--panel)}.article-visual img{display:block;width:100%;height:auto}.article-visual figcaption{padding:.7rem 1rem;color:var(--muted);font-size:.88rem;line-height:1.5}
 </style>
 </head>
 <body>
@@ -114,6 +115,7 @@
   <!-- ① -->
   <h2>① What decoding actually does</h2>
   <p class="sub">Three steps, none of them magic.</p>
+  <figure class="article-visual"><img src="/assets/percent-encoding/04-decoding.png" alt="Decoding caf%C3%A9 by reading percent escapes as UTF-8 bytes and rebuilding café." loading="lazy" decoding="async"><figcaption>Read each %XX escape as a byte, then decode the byte sequence as UTF-8.</figcaption></figure>
   <div class="ex">
     <ol>
       <li><b>Read each <span class="kbd">%XX</span> group as one byte</b> — <span class="kbd">%20</span> is byte <span class="kbd">0x20</span>, <span class="kbd">%C3</span> is byte <span class="kbd">0xC3</span>.</li>

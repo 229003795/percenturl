@@ -114,6 +114,7 @@
     border-radius:10px;padding:10px 12px;color:var(--accent);text-decoration:none;
     font-size:.86rem;font-weight:600;display:flex;align-items:center}
   .reltools .rt-list a:hover{border-color:var(--accent);text-decoration:underline}
+  .article-visual{margin:1.5rem 0 2rem;padding:0;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:var(--panel)}.article-visual img{display:block;width:100%;height:auto}.article-visual figcaption{padding:.7rem 1rem;color:var(--muted);font-size:.88rem;line-height:1.5}
 </style>
 </head>
 <body>
@@ -200,6 +201,7 @@
   <!-- ============ BLOCK 3 ============ -->
   <h2 class="blk"><span class="n">3</span>HTML entities are not URL encoding</h2>
   <p class="blksub">This is the part almost every HTML-escape tool skips. HTML entities and percent-encoding (URL encoding) are <strong>two different systems</strong> that happen to both turn awkward characters into ASCII. They escape different characters, they live in different places, and they are decoded by different things. Using the wrong one does not just look wrong — it changes the value.</p>
+  <figure class="article-visual"><img src="/assets/percent-encoding/06-html-vs-url.png" alt="Comparison: less-than becomes the HTML entity &amp;lt; in HTML, or %3C when encoded as URL data." loading="lazy" decoding="async"><figcaption>Choose the escape format for the parser that will read the value.</figcaption></figure>
 
   <div class="live">
     <div class="l"><span class="k">Your input</span> <code id="lvRaw">—</code></div>
