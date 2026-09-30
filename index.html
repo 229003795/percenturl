@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>URL Encoder / Decoder — Percent-Encoding (URL Encoding) Tool</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#1e293b; --ink:#e2e8f0; --muted:#94a3b8;
+    --accent:#38bdf8; --accent2:#22d3ee; --line:#334155;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.5}
+  .wrap{max-width:880px;margin:0 auto;padding:20px}
+  h1{font-size:1.4rem;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:.92rem;margin:0 0 16px}
+  .notice{background:rgba(56,189,248,.12);border:1px solid var(--accent);
+          color:var(--ink);padding:10px 12px;border-radius:10px;font-size:.85rem;margin-bottom:16px}
+  label{display:block;font-size:.78rem;color:var(--muted);margin:14px 0 6px;
+        text-transform:uppercase;letter-spacing:.04em}
+  textarea{width:100%;min-height:140px;background:var(--panel);color:var(--ink);
+           border:1px solid var(--line);border-radius:10px;padding:12px;font-size:1rem;
+           font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical}
+  .controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:8px 0 4px}
+  .ctrl{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .ctrl .t{font-size:.78rem;color:var(--muted);margin-bottom:8px}
+  .seg{display:flex;gap:6px;flex-wrap:wrap}
+  .seg button{flex:1;min-width:64px;background:#0b1220;color:var(--ink);border:1px solid var(--line);
+             border-radius:8px;padding:8px 6px;font-size:.8rem;cursor:pointer}
+  .seg button.active{background:var(--accent);color:#06121f;border-color:var(--accent);font-weight:600}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .btn{flex:1;min-width:140px;border:none;border-radius:10px;padding:12px;font-size:1rem;font-weight:600;cursor:pointer}
+  .btn.encode{background:var(--accent);color:#06121f}
+  .btn.decode{background:var(--accent2);color:#06121f}
+  .btn.copy{background:#0b1220;color:var(--ink);border:1px solid var(--line)}
+  .outlabel{display:flex;justify-content:space-between;align-items:center}
+  .tag{color:#34d399;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+  .note{color:var(--muted);font-size:.78rem;margin-top:18px}
+  .ft{margin-top:28px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:.85rem}
+  .ft nav a{color:var(--accent);text-decoration:none;margin:0 2px}
+  .ft nav a:hover{text-decoration:underline}
+  .ft .copy{margin:8px 0 0}
+
+  /* new: target mode + batch */
+  .target-row{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0}
+  .target-row .t{font-size:.78rem;color:var(--muted);margin-bottom:8px}
+  .batch{display:inline-flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);
+         border-radius:999px;padding:8px 14px;margin:8px 0;cursor:pointer;font-size:.85rem;user-select:none}
+  .batch.on{background:rgba(56,189,248,.18);border-color:var(--accent);color:var(--ink)}
+  .batch .dot{width:10px;height:10px;border-radius:50%;background:var(--line);transition:.15s}
+  .batch.on .dot{background:var(--accent)}
+  .help{color:var(--muted);font-size:.8rem;margin:10px 0;line-height:1.65}
+  .help b{color:var(--ink);font-weight:600}
+  .errbox{display:none;background:rgba(248,113,113,.12);border:1px solid #f87171;color:#fecaca;
+          padding:10px 12px;border-radius:10px;font-size:.85rem;margin:10px 0;white-space:pre-wrap}
+  .errbox.show{display:block}
+
+  /* new: char reference table */
+  details.tbl{margin-top:22px;border-top:1px solid var(--line);padding-top:14px}
+  details.tbl summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:.95rem}
+  .tblsearch{margin:10px 0}
+  .tblsearch input{width:100%;max-width:340px;background:var(--panel);border:1px solid var(--line);
+                  border-radius:8px;padding:8px 10px;color:var(--ink);font-size:.9rem}
+  table.ct{width:100%;border-collapse:collapse;margin-top:8px;font-size:.85rem}
+  table.ct th,table.ct td{border:1px solid var(--line);padding:6px 8px;text-align:left}
+  table.ct th{color:var(--muted);font-weight:600}
+  table.ct td.ch{font-family:ui-monospace,monospace;font-size:1.05rem;text-align:center}
+  table.ct .keep{color:#34d399}
+  table.ct .enc{color:var(--accent)}
+
+  /* internal-link additions */
+  .backhome{margin:0 0 14px;font-size:.82rem}
+  .backhome a{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--line)}
+  .backhome a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .more{margin-top:26px;border-top:1px solid var(--line);padding-top:16px}
+  .more h2{font-size:1.05rem;margin:0 0 4px}
+  .more-sub{color:var(--muted);font-size:.85rem;margin:0 0 12px}
+  .more-list{list-style:none;padding:0;margin:0}
+  .more-list li{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+                padding:10px 12px;margin:0 0 8px;font-size:.86rem;line-height:1.6}
+  .more-list a{color:var(--accent);text-decoration:none;font-weight:600}
+  .more-list a:hover{text-decoration:underline}
+  .more-info{margin:10px 0 0;font-size:.85rem}
+  .more-info a{color:var(--accent);text-decoration:none}
+  .more-info a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>URL Encoder / Decoder</h1>
+  <p class="sub">Percent-encode (%XX) or decode any text or a whole URL. Everything runs in your browser — nothing is uploaded to a server.</p>
+
+  <div class="notice">
+    All processing happens in your browser. Your text is never uploaded to any server.
+  </div>
+
+  <!-- target: a component, or a whole URL -->
+  <div class="target-row">
+    <div class="t">Target (two modes)</div>
+    <div class="seg" data-k="target">
+      <button data-v="component" class="active">Component (a piece of text / one parameter value)</button>
+      <button data-v="url">Full URL (splits scheme / host / path / query / fragment)</button>
+    </div>
+  </div>
+
+  <!-- batch mode -->
+  <div class="batch" id="batchToggle">
+    <span class="dot"></span>
+    <span>Batch mode: one item per line (each line is encoded / decoded on its own, and errors are reported per line)</span>
+  </div>
+
+  <label for="in">Input</label>
+  <textarea id="in" placeholder="Paste a URL, or any text you need to encode / decode…"></textarea>
+
+  <div class="controls">
+    <div class="ctrl">
+      <div class="t">Character set</div>
+      <div class="seg" data-k="charset">
+        <button data-v="utf-8" class="active">UTF-8</button>
+        <button data-v="ascii">ASCII</button>
+      </div>
+    </div>
+    <div class="ctrl">
+      <div class="t">Space as</div>
+      <div class="seg" data-k="space">
+        <button data-v="%20" class="active">%20</button>
+        <button data-v="+">+</button>
+      </div>
+    </div>
+    <div class="ctrl">
+      <div class="t">Encoding mode</div>
+      <div class="seg" data-k="mode">
+        <button data-v="rfc3986" class="active">RFC 3986</button>
+        <button data-v="component">encodeURIComponent</button>
+      </div>
+    </div>
+    <div class="ctrl">
+      <div class="t">Newlines</div>
+      <div class="seg" data-k="newline">
+        <button data-v="single" class="active">Whole text</button>
+        <button data-v="perline">Per line</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="help">
+    <b>Plain English:</b> percent-encoding (also called URL encoding) rewrites the characters a URL cannot carry directly as <b>a percent sign plus two hex digits</b>. A space becomes <b>%20</b>; an accented letter becomes a run of %XX groups.<br>
+    · <b>Component mode</b>: encode / decode one piece of text, such as a single parameter value.<br>
+    · <b>Full URL mode</b>: splits the URL into scheme / host / path / query / fragment and encodes each part on its own, keeping the structural characters (<b>://</b> <b>/</b> <b>?</b> <b>&amp;</b> <b>=</b> <b>#</b>) intact.<br>
+    · With <b>batch</b> on, every line is treated as its own item, and a bad line is reported on its own.
+  </p>
+
+  <div class="row">
+    <button class="btn encode" id="encBtn">URL Encode</button>
+    <button class="btn decode" id="decBtn">URL Decode</button>
+  </div>
+
+  <div class="errbox" id="errbox"></div>
+
+  <label class="outlabel" for="out">Output <span class="tag" id="modeTag">encoded</span></label>
+  <textarea id="out" readonly placeholder="The result appears here…"></textarea>
+
+  <div class="row">
+    <button class="btn copy" id="copyBtn">Copy result</button>
+  </div>
+
+  <p class="note">
+    No sign-up · Unlimited use · No watermark · Runs only in your browser.
+  </p>
+
+  <!-- percent-encoding character reference table -->
+  <details class="tbl">
+    <summary>Percent-encoding character reference table (click to expand)</summary>
+    <p class="help">Every printable ASCII character and how it looks under percent-encoding. Green = left as-is, blue = encoded. Use the search box to find one.</p>
+    <div class="tblsearch">
+      <input id="tblSearch" type="text" placeholder="Search a character, its code or its name — e.g. space / %20 / question mark">
+    </div>
+    <table class="ct">
+      <thead><tr><th>Char</th><th>Name</th><th>Encoded</th><th>Handling</th></tr></thead>
+      <tbody id="ctbody"></tbody>
+    </table>
+  </details>
+
+  <!-- other tools on this site: descriptive in-body internal links (not just the footer) -->
+  <section class="more">
+    <h2>More tools on this site</h2>
+    <p class="more-sub">Every tool runs entirely in your browser — nothing is uploaded. Pick the encoding problem you have:</p>
+    <ul class="more-list">
+      <li><a href="/utm-builder">UTM Builder</a> — build a campaign URL and watch every parameter value get percent-encoded live, plus the nine ways a UTM link breaks once it is in a URL.</li>
+      <li><a href="/base64">Base64 Encoder / Decoder</a> — encode or decode as you type, see which character set and alphabet are in use, and what <code>+</code>, <code>/</code> and <code>=</code> actually do inside a URL.</li>
+      <li><a href="/html-entities">HTML Entity Encoder / Decoder</a> — escape <code>&amp;lt;</code> <code>&amp;gt;</code> <code>&amp;amp;</code> as named, decimal or hex entities, and why HTML entities are not URL encoding.</li>
+      <li><a href="/jwt">JWT Decode</a> — decode a JSON Web Token into its header, payload and signature, and see why every JWT segment must be base64url instead of standard Base64.</li>
+      <li><a href="/javascript">URL Encoding in JavaScript</a> — how <code>encodeURI</code>, <code>encodeURIComponent</code> and <code>escape</code> differ, when to use each, and code you can copy straight into your project.</li>
+      <li><a href="/percent-encoding">What Is Percent-Encoding?</a> — the concept page: why a URL is full of things like <code>%20</code> and <code>%C3%A9</code>, explained from first principles.</li>
+      <li><a href="/url-encoder-online">URL Encoder Online</a> — encode any text or a whole URL in the browser and see exactly which characters stay and which become <code>%XX</code>.</li>
+      <li><a href="/url-decoder">URL Decoder Online</a> — paste a percent-encoded URL or string and read it back as plain text, with every <code>%XX</code> group shown as it is decoded.</li>
+      <li><a href="/url-encode-and-decode">URL Encode and Decode</a> — one box for both directions: encode a component or a full URL, or decode it back, with the live before-and-after side by side.</li>
+      <li><a href="/online-urlencoder">Online URLencoder</a> — why a browser-side encoder keeps your text local (nothing is uploaded) and how that beats a server round-trip.</li>
+    </ul>
+    <p class="more-info">
+      <a href="/about">About</a> · <a href="/privacy">Privacy</a> · <a href="/contact">Contact</a>
+    </p>
+  </section>
+
+  <footer class="ft">
+    <nav>
+      <a href="/">URL Encoder</a> ·
+      <a href="/utm-builder">UTM Builder</a> ·
+      <a href="/base64">Base64</a> ·
+      <a href="/html-entities">HTML Entities</a> ·
+      <a href="/jwt">JWT</a> ·
+      <a href="/javascript">JavaScript Encoding</a> ·
+      <a href="/percent-encoding">Percent Encoding</a> ·
+      <a href="/url-encoder-online">URL Encoder Online</a> ·
+      <a href="/url-decoder">URL Decoder</a> ·
+      <a href="/url-encode-and-decode">URL Encode / Decode</a> ·
+      <a href="/online-urlencoder">Online URLencoder</a> ·
+      <a href="/about">About</a> ·
+      <a href="/privacy">Privacy</a> ·
+      <a href="/contact">Contact</a>
+    </nav>
+    <p class="copy">© 2026 PercentURL · All processing runs in your browser.</p>
+  </footer>
+</div>
+
+<script>
+const state = { charset:'utf-8', space:'%20', mode:'rfc3986', newline:'single', target:'component', batch:false };
+
+document.querySelectorAll('.seg').forEach(seg=>{
+  const k = seg.dataset.k;
+  seg.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      seg.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      state[k]=b.dataset.v;
+      clearErr();
+    });
+  });
+});
+const batchEl=document.getElementById('batchToggle');
+batchEl.addEventListener('click',()=>{
+  state.batch=!state.batch;
+  batchEl.classList.toggle('on',state.batch);
+  clearErr();
+});
+
+function safeSet(mode){
+  const A='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let keep = A+'-_.~';                 // RFC 3986 unreserved
+  if(mode==='component'){ keep = A+"-_.!~*'()"; } // encodeURIComponent keeps these too
+  return new Set(keep.split('').map(c=>c.charCodeAt(0)));
+}
+function hex2(b){ return b.toString(16).toUpperCase().padStart(2,'0'); }
+function escapeHtml(s){ return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function encodeLine(line){
+  const keep = safeSet(state.mode);
+  if(state.charset==='utf-8'){
+    const bytes = new TextEncoder().encode(line);
+    let r='';
+    for(const b of bytes){
+      if(b===0x20) r += (state.space==='+') ? '+' : '%20';
+      else if(keep.has(b)) r += String.fromCharCode(b);
+      else r += '%'+hex2(b);
+    }
+    return r;
+  }
+  let r='';
+  for(const ch of line){
+    const c=ch.codePointAt(0);
+    if(c===0x20){ r += (state.space==='+') ? '+' : '%20'; continue; }
+    if(c<=0x7F){ if(keep.has(c)) r+=ch; else r+='%'+hex2(c); }
+    else if(c<=0xFF){ r+='%'+hex2(c); }
+    else { r+='%u'+c.toString(16).toUpperCase().padStart(4,'0'); }
+  }
+  return r;
+}
+function encodeText(text){
+  const lines = state.newline==='perline' ? text.split(/\r?\n/) : [text];
+  return lines.map(encodeLine).join('\n');
+}
+
+// Validate the % escapes; return the decoded text, or throw an error with a plain-English message
+function decodeLine(line){
+  let i=0;
+  while(i<line.length){
+    if(line[i]==='%'){
+      if(line[i+1]==='u'){
+        const h=line.substr(i+2,4);
+        if(!/^[0-9A-Fa-f]{4}$/.test(h)) throw { msg:'Invalid %u escape: %u must be followed by 4 hex digits (for example %u4E2D is the character U+4E2D).' };
+        i+=6;
+      } else {
+        const h=line.substr(i+1,2);
+        if(!/^[0-9A-Fa-f]{2}$/.test(h)) throw { msg:'Invalid % escape: a percent sign must be followed by 2 hex digits (for example %20 is a space). A lone % or a % not followed by hex digits is an error.' };
+        i+=3;
+      }
+    } else i++;
+  }
+  let t=line;
+  if(state.space==='+') t=t.replace(/\+/g,' ');
+  const re=/(%u[0-9A-Fa-f]{4})|(%[0-9A-Fa-f]{2})|([^%]+)/g;
+  let result='',buf=[];
+  const flush=()=>{ if(buf.length){ result+=new TextDecoder('utf-8').decode(new Uint8Array(buf)); buf=[]; } };
+  let m;
+  while((m=re.exec(t))!==null){
+    if(m[1]){ flush(); result+=String.fromCharCode(parseInt(m[1].slice(2),16)); }
+    else if(m[2]){ buf.push(parseInt(m[2].slice(1),16)); }
+    else { flush(); result+=m[3]; }
+  }
+  flush();
+  return result;
+}
+function decodeText(text){
+  const lines = text.split(/\r?\n/);
+  return lines.map(decodeLine).join('\n');
+}
+
+// full-URL mode
+function safeDecodeSeg(s,part){
+  try { return decodeLine(s); }
+  catch(e){ throw { msg: part + ' could not be decoded: ' + e.msg }; }
+}
+function processUrl(text, isEncode){
+  const raw = text.replace(/\s+$/,'');
+  const m = raw.match(/^(([a-zA-Z][a-zA-Z0-9+.\-]*):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/);
+  if(!m) throw { msg:'That does not look like a complete URL. A full URL normally starts with http:// or https:// (for example https://example.com/caf%C3%A9?q=tea). If you only want to encode a piece of text, switch to Component mode.' };
+  const scheme=m[2]||'', authority=m[4]||'', path=m[5]||'', query=m[7]||'', fragment=m[8]||'';
+  if(isEncode){
+    let out='';
+    if(scheme) out+=scheme.toLowerCase()+':';
+    if(authority!==''||scheme) out+='//'+authority;
+    const segs=path.split('/');
+    out+=segs.map(s=> s===''?'':encodeLine(s)).join('/');
+    if(query!==''){
+      const parts=query.split('&');
+      out+='?'+parts.map(p=>{
+        const eq=p.indexOf('=');
+        if(eq<0) return encodeLine(p);
+        return encodeLine(p.slice(0,eq))+'='+encodeLine(p.slice(eq+1));
+      }).join('&');
+    }
+    if(fragment!=='') out+='#'+encodeLine(fragment);
+    return out;
+  } else {
+    let out='';
+    if(scheme) out+=scheme.toLowerCase()+':';
+    if(authority!==''||scheme) out+='//'+authority;
+    const segs=path.split('/');
+    out+=segs.map(s=> s===''?'':safeDecodeSeg(s,'path')).join('/');
+    if(query!==''){
+      const parts=query.split('&');
+      out+='?'+parts.map(p=>{
+        const eq=p.indexOf('=');
+        if(eq<0) return safeDecodeSeg(p,'query');
+        return safeDecodeSeg(p.slice(0,eq),'query parameter name')+'='+safeDecodeSeg(p.slice(eq+1),'query parameter value');
+      }).join('&');
+    }
+    if(fragment!=='') out+='#'+safeDecodeSeg(fragment,'fragment');
+    return out;
+  }
+}
+
+const inp=document.getElementById('in');
+const out=document.getElementById('out');
+const tag=document.getElementById('modeTag');
+const errbox=document.getElementById('errbox');
+function showErr(msg){ errbox.textContent='⚠️ '+msg; errbox.classList.add('show'); }
+function clearErr(){ errbox.classList.remove('show'); }
+
+document.getElementById('encBtn').addEventListener('click',()=>{
+  clearErr();
+  try{
+    let v;
+    if(state.target==='url') v=processUrl(inp.value,true);
+    else v = state.batch ? inp.value.split(/\r?\n/).map(encodeLine).join('\n') : encodeText(inp.value);
+    out.value=v; tag.textContent='encoded';
+  }catch(e){ showErr(e.msg||String(e)); }
+});
+
+document.getElementById('decBtn').addEventListener('click',()=>{
+  clearErr();
+  try{
+    let v; const errors=[];
+    if(state.target==='url'){
+      v=processUrl(inp.value,false);
+    } else if(state.batch){
+      v=inp.value.split(/\r?\n/).map((ln,idx)=>{
+        try{ return decodeLine(ln); }
+        catch(e){ errors.push('Line ' + (idx+1) + ': ' + e.msg); return ln; }
+      }).join('\n');
+    } else {
+      v=decodeLine(inp.value);
+    }
+    if(errors.length) showErr(errors.join('\n'));
+    out.value=v; tag.textContent='decoded';
+  }catch(e){ showErr(e.msg||String(e)); }
+});
+
+document.getElementById('copyBtn').addEventListener('click',async()=>{
+  const b=document.getElementById('copyBtn');
+  try{
+    await navigator.clipboard.writeText(out.value);
+    const o=b.textContent; b.textContent='Copied'; setTimeout(()=>b.textContent=o,1200);
+  }catch(e){
+    out.removeAttribute('readonly'); out.select(); document.execCommand('copy'); out.setAttribute('readonly','');
+  }
+});
+
+// percent-encoding character reference table
+const UNRESERVED = new Set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~'.split('').map(c=>c.charCodeAt(0)));
+const NAMES = {0x20:'space',0x21:'exclamation mark',0x22:'double quote',0x23:'hash',0x24:'dollar sign',0x25:'percent sign',0x26:'ampersand',0x27:'single quote',0x28:'left parenthesis',0x29:'right parenthesis',0x2A:'asterisk',0x2B:'plus sign',0x2C:'comma',0x2D:'hyphen',0x2E:'period',0x2F:'slash',0x3A:'colon',0x3B:'semicolon',0x3C:'less than',0x3D:'equals sign',0x3E:'greater than',0x3F:'question mark',0x40:'at sign',0x5B:'left square bracket',0x5D:'right square bracket',0x5E:'caret',0x5F:'underscore',0x60:'backtick',0x7B:'left curly brace',0x7C:'vertical bar',0x7D:'right curly brace',0x7E:'tilde'};
+function buildRows(){
+  const rows=[];
+  for(let c=0x20;c<=0x7E;c++){
+    const ch=String.fromCharCode(c);
+    const isUn=UNRESERVED.has(c);
+    const enc=isUn?ch:'%'+hex2(c);
+    const name=NAMES[c]||(c>=0x30&&c<=0x39?'digit':c>=0x41&&c<=0x5A?'uppercase letter':c>=0x61&&c<=0x7A?'lowercase letter':'symbol');
+    rows.push({ch,enc,isUn,name});
+  }
+  return rows;
+}
+const ROWS=buildRows();
+const tbody=document.getElementById('ctbody');
+function renderRows(filter){
+  filter=(filter||'').toLowerCase();
+  tbody.innerHTML='';
+  for(const r of ROWS){
+    if(filter && !(r.ch.toLowerCase().includes(filter) || r.enc.toLowerCase().includes(filter) || r.name.toLowerCase().includes(filter))) continue;
+    const disp = r.ch===' ' ? '␣' : r.ch;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="ch">${escapeHtml(disp)}</td><td>${r.name}</td><td class="${r.isUn?'keep':'enc'}">${r.enc}</td><td class="${r.isUn?'keep':'enc'}">${r.isUn?'left as-is':'encoded'}</td>`;
+    tbody.appendChild(tr);
+  }
+}
+renderRows('');
+document.getElementById('tblSearch').addEventListener('input',e=>renderRows(e.target.value));
+</script>
+</body>
+</html>

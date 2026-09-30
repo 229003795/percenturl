@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="An online tool, a plain-English explanation and copy-ready code examples for URL (percent) encoding in JavaScript: how encodeURIComponent, encodeURI and decodeURIComponent differ, and when to use each.">
+<title>URL Encoding in JavaScript — encodeURI / encodeURIComponent Tool and Code Examples</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#1e293b; --ink:#e2e8f0; --muted:#94a3b8;
+    --accent:#38bdf8; --accent2:#22d3ee; --line:#334155;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.5}
+  .wrap{max-width:880px;margin:0 auto;padding:20px}
+  h1{font-size:1.4rem;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:.92rem;margin:0 0 16px}
+  h2{font-size:1.05rem;margin:26px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  .notice{background:rgba(56,189,248,.12);border:1px solid var(--accent);
+          color:var(--ink);padding:10px 12px;border-radius:10px;font-size:.85rem;margin-bottom:16px}
+  label{display:block;font-size:.78rem;color:var(--muted);margin:14px 0 6px;
+        text-transform:uppercase;letter-spacing:.04em}
+  textarea{width:100%;min-height:120px;background:var(--panel);color:var(--ink);
+           border:1px solid var(--line);border-radius:10px;padding:12px;font-size:1rem;
+           font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical}
+  .controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:8px 0 4px}
+  .ctrl{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .ctrl .t{font-size:.78rem;color:var(--muted);margin-bottom:8px}
+  .seg{display:flex;gap:6px;flex-wrap:wrap}
+  .seg button{flex:1;min-width:64px;background:#0b1220;color:var(--ink);border:1px solid var(--line);
+             border-radius:8px;padding:8px 6px;font-size:.8rem;cursor:pointer}
+  .seg button.active{background:var(--accent);color:#06121f;border-color:var(--accent);font-weight:600}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .btn{flex:1;min-width:140px;border:none;border-radius:10px;padding:12px;font-size:1rem;font-weight:600;cursor:pointer}
+  .btn.encode{background:var(--accent);color:#06121f}
+  .btn.decode{background:var(--accent2);color:#06121f}
+  .btn.copy{background:#0b1220;color:var(--ink);border:1px solid var(--line)}
+  .outlabel{display:flex;justify-content:space-between;align-items:center}
+  .tag{color:#34d399;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+  .note{color:var(--muted);font-size:.78rem;margin-top:18px}
+  .ft{margin-top:28px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:.85rem}
+  .ft nav a{color:var(--accent);text-decoration:none;margin:0 2px}
+  .ft nav a:hover{text-decoration:underline}
+  .ft .copy{margin:8px 0 0}
+
+  /* live preview of the three native functions */
+  .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px}
+  .live{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .live .lbl{font-size:.74rem;color:var(--muted);font-family:ui-monospace,monospace;margin-bottom:6px}
+  .live .val{font-family:ui-monospace,monospace;font-size:.86rem;word-break:break-all;min-height:34px}
+  .live .val.bad{color:#f87171}
+
+  /* explanation */
+  .ex{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 16px;margin-top:8px}
+  .ex ul{margin:10px 0;padding-left:20px}
+  .ex li{margin:6px 0}
+  .ex b{color:var(--ink)}
+  .kbd{font-family:ui-monospace,monospace;background:#0b1220;border:1px solid var(--line);
+       border-radius:6px;padding:1px 6px;color:var(--accent2);font-size:.85rem}
+
+  /* code examples */
+  .codebox{position:relative;background:#0b1220;border:1px solid var(--line);border-radius:10px;
+           margin:10px 0;overflow:hidden}
+  .codebox .chead{display:flex;justify-content:space-between;align-items:center;
+                  padding:8px 12px;border-bottom:1px solid var(--line);font-size:.78rem;color:var(--muted)}
+  .codebox pre{margin:0;padding:12px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+                font-size:.85rem;line-height:1.55;color:#cbd5e1}
+  .codebox .copycode{background:transparent;border:1px solid var(--line);color:var(--ink);
+                     border-radius:8px;padding:4px 10px;font-size:.78rem;cursor:pointer}
+  .codebox .copycode:hover{border-color:var(--accent);color:var(--accent)}
+  .codebox .cmt{color:#64748b}
+  .codebox .fn{color:var(--accent2)}
+
+  /* internal-link additions */
+  .backhome{margin:0 0 14px;font-size:.82rem}
+  .backhome a{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--line)}
+  .backhome a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  /* related-tools horizontal interlink */
+  .reltools{margin-top:26px;border-top:1px solid var(--line);padding-top:16px}
+  .reltools h2{font-size:1.05rem;margin:0 0 4px}
+  .reltools .rt-sub{color:var(--muted);font-size:.85rem;margin:0 0 12px}
+  .reltools .rt-list{display:flex;flex-wrap:wrap;gap:8px}
+  .reltools .rt-list a{flex:1 1 200px;background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;padding:10px 12px;color:var(--accent);text-decoration:none;
+    font-size:.86rem;font-weight:600;display:flex;align-items:center}
+  .reltools .rt-list a:hover{border-color:var(--accent);text-decoration:underline}
+.article-visual{margin:1.5rem 0 2rem;padding:0;overflow:hidden;border:1px solid rgba(148,163,184,.28);border-radius:14px;background:rgba(15,23,42,.72)}.article-visual img{display:block;width:100%;height:auto}.article-visual figcaption{padding:.7rem 1rem;color:#94a3b8;font-size:.88rem;line-height:1.5}</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>URL Encoding in JavaScript</h1>
+  <p class="sub">An online tool, a plain-English explanation and copy-ready code examples for percent (%XX) encoding with the browser's own <span class="kbd">encodeURIComponent</span> / <span class="kbd">encodeURI</span> / <span class="kbd">decodeURIComponent</span>. Everything runs in your browser.</p>
+  <p class="backhome"><a href="/">← Back to the URL Encoder</a></p>
+
+  <div class="notice">
+    Everything on this page runs in your browser — your text is never uploaded to a server. The code examples are ready to copy into your own project.
+  </div>
+
+  <!-- tool -->
+  <h2>① Online tool: watch JavaScript encode as you type</h2>
+  <p class="sub">Type below and the three boxes underneath update live with the result of each of JavaScript's three native functions.</p>
+
+  <label for="in">Input</label>
+  <textarea id="in" placeholder="e.g. https://example.com/café?q=hello world"></textarea>
+
+  <div class="controls">
+    <div class="ctrl">
+      <div class="t">Function</div>
+      <div class="seg" data-k="fn">
+        <button data-v="encodeURIComponent" class="active">encodeURIComponent</button>
+        <button data-v="encodeURI">encodeURI</button>
+        <button data-v="decodeURIComponent">decode</button>
+      </div>
+    </div>
+    <div class="ctrl">
+      <div class="t">Target</div>
+      <div class="seg" data-k="target">
+        <button data-v="component" class="active">Component (a piece of text)</button>
+        <button data-v="url">Full URL</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <button class="btn encode" id="encBtn">Run the selected function</button>
+    <button class="btn copy" id="copyBtn">Copy result</button>
+  </div>
+
+  <label class="outlabel" for="out">Output <span class="tag" id="modeTag">result</span></label>
+  <textarea id="out" readonly placeholder="The result appears here…"></textarea>
+
+  <div class="grid3" id="live">
+    <div class="live"><div class="lbl">encodeURIComponent(input)</div><div class="val" id="lvEnc"></div></div>
+    <div class="live"><div class="lbl">encodeURI(input)</div><div class="val" id="lvUri"></div></div>
+    <div class="live"><div class="lbl">decodeURIComponent(input)</div><div class="val" id="lvDec"></div></div>
+  </div>
+
+  <!-- explanation -->
+  <h2>② Plain English: how these functions actually differ</h2>
+  <div class="ex">
+    <ul>
+      <li><b>Percent-encoding (URL encoding)</b>: rewrites the characters a URL cannot carry directly as <span class="kbd">% plus two hex digits</span>. Spaces, <span class="kbd">&amp;</span>, <span class="kbd">=</span>, <span class="kbd">?#</span> and every non-ASCII character get encoded.</li>
+      <li><b>encodeURIComponent(str)</b>: encodes everything except <span class="kbd">A-Z a-z 0-9 - _ . ! ~ * ' ( )</span>. <b>Use it to encode one value or one parameter</b> — for example the value of a query parameter.</li>
+      <li><b>encodeURI(str)</b>: encodes only the characters that are genuinely illegal and <b>keeps</b> the URL structural characters <span class="kbd">:/?#@&amp;=+$,;</span>. Use it on a whole URL that is already correctly structured.</li>
+      <li><b>decodeURIComponent / decodeURI</b>: turns %XX back into the original character. Use the decoder that matches the encoder you used.</li>
+      <li><b>Pitfall 1 — do not encode twice</b>: encoding an already-encoded string turns <span class="kbd">%</span> into <span class="kbd">%25</span> and makes the mess worse. Check first, then encode.</li>
+      <li><b>Pitfall 2 — + is not a space</b>: <span class="kbd">encodeURIComponent(' ')</span> returns <span class="kbd">%20</span>, not <span class="kbd">+</span>. <span class="kbd">+</span> only means a space inside an <span class="kbd">application/x-www-form-urlencoded</span> form submission.</li>
+      <li><b>Pitfall 3 — a whole URL must be encoded part by part</b>: running <span class="kbd">encodeURIComponent</span> over an entire URL also encodes <span class="kbd">://</span> <span class="kbd">?</span> <span class="kbd">&amp;</span> and breaks it. Encode the scheme, the host, each path segment, each parameter name and each parameter value separately (see the code below).</li>
+    </ul>
+  </div>
+
+  <!-- code examples -->
+  <figure class="article-visual"><img src="/assets/percent-encoding/03-encode-parts.png" alt="Diagram separating a URL into component values and delimiters before encoding." loading="lazy" decoding="async"><figcaption>Use component encoding for data values; keep the URL structure intact.</figcaption></figure>
+<h2>③ Code examples (hit Copy and paste them in)</h2>
+
+  <div class="codebox">
+    <div class="chead"><span>1) Basic encoding: one parameter value</span><button class="copycode">Copy</button></div>
+    <pre><code><span class="cmt">// encode a value so it can be used as a query parameter</span>
+const q = <span class="fn">encodeURIComponent</span>('café &amp; tea');
+<span class="cmt">// → "caf%C3%A9%20%26%20tea"</span>
+const url = 'https://example.com/search?q=' + q;</code></pre>
+  </div>
+
+  <div class="codebox">
+    <div class="chead"><span>2) Building a query string safely</span><button class="copycode">Copy</button></div>
+    <pre><code>function buildQuery(params) {
+  return Object.keys(params)
+    .map(k =&gt; <span class="fn">encodeURIComponent</span>(k) + '=' + <span class="fn">encodeURIComponent</span>(params[k]))
+    .join('&amp;');
+}
+const qs = buildQuery({ q: 'café', page: 2 });
+<span class="cmt">// → "q=caf%C3%A9&amp;page=2"</span></code></pre>
+  </div>
+
+  <div class="codebox">
+    <div class="chead"><span>3) Reading and decoding a parameter from the address bar (URLSearchParams)</span><button class="copycode">Copy</button></div>
+    <pre><code><span class="cmt">// in a browser: decoded for you automatically</span>
+const params = new URLSearchParams(window.location.search);
+const q = params.get('q');   <span class="cmt">// already the decoded original text</span>
+
+<span class="cmt">// decoding an encoded string by hand</span>
+const raw = 'caf%C3%A9';
+const text = <span class="fn">decodeURIComponent</span>(raw);  <span class="cmt">// "café"</span></code></pre>
+  </div>
+
+  <div class="codebox">
+    <div class="chead"><span>4) Encoding every part of a whole URL (the correct way)</span><button class="copycode">Copy</button></div>
+    <pre><code>function encodeUrl(url) {
+  const u = new URL(url);
+  u.pathname = u.pathname.split('/').map(<span class="fn">encodeURIComponent</span>).join('/');
+  u.search = '?' + new URLSearchParams(
+    [...new URLSearchParams(u.search)].map(
+      ([k, v]) =&gt; [<span class="fn">encodeURIComponent</span>(k), <span class="fn">encodeURIComponent</span>(v)]
+    )
+  ).toString();
+  return u.toString();
+}
+encodeUrl('https://example.com/café?q=café');</code></pre>
+  </div>
+
+  <div class="codebox">
+    <div class="chead"><span>5) Preventing double-encoding</span><button class="copycode">Copy</button></div>
+    <pre><code>function safeEncode(str) {
+  <span class="cmt">// if it already contains %XX, decode first so that we only encode once</span>
+  const decoded = /%[0-9A-Fa-f]{2}/.test(str) ? <span class="fn">decodeURIComponent</span>(str) : str;
+  return <span class="fn">encodeURIComponent</span>(decoded);
+}</code></pre>
+  </div>
+
+  <p class="note">
+    No sign-up · Unlimited use · Runs only in your browser. Want the general-purpose encoder instead? <a href="/" style="color:var(--accent)">Go here →</a>
+  </p>
+
+    <section class="reltools">
+    <h2>Related tools</h2>
+    <p class="rt-sub">Every tool on this site runs entirely in your browser. Pick the encoding problem you have:</p>
+    <div class="rt-list">
+      <a href="/">URL Encoder / Decoder</a>
+      <a href="/utm-builder">UTM Builder</a>
+      <a href="/base64">Base64 Encoder / Decoder</a>
+      <a href="/html-entities">HTML Entity Encoder / Decoder</a>
+      <a href="/jwt">JWT Decode</a>
+      <a href="/percent-encoding">What Is Percent-Encoding?</a>
+    </div>
+  </section>
+  <footer class="ft">
+    <nav>
+      <a href="/">URL Encoder</a> ·
+      <a href="/utm-builder">UTM Builder</a> ·
+      <a href="/base64">Base64</a> ·
+      <a href="/html-entities">HTML Entities</a> ·
+      <a href="/jwt">JWT</a> ·
+      <a href="/javascript">JavaScript Encoding</a> ·
+      <a href="/percent-encoding">Percent Encoding</a> ·
+      <a href="/about">About</a> ·
+      <a href="/privacy">Privacy</a> ·
+      <a href="/contact">Contact</a>
+    </nav>
+    <p class="copy">© 2026 PercentURL · All processing runs in your browser.</p>
+  </footer>
+</div>
+
+<script>
+const state = { fn:'encodeURIComponent', target:'component' };
+
+document.querySelectorAll('.seg').forEach(seg=>{
+  const k = seg.dataset.k;
+  seg.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      seg.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      state[k]=b.dataset.v;
+      runLive();
+    });
+  });
+});
+
+const inp=document.getElementById('in');
+const out=document.getElementById('out');
+const tag=document.getElementById('modeTag');
+
+// full URL: encode each part with encodeURIComponent and keep the structural characters
+function encodeUrlParts(s){
+  const m = s.match(/^(([a-zA-Z][a-zA-Z0-9+.\-]*):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/);
+  if(!m) return null;
+  const scheme=m[2]||'', authority=m[4]||'', path=m[5]||'', query=m[7]||'', fragment=m[8]||'';
+  let r='';
+  if(scheme) r+=scheme.toLowerCase()+':';
+  if(authority!==''||scheme) r+='//'+authority;
+  r+=path.split('/').map(seg=> seg===''?'':encodeURIComponent(seg)).join('/');
+  if(query!==''){
+    r+='?'+query.split('&').map(p=>{
+      const eq=p.indexOf('=');
+      if(eq<0) return encodeURIComponent(p);
+      return encodeURIComponent(p.slice(0,eq))+'='+encodeURIComponent(p.slice(eq+1));
+    }).join('&');
+  }
+  if(fragment!=='') r+='#'+encodeURIComponent(fragment);
+  return r;
+}
+function decodeUrlParts(s){
+  const m = s.match(/^(([a-zA-Z][a-zA-Z0-9+.\-]*):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/);
+  if(!m) return null;
+  const scheme=m[2]||'', authority=m[4]||'', path=m[5]||'', query=m[7]||'', fragment=m[8]||'';
+  let r='';
+  if(scheme) r+=scheme.toLowerCase()+':';
+  if(authority!==''||scheme) r+='//'+authority;
+  r+=path.split('/').map(seg=> seg===''?'':decodeURIComponent(seg)).join('/');
+  if(query!==''){
+    r+='?'+query.split('&').map(p=>{
+      const eq=p.indexOf('=');
+      if(eq<0) return decodeURIComponent(p);
+      return decodeURIComponent(p.slice(0,eq))+'='+decodeURIComponent(p.slice(eq+1));
+    }).join('&');
+  }
+  if(fragment!=='') r+='#'+decodeURIComponent(fragment);
+  return r;
+}
+
+function applyFn(str, fn, target){
+  if(fn==='decodeURIComponent'){
+    return target==='url' ? decodeUrlParts(str) : decodeURIComponent(str);
+  }
+  if(fn==='encodeURI'){
+    // encodeURI is designed for a whole URL, so call it directly
+    return encodeURI(str);
+  }
+  // encodeURIComponent
+  return target==='url' ? encodeUrlParts(str) : encodeURIComponent(str);
+}
+
+function runLive(){
+  const v = inp.value;
+  const enc = v!=='' ? encodeURIComponent(v) : '';
+  const uri = v!=='' ? encodeURI(v) : '';
+  let dec='', bad=false;
+  if(v!==''){
+    try{ dec = decodeURIComponent(v); }catch(e){ dec='(not valid percent-encoding)'; bad=true; }
+  }
+  const lvEnc=document.getElementById('lvEnc'), lvUri=document.getElementById('lvUri'), lvDec=document.getElementById('lvDec');
+  lvEnc.textContent=enc||'—'; lvUri.textContent=uri||'—';
+  lvDec.textContent=dec||'—'; lvDec.classList.toggle('bad',bad);
+}
+
+document.getElementById('encBtn').addEventListener('click',()=>{
+  try{
+    const v = applyFn(inp.value, state.fn, state.target);
+    out.value = (v===null) ? '⚠️ That does not look like a complete URL (it should start with http:// or https://). If you only want to encode a piece of text, switch to Component mode.' : v;
+    tag.textContent = state.fn + (state.target==='url'?' · url':'');
+  }catch(e){ out.value='⚠️ '+ (e.message||String(e)); }
+});
+
+document.getElementById('copyBtn').addEventListener('click',async()=>{
+  const b=document.getElementById('copyBtn');
+  try{ await navigator.clipboard.writeText(out.value);
+    const o=b.textContent; b.textContent='Copied'; setTimeout(()=>b.textContent=o,1200);
+  }catch(e){ out.removeAttribute('readonly'); out.select(); document.execCommand('copy'); out.setAttribute('readonly',''); }
+});
+
+// copy buttons for the code examples
+document.querySelectorAll('.codebox .copycode').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const code = btn.closest('.codebox').querySelector('code').innerText;
+    navigator.clipboard.writeText(code).then(()=>{
+      const o=btn.textContent; btn.textContent='Copied'; setTimeout(()=>btn.textContent=o,1200);
+    }).catch(()=>{});
+  });
+});
+
+inp.addEventListener('input', runLive);
+runLive();
+</script>
+</body>
+</html>

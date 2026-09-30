@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Base64 Encoder / Decoder — Encode &amp; Decode Online with Live Charset Display</title>
+<meta name="description" content="Free Base64 encoder and decoder. Encode or decode online as you type, see exactly which character set is being used, and learn how the + and / in standard Base64 break inside a URL — and when to use URL-safe Base64 instead.">
+<link rel="canonical" href="https://percenturl.com/base64">
+<style>
+  :root{
+    --bg:#0f172a; --panel:#1e293b; --ink:#e2e8f0; --muted:#94a3b8;
+    --accent:#38bdf8; --accent2:#22d3ee; --line:#334155;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.5}
+  .wrap{max-width:880px;margin:0 auto;padding:20px}
+  h1{font-size:1.4rem;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:.92rem;margin:0 0 16px}
+  .notice{background:rgba(56,189,248,.12);border:1px solid var(--accent);
+          color:var(--ink);padding:10px 12px;border-radius:10px;font-size:.85rem;margin-bottom:16px}
+  .alias{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;
+         font-size:.84rem;color:var(--muted);margin:0 0 16px;line-height:1.6}
+  .alias b{color:var(--accent);font-weight:600}
+
+  h2.blk{font-size:1.05rem;margin:30px 0 4px;padding-top:18px;border-top:1px solid var(--line)}
+  h2.blk .n{color:var(--accent);margin-right:6px}
+  .blksub{color:var(--muted);font-size:.85rem;margin:0 0 14px}
+
+  label{display:block;font-size:.78rem;color:var(--muted);margin:14px 0 6px;
+        text-transform:uppercase;letter-spacing:.04em}
+  textarea{width:100%;min-height:120px;background:var(--panel);color:var(--ink);
+           border:1px solid var(--line);border-radius:10px;padding:12px;font-size:.95rem;
+           font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical}
+  textarea:focus{outline:none;border-color:var(--accent)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .btn{flex:1;min-width:130px;border:none;border-radius:10px;padding:11px;font-size:.95rem;font-weight:600;cursor:pointer}
+  .btn.copy{background:#0b1220;color:var(--ink);border:1px solid var(--line)}
+
+  .controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:8px 0 4px}
+  .ctrl{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .ctrl .t{font-size:.78rem;color:var(--muted);margin-bottom:8px}
+  .seg{display:flex;gap:6px;flex-wrap:wrap}
+  .seg button{flex:1;min-width:78px;background:#0b1220;color:var(--ink);border:1px solid var(--line);
+             border-radius:8px;padding:8px 6px;font-size:.78rem;cursor:pointer}
+  .seg button.active{background:var(--accent);color:#06121f;border-color:var(--accent);font-weight:600}
+  .hint{color:var(--muted);font-size:.78rem;margin-top:6px}
+
+  .readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
+  .ro{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+  .ro .k{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .ro .v{font-size:.92rem;margin-top:3px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-all}
+  .ro .v.acc{color:var(--accent)}
+
+  table.enc{width:100%;border-collapse:collapse;margin-top:10px;font-size:.83rem}
+  table.enc th,table.enc td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+  table.enc th{color:var(--muted);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.03em}
+  table.enc td.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-all}
+  table.enc .multi{color:var(--accent)}
+  table.enc .ascii{color:#34d399}
+  .empty{color:var(--muted);font-size:.85rem;margin-top:10px}
+
+  .warn{display:none;background:rgba(248,113,113,.12);border:1px solid #f87171;color:#fecaca;
+        padding:10px 12px;border-radius:10px;font-size:.85rem;margin-top:12px;white-space:pre-wrap}
+  .warn.show{display:block}
+
+  .live{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin:12px 0;font-size:.85rem}
+  .live .l{margin:5px 0;word-break:break-all}
+  .live .k{color:var(--muted);display:inline-block;min-width:150px}
+
+  .fail{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0}
+  .fail h3{margin:0 0 8px;font-size:.95rem}
+  .fail .line{margin:6px 0;font-size:.85rem}
+  .fail .k{color:var(--muted);display:inline-block;min-width:132px}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#0b1220;
+       border:1px solid var(--line);border-radius:6px;padding:1px 5px;font-size:.82rem;word-break:break-all}
+  .bad{color:#fca5a5}
+  .good{color:#34d399}
+  .why{color:var(--muted);font-size:.84rem;margin:6px 0 0}
+
+  .note{color:var(--muted);font-size:.78rem;margin-top:18px}
+  .ft{margin-top:28px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:.85rem}
+  .ft nav a{color:var(--accent);text-decoration:none;margin:0 2px}
+  .ft nav a:hover{text-decoration:underline}
+  .ft .copy{margin:8px 0 0}
+
+  /* internal-link additions */
+  .backhome{margin:0 0 14px;font-size:.82rem}
+  .backhome a{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--line)}
+  .backhome a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .more{margin-top:26px;border-top:1px solid var(--line);padding-top:16px}
+  .more h2{font-size:1.05rem;margin:0 0 4px}
+  .more-sub{color:var(--muted);font-size:.85rem;margin:0 0 12px}
+  .more-list{list-style:none;padding:0;margin:0}
+  .more-list li{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+                padding:10px 12px;margin:0 0 8px;font-size:.86rem;line-height:1.6}
+  .more-list a{color:var(--accent);text-decoration:none;font-weight:600}
+  .more-list a:hover{text-decoration:underline}
+  .more-info{margin:10px 0 0;font-size:.85rem}
+  .more-info a{color:var(--accent);text-decoration:none}
+  .more-info a:hover{text-decoration:underline}
+  /* related-tools horizontal interlink */
+  .reltools{margin-top:26px;border-top:1px solid var(--line);padding-top:16px}
+  .reltools h2{font-size:1.05rem;margin:0 0 4px}
+  .reltools .rt-sub{color:var(--muted);font-size:.85rem;margin:0 0 12px}
+  .reltools .rt-list{display:flex;flex-wrap:wrap;gap:8px}
+  .reltools .rt-list a{flex:1 1 200px;background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;padding:10px 12px;color:var(--accent);text-decoration:none;
+    font-size:.86rem;font-weight:600;display:flex;align-items:center}
+  .reltools .rt-list a:hover{border-color:var(--accent);text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Base64 Encoder / Decoder</h1>
+  <p class="sub">Encode or decode Base64 as you type — and see exactly which character set and alphabet the tool is using. Runs entirely in your browser.</p>
+  <p class="backhome"><a href="/">← Back to the URL Encoder</a></p>
+
+  <p class="alias">Also searched as <b>base64 encode</b> · <b>base64 decode</b> · <b>base64 encode online</b> · <b>base64 decode online</b> · <b>base64 converter</b> · or <b>base 64</b>. It is one tool: bytes to Base64 text, and back.</p>
+
+  <div class="notice">
+    Everything runs in your browser. Nothing you type is uploaded to any server.
+  </div>
+
+  <!-- ============ BLOCK 1 ============ -->
+  <h2 class="blk"><span class="n">1</span>Encode or decode</h2>
+  <p class="blksub">Pick a direction, type or paste, and the result updates live.</p>
+
+  <div class="controls">
+    <div class="ctrl">
+      <div class="t">Direction</div>
+      <div class="seg" data-k="mode">
+        <button data-v="encode" class="active">Encode</button>
+        <button data-v="decode">Decode</button>
+      </div>
+    </div>
+    <div class="ctrl">
+      <div class="t">Character set</div>
+      <div class="seg" data-k="charset">
+        <button data-v="utf-8" class="active">UTF-8</button>
+        <button data-v="ascii">ASCII</button>
+        <button data-v="latin1">Latin-1</button>
+      </div>
+    </div>
+    <div class="ctrl">
+      <div class="t">Alphabet</div>
+      <div class="seg" data-k="alphabet">
+        <button data-v="standard" class="active">Standard (+ /)</button>
+        <button data-v="urlsafe">URL-safe (- _)</button>
+      </div>
+    </div>
+    <div class="ctrl">
+      <div class="t">Padding</div>
+      <div class="seg" data-k="padding">
+        <button data-v="pad" class="active">Include =</button>
+        <button data-v="nopad">Omit =</button>
+      </div>
+    </div>
+  </div>
+  <div class="hint" id="dirHint">Encoding text to Base64. Switch to Decode to go the other way.</div>
+
+  <label for="in" id="inLabel">Text to encode</label>
+  <textarea id="in" placeholder="Type or paste here — the output updates as you type."></textarea>
+
+  <label for="out">Result</label>
+  <textarea id="out" readonly placeholder="Result appears here."></textarea>
+  <div class="row">
+    <button class="btn copy" id="copyBtn">Copy result</button>
+  </div>
+
+  <div class="warn" id="warn"></div>
+
+  <!-- ============ BLOCK 2 ============ -->
+  <h2 class="blk"><span class="n">2</span>Live: what the encoder is actually doing</h2>
+  <p class="blksub">Base64 does not encode text — it encodes <em>bytes</em>. The character set decides what those bytes are, so the same visible text can produce different Base64. This readout shows the choice being made.</p>
+
+  <div class="readout">
+    <div class="ro"><div class="k">Character set</div><div class="v acc" id="roCharset">UTF-8</div></div>
+    <div class="ro"><div class="k">Bytes in play</div><div class="v" id="roBytes">0</div></div>
+    <div class="ro"><div class="k">Alphabet</div><div class="v" id="roAlphabet">Standard</div></div>
+    <div class="ro"><div class="k">Padding</div><div class="v" id="roPadding">included</div></div>
+    <div class="ro"><div class="k">Output length</div><div class="v" id="roLen">0</div></div>
+  </div>
+
+  <table class="enc">
+    <thead>
+      <tr><th>Character</th><th>Code point</th><th>Bytes in this charset</th><th>Kind</th></tr>
+    </thead>
+    <tbody id="byteBody"></tbody>
+  </table>
+  <div class="empty" id="byteEmpty">Type something above to see how each character becomes bytes.</div>
+
+  <!-- ============ BLOCK 3 ============ -->
+  <h2 class="blk"><span class="n">3</span>Putting Base64 in a URL: how <code>+</code> and <code>/</code> break it</h2>
+  <p class="blksub">Standard Base64 uses <code>+</code> and <code>/</code>. Both are meaningful characters in a URL, so the moment the value travels in a link or a query string, the meaning can change. This is the step almost every Base64 tool skips.</p>
+
+  <div class="live">
+    <div class="l"><span class="k">Your output, standard</span> <code id="lvStd">—</code></div>
+    <div class="l"><span class="k">URL-safe form</span> <code id="lvUrl">—</code></div>
+    <div class="l"><span class="k">Percent-encoded for a URL</span> <code id="lvPct">—</code></div>
+  </div>
+
+  <div class="fail">
+    <h3><code>+</code> is read as a space in a query string</h3>
+    <div class="line"><span class="k">You send</span> <code>?token=SGVsbG8+A==</code></div>
+    <div class="line"><span class="k">Server decodes as</span> <code>SGVsbG8 A==</code> <span class="bad">— the + became a space</span></div>
+    <div class="line"><span class="k">Result</span> Base64 decodes to different bytes than you encoded; the token or payload is corrupted</div>
+    <div class="line"><span class="k">Fix</span> <code class="good">%2B</code> for the plus, or switch to URL-safe Base64</div>
+  </div>
+
+  <div class="fail">
+    <h3><code>/</code> splits a path segment</h3>
+    <div class="line"><span class="k">You send</span> <code>https://api.example.com/get/Pj4/Pyc=</code></div>
+    <div class="line"><span class="k">Server sees</span> two path segments — <code>Pj4</code> and <code>Pyc=</code> — <span class="bad">not one value</span></div>
+    <div class="line"><span class="k">Result</span> 404, or the wrong resource; the value never arrives intact</div>
+    <div class="line"><span class="k">Fix</span> <code class="good">%2F</code> for the slash, or URL-safe Base64</div>
+  </div>
+
+  <div class="fail">
+    <h3>Trailing <code>=</code> padding gets trimmed or misread</h3>
+    <div class="line"><span class="k">You send</span> <code>?id=SGVsbG8=</code></div>
+    <div class="line"><span class="k">What happens</span> some systems strip trailing <code>=</code>, and inside a query value it also collides with the <code>key=value</code> separator</div>
+    <div class="line"><span class="k">Fix</span> <code class="good">%3D</code>, or use unpadded URL-safe Base64 (what JWTs do)</div>
+  </div>
+
+  <div class="fail">
+    <h3>Sending standard Base64 where the consumer expects URL-safe</h3>
+    <div class="line"><span class="k">Example</span> a JWT segment, an OAuth <code>state</code>, or an AWS S3 presigned signature</div>
+    <div class="line"><span class="k">Result</span> <code>+</code> and <code>/</code> are not in the URL-safe alphabet, so the receiver <span class="bad">fails or decodes to the wrong bytes</span></div>
+    <div class="line"><span class="k">Fix</span> produce URL-safe from the start: <code>+</code> → <code>-</code>, <code>/</code> → <code>_</code></div>
+  </div>
+
+  <div class="fail">
+    <h3>Double-encoding the escape</h3>
+    <div class="line"><span class="k">You percent-encode</span> an already-encoded value</div>
+    <div class="line"><span class="k">Result</span> <code>%2B</code> <span class="bad">→</span> <code>%252B</code> — the receiver decodes it back to the literal text <code>%2B</code>, not a plus</div>
+    <div class="line"><span class="k">Fix</span> percent-encode exactly once, and only the characters that need it</div>
+  </div>
+
+  <div class="fail">
+    <h3><code>atob()</code> expects standard Base64, not URL-safe</h3>
+    <div class="line"><span class="k">In the browser</span> <code>atob('Pj4_Pyc-Pg')</code> <span class="bad">throws</span> — <code>-</code> and <code>_</code> are not valid to it</div>
+    <div class="line"><span class="k">Fix</span> translate back first: <code class="good">-</code>→<code>+</code>, <code>_</code>→<code>/</code>, then re-add padding before calling <code>atob()</code></div>
+  </div>
+
+  <h3 style="font-size:.95rem;margin:20px 0 4px">When to use URL-safe Base64</h3>
+  <p class="why">Use the URL-safe alphabet (<code>-</code> and <code>_</code>, usually with padding dropped) whenever the Base64 value travels somewhere with URL or identifier rules:</p>
+  <p class="why">
+    · anywhere inside a URL — a path segment, a query parameter, a fragment<br>
+    · JWT / JWS / JWK segments, OAuth <code>state</code> and PKCE <code>code_verifier</code><br>
+    · AWS S3 presigned URLs and other signatures that are specified as base64url<br>
+    · filenames, headers, or anything that must avoid <code>+</code> and <code>/</code>
+  </p>
+  <p class="why">Stay on <strong>standard</strong> Base64 when the consumer expects it — MIME email attachments, PEM, most plain-text Base64 blobs, and default decoders such as <code>atob()</code>, <code>Buffer.from(s,'base64')</code>, <code>base64.b64decode()</code>. When in doubt, check what the receiving side specifies, and encode once with that alphabet.</p>
+
+  <p class="note">
+    No login · Unlimited use · No watermark · Runs only in your browser. This tool encodes bytes exactly once, with the character set and alphabet you choose, and shows you both while it works.
+  </p>
+
+    <section class="reltools">
+    <h2>Related tools</h2>
+    <p class="rt-sub">Every tool on this site runs entirely in your browser. Pick the encoding problem you have:</p>
+    <div class="rt-list">
+      <a href="/">URL Encoder / Decoder</a>
+      <a href="/utm-builder">UTM Builder</a>
+      <a href="/html-entities">HTML Entity Encoder / Decoder</a>
+      <a href="/jwt">JWT Decode</a>
+      <a href="/javascript">URL Encoding in JavaScript</a>
+      <a href="/percent-encoding">What Is Percent-Encoding?</a>
+    </div>
+  </section>
+  <footer class="ft">
+    <nav>
+      <a href="/">URL Encoder</a> ·
+      <a href="/utm-builder">UTM Builder</a> ·
+      <a href="/base64">Base64</a> ·
+      <a href="/html-entities">HTML Entities</a> ·
+      <a href="/jwt">JWT</a> ·
+      <a href="/javascript">JavaScript Encoding</a> ·
+      <a href="/percent-encoding">Percent Encoding</a> ·
+      <a href="/about">About</a> ·
+      <a href="/privacy">Privacy</a> ·
+      <a href="/contact">Contact</a>
+    </nav>
+    <p class="copy">© 2026 PercentURL · All processing runs in your browser.</p>
+  </footer>
+</div>
+
+<script>
+const B64STD = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+const state = { mode:'encode', charset:'utf-8', alphabet:'standard', padding:'pad' };
+
+const inEl   = document.getElementById('in');
+const outEl  = document.getElementById('out');
+const warnEl = document.getElementById('warn');
+const byteBody  = document.getElementById('byteBody');
+const byteEmpty = document.getElementById('byteEmpty');
+
+/* ---------- charset: string -> bytes ---------- */
+function textToBytes(str, charset){
+  if(charset === 'utf-8') return Array.from(new TextEncoder().encode(str));
+  const out = [];
+  for(const ch of Array.from(str)){
+    const cp = ch.codePointAt(0);
+    if(charset === 'ascii'){
+      if(cp > 0x7F) throw { msg:'Character "' + ch + '" (U+' + cp.toString(16).toUpperCase() +
+        ') is outside ASCII. Switch the character set to UTF-8 to encode it.' };
+      out.push(cp);
+    } else { // latin1
+      if(cp > 0xFF) throw { msg:'Character "' + ch + '" (U+' + cp.toString(16).toUpperCase() +
+        ') is outside Latin-1. Switch the character set to UTF-8 to encode it.' };
+      out.push(cp);
+    }
+  }
+  return out;
+}
+
+/* ---------- charset: bytes -> string ---------- */
+function bytesToText(bytes, charset){
+  if(charset === 'utf-8'){
+    try{ return new TextDecoder('utf-8', {fatal:true}).decode(new Uint8Array(bytes)); }
+    catch(e){ throw { msg:'These bytes are not valid UTF-8. That is expected for binary data (an image, a PDF, an encrypted blob) — decode as Latin-1 to see the raw bytes, or treat the result as a file.' }; }
+  }
+  if(charset === 'ascii'){
+    for(const b of bytes) if(b > 0x7F)
+      throw { msg:'Byte 0x' + b.toString(16).toUpperCase() + ' is above 0x7F, so this is not ASCII text. Try UTF-8 or Latin-1.' };
+  }
+  return bytes.map(b => String.fromCharCode(b)).join('');
+}
+
+/* ---------- Base64 ---------- */
+function bytesToB64(bytes, urlSafe, pad){
+  let out = '';
+  for(let i = 0; i < bytes.length; i += 3){
+    const b0 = bytes[i], b1 = bytes[i+1], b2 = bytes[i+2];
+    const has1 = i+1 < bytes.length, has2 = i+2 < bytes.length;
+    out += B64STD[b0 >> 2];
+    out += B64STD[((b0 & 3) << 4) | ((has1 ? b1 : 0) >> 4)];
+    out += has1 ? B64STD[((b1 & 15) << 2) | ((has2 ? b2 : 0) >> 6)] : '=';
+    out += has2 ? B64STD[b2 & 63] : '=';
+  }
+  if(!pad) out = out.replace(/=+$/, '');
+  if(urlSafe) out = out.replace(/\+/g, '-').replace(/\//g, '_');
+  return out;
+}
+
+function b64ToBytes(str){
+  let s = str.replace(/[\s\r\n]+/g, '');
+  if(!s) return [];
+  s = s.replace(/-/g, '+').replace(/_/g, '/');
+  const rem = s.length % 4;
+  if(rem === 1) throw { msg:'This is not valid Base64: a length of 4n+1 is impossible. A character was probably dropped when copying.' };
+  if(rem) s += '='.repeat(4 - rem);
+  if(!/^[A-Za-z0-9+/]*={0,2}$/.test(s))
+    throw { msg:'This is not valid Base64. Valid characters are A-Z a-z 0-9 + / = (or - _ for URL-safe). If it contains %20 it is percent-encoded; if it is all 0-9 a-f it is probably hex.' };
+  const out = [];
+  for(let i = 0; i < s.length; i += 4){
+    const n = (B64STD.indexOf(s[i]) << 18) | (B64STD.indexOf(s[i+1]) << 12) |
+              ((s[i+2] === '=' ? 0 : B64STD.indexOf(s[i+2])) << 6) |
+              (s[i+3] === '=' ? 0 : B64STD.indexOf(s[i+3]));
+    out.push((n >> 16) & 255);
+    if(s[i+2] !== '=') out.push((n >> 8) & 255);
+    if(s[i+3] !== '=') out.push(n & 255);
+  }
+  return out;
+}
+
+/* ---------- live run ---------- */
+function run(){
+  const raw = inEl.value;
+  let output = '', bytes = [], note = null;
+
+  try{
+    if(state.mode === 'encode'){
+      bytes = textToBytes(raw, state.charset);
+      output = bytesToB64(bytes, state.alphabet === 'urlsafe', state.padding === 'pad');
+    } else {
+      bytes = b64ToBytes(raw);
+      output = raw ? bytesToText(bytes, state.charset) : '';
+    }
+    warnEl.classList.remove('show');
+  }catch(e){
+    warnEl.textContent = '⚠️ ' + (e.msg || String(e));
+    warnEl.classList.add('show');
+    if(state.mode === 'decode' && raw){
+      try{ bytes = b64ToBytes(raw); }catch(_){ bytes = []; }
+    } else { bytes = []; }
+  }
+
+  outEl.value = output;
+
+  document.getElementById('roCharset').textContent = state.charset === 'utf-8' ? 'UTF-8'
+    : state.charset === 'ascii' ? 'ASCII' : 'Latin-1';
+  document.getElementById('roBytes').textContent = bytes.length;
+  document.getElementById('roAlphabet').textContent = state.alphabet === 'urlsafe' ? 'URL-safe (- _)' : 'Standard (+ /)';
+  document.getElementById('roPadding').textContent = state.padding === 'pad' ? 'included (=)' : 'omitted';
+  document.getElementById('roLen').textContent = output.length;
+
+  renderBytes(bytes);
+  renderLive(output);
+}
+
+/* character -> bytes table (for the INPUT, so the charset choice is visible) */
+function renderBytes(bytes){
+  byteBody.innerHTML = '';
+  const src = state.mode === 'encode' ? Array.from(inEl.value) : null;
+  if(!src || !src.length){
+    byteEmpty.style.display = bytes.length ? 'none' : 'block';
+    if(state.mode === 'decode' && bytes.length){
+      // show the bytes we decoded, grouped as one row per byte
+      byteEmpty.textContent = '';
+      const shown = bytes.slice(0, 24);
+      for(const b of shown){
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td class="mono">—</td><td class="mono">0x' + b.toString(16).toUpperCase().padStart(2,'0') +
+          '</td><td class="mono">' + b + '</td><td class="ascii">decoded byte</td>';
+        byteBody.appendChild(tr);
+      }
+      if(bytes.length > shown.length){
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td class="mono">…</td><td class="mono">…</td><td class="mono">…</td><td>+' +
+          (bytes.length - shown.length) + ' more bytes</td>';
+        byteBody.appendChild(tr);
+      }
+    }
+    return;
+  }
+  byteEmpty.style.display = 'none';
+  const shown = src.slice(0, 24);
+  for(const ch of shown){
+    let cp, bs, kind, cls;
+    try{
+      const b = textToBytes(ch, state.charset);
+      cp = ch.codePointAt(0); bs = b; 
+    }catch(e){ cp = ch.codePointAt(0); bs = null; }
+    if(bs === null){ kind = 'outside this charset'; cls = 'bad'; }
+    else if(bs.length === 1 && bs[0] <= 0x7F){ kind = 'ASCII'; cls = 'ascii'; }
+    else if(bs.length === 1){ kind = 'single byte'; cls = 'multi'; }
+    else { kind = bs.length + '-byte sequence'; cls = 'multi'; }
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td class="mono">' + escapeHtml(ch === ' ' ? '␣' : ch) + '</td>' +
+      '<td class="mono">U+' + cp.toString(16).toUpperCase().padStart(4,'0') + '</td>' +
+      '<td class="mono ' + cls + '">' + (bs === null ? '—' : bs.map(x => x.toString(16).toUpperCase().padStart(2,'0')).join(' ')) + '</td>' +
+      '<td class="' + cls + '">' + kind + '</td>';
+    byteBody.appendChild(tr);
+  }
+  if(src.length > shown.length){
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td class="mono">…</td><td class="mono">…</td><td class="mono">…</td><td>+' +
+      (src.length - shown.length) + ' more characters</td>';
+    byteBody.appendChild(tr);
+  }
+}
+
+/* block 3 live line */
+function renderLive(output){
+  const std = output || '';
+  const urlSafe = std.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  const pct = std.replace(/\+/g, '%2B').replace(/\//g, '%2F').replace(/=/g, '%3D');
+  document.getElementById('lvStd').textContent = std || '—';
+  document.getElementById('lvUrl').textContent = urlSafe || '—';
+  document.getElementById('lvPct').textContent = pct || '—';
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+document.querySelectorAll('.seg').forEach(seg=>{
+  const k = seg.dataset.k;
+  seg.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      seg.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      state[k] = b.dataset.v;
+      if(k === 'mode'){
+        const enc = state.mode === 'encode';
+        document.getElementById('inLabel').textContent = enc ? 'Text to encode' : 'Base64 to decode';
+        inEl.placeholder = enc ? 'Type or paste here — the output updates as you type.'
+                               : 'Paste a Base64 string — standard, URL-safe or unpadded.';
+        document.getElementById('dirHint').textContent = enc
+          ? 'Encoding text to Base64. Switch to Decode to go the other way.'
+          : 'Decoding Base64 back to text. URL-safe and missing padding are handled automatically.';
+      }
+      run();
+    });
+  });
+});
+
+inEl.addEventListener('input', run);
+document.getElementById('copyBtn').addEventListener('click', async ()=>{
+  const b = document.getElementById('copyBtn');
+  if(!outEl.value){ b.textContent='Nothing to copy'; setTimeout(()=>b.textContent='Copy result',1200); return; }
+  try{ await navigator.clipboard.writeText(outEl.value); }
+  catch(e){ outEl.removeAttribute('readonly'); outEl.select(); document.execCommand('copy'); outEl.setAttribute('readonly',''); }
+  b.textContent = 'Copied';
+  setTimeout(()=>b.textContent = 'Copy result', 1200);
+});
+
+run();
+</script>
+</body>
+</html>

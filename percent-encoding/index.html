@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Percent-encoding (URL encoding) explained: what it is, why URLs need it, how the encoding works, which characters may stay as-is in each part of a URL, and the four most common misunderstandings.">
+<title>What Is Percent-Encoding? — URL Encoding Explained</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#1e293b; --ink:#e2e8f0; --muted:#94a3b8;
+    --accent:#38bdf8; --accent2:#22d3ee; --line:#334155;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.6}
+  .wrap{max-width:880px;margin:0 auto;padding:20px}
+  h1{font-size:1.4rem;margin:0 0 4px;line-height:1.4}
+  .sub{color:var(--muted);font-size:.92rem;margin:0 0 16px}
+  h2{font-size:1.05rem;margin:26px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  h3{font-size:.95rem;margin:18px 0 6px;color:var(--accent)}
+  .notice{background:rgba(56,189,248,.12);border:1px solid var(--accent);
+          color:var(--ink);padding:10px 12px;border-radius:10px;font-size:.85rem;margin-bottom:16px}
+  .note{color:var(--muted);font-size:.78rem;margin-top:18px}
+  .ft{margin-top:28px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:.85rem}
+  .ft nav a{color:var(--accent);text-decoration:none;margin:0 2px}
+  .ft nav a:hover{text-decoration:underline}
+  .ft .copy{margin:8px 0 0}
+  .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#0b1220;
+       border:1px solid var(--line);border-radius:6px;padding:1px 6px;color:var(--accent2);font-size:.85rem}
+  .ex{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 16px;margin-top:8px}
+  .ex ul,.ex ol{margin:10px 0;padding-left:22px}
+  .ex li{margin:8px 0}
+  .ex b{color:var(--ink)}
+  .ex p{font-size:.92rem}
+  .lead{font-size:1rem;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+        padding:14px 16px;margin:10px 0}
+  .lead b{color:var(--accent2)}
+  table.ct{width:100%;border-collapse:collapse;margin-top:10px;font-size:.85rem}
+  table.ct th,table.ct td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+  table.ct th{color:var(--muted);font-weight:600}
+  table.ct td.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .ok{color:#34d399}
+  .no{color:#f87171}
+  .step{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);
+        border-radius:8px;padding:10px 14px;margin:8px 0;font-size:.92rem}
+  .step .n{color:var(--accent);font-weight:600}
+  .codebox{background:#0b1220;border:1px solid var(--line);border-radius:10px;margin:10px 0;overflow:hidden}
+  .codebox pre{margin:0;padding:12px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+                font-size:.85rem;line-height:1.6;color:#cbd5e1}
+  .codebox .cmt{color:#64748b}
+  .jump{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .jump a{flex:1;min-width:180px;text-align:center;background:var(--panel);border:1px solid var(--line);
+          border-radius:10px;padding:10px 12px;color:var(--accent);text-decoration:none;font-size:.88rem}
+  .jump a:hover{border-color:var(--accent)}
+
+  /* internal-link additions */
+  .backhome{margin:0 0 14px;font-size:.82rem}
+  .backhome a{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--line)}
+  .backhome a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  /* related-tools horizontal interlink */
+  .reltools{margin-top:26px;border-top:1px solid var(--line);padding-top:16px}
+  .reltools h2{font-size:1.05rem;margin:0 0 4px}
+  .reltools .rt-sub{color:var(--muted);font-size:.85rem;margin:0 0 12px}
+  .reltools .rt-list{display:flex;flex-wrap:wrap;gap:8px}
+  .reltools .rt-list a{flex:1 1 200px;background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;padding:10px 12px;color:var(--accent);text-decoration:none;
+    font-size:.86rem;font-weight:600;display:flex;align-items:center}
+  .reltools .rt-list a:hover{border-color:var(--accent);text-decoration:underline}
+.article-visual{margin:1.5rem 0 2rem;padding:0;overflow:hidden;border:1px solid rgba(148,163,184,.28);border-radius:14px;background:rgba(15,23,42,.72)}.article-visual img{display:block;width:100%;height:auto}.article-visual figcaption{padding:.7rem 1rem;color:#94a3b8;font-size:.88rem;line-height:1.5}</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>What Is Percent-Encoding?</h1>
+  <p class="sub">Why a URL is full of things like <span class="kbd">%20</span> and <span class="kbd">%C3%A9</span>, explained from first principles. This page is an <b>explainer</b>, not a tool.</p>
+  <p class="backhome"><a href="/">← Back to the URL Encoder</a></p>
+
+  <div class="notice">
+    This page is concept-only and has no encoder. To actually encode or decode text, use the <a href="/" style="color:var(--accent)">URL Encoder tool</a>; to see how it is done in JavaScript, read the <a href="/javascript" style="color:var(--accent)">JavaScript encoding page</a>.
+  </div>
+
+  <p class="lead">
+    Percent-encoding writes a byte that a URL cannot carry directly as <b>a percent sign plus two hex digits</b>.
+    A space becomes <span class="kbd">%20</span>, and the accented letter <span class="kbd">é</span> becomes <span class="kbd">%C3%A9</span>.
+    It is also commonly called <b>URL encoding</b>; its formal name in RFC 3986 is <b>Percent-Encoding</b>.
+  </p>
+
+  <!-- ① why it exists -->
+  <h2>① Why does percent-encoding exist?</h2>
+  <div class="ex">
+    <p>A URL (URI) was designed for plain ASCII, and a set of its characters were given <b>structural meaning</b>. That creates three problems:</p>
+    <ol>
+      <li><b>The character set is too small</b>: a URL can only safely carry a limited set of ASCII characters. Accented letters, emoji and every other non-ASCII character are not in it, so they need another spelling.</li>
+      <li><b>Some characters are the skeleton, not content</b>: <span class="kbd">:</span> <span class="kbd">/</span> <span class="kbd">?</span> <span class="kbd">#</span> <span class="kbd">&amp;</span> <span class="kbd">=</span> <span class="kbd">@</span> are there to separate the scheme, the path, the query string and the fragment. If the content itself contains a <span class="kbd">?</span> and it is not encoded, the browser reads it as "the query string starts here" and the URL structure falls apart.</li>
+      <li><b>Some characters are not allowed at all</b>: spaces, <span class="kbd">&lt;</span> <span class="kbd">&gt;</span> <span class="kbd">&quot;</span> <span class="kbd">{</span> <span class="kbd">}</span> and control characters are illegal in a URL.</li>
+    </ol>
+    <p>Percent-encoding is the single answer to all three: <b>any character that is unsafe, or that you want to use as content, is written as %XX.</b></p>
+  </div>
+
+  <!-- ② the rules -->
+  <h2>② The rules: really just three steps</h2>
+  <p class="sub">Most people assume one character maps to one %XX. There is a UTF-8 byte layer in between.</p>
+
+  <div class="step"><span class="n">Step 1 ·</span> Take one character — say <span class="kbd">é</span>.</div>
+  <div class="step"><span class="n">Step 2 ·</span> Encode it to <b>UTF-8</b> bytes first. <span class="kbd">é</span> is 2 bytes in UTF-8: <span class="kbd">C3 A9</span>.</div>
+  <div class="step"><span class="n">Step 3 ·</span> Write each byte as <b>% + two hex digits</b>: <span class="kbd">C3</span>→<span class="kbd">%C3</span>, <span class="kbd">A9</span>→<span class="kbd">%A9</span>, which gives <span class="kbd">%C3%A9</span>.</div>
+
+  <table class="ct">
+    <thead><tr><th>Char</th><th>UTF-8 bytes (hex)</th><th>Percent-encoded</th></tr></thead>
+    <tbody>
+      <tr><td>é</td><td class="mono">C3 A9 (2 bytes)</td><td class="mono">%C3%A9</td></tr>
+      <tr><td>€</td><td class="mono">E2 82 AC (3 bytes)</td><td class="mono">%E2%82%AC</td></tr>
+      <tr><td>space</td><td class="mono">20 (1 byte)</td><td class="mono">%20</td></tr>
+      <tr><td>A</td><td class="mono">41 (1 byte)</td><td class="mono">A (no encoding needed)</td></tr>
+      <tr><td>&amp;</td><td class="mono">26 (1 byte)</td><td class="mono">%26</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Key idea: <b>percent-encoding encodes bytes, not characters</b>. That is why <span class="kbd">é</span> becomes two %XX groups and <span class="kbd">€</span> becomes three, while an ASCII letter stays exactly as it is.</p>
+
+<figure class="article-visual"><img src="/assets/percent-encoding/01-byte-encoding.png" alt="Diagram showing the character é encoded to UTF-8 bytes C3 A9 and then to percent-encoded bytes %C3%A9." loading="lazy" decoding="async"><figcaption>1/3 · Characters become UTF-8 bytes first; each byte is written as % plus two hexadecimal digits.</figcaption></figure>
+  <!-- ③ three classes -->
+  <h2>③ Characters fall into three classes</h2>
+  <p class="sub">RFC 3986 splits ASCII into three classes, and that is what decides whether a character can stay as-is in a URL.</p>
+  <table class="ct">
+    <thead><tr><th>Class</th><th>Which characters</th><th>Encode?</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Unreserved</b><br><span style="color:var(--muted);font-size:.8rem">always safe</span></td>
+        <td class="mono">A-Z a-z 0-9 - _ . ~</td>
+        <td class="ok">Never encoded</td>
+        <td>Safe everywhere — they can appear exactly as they are.</td>
+      </tr>
+      <tr>
+        <td><b>Reserved</b><br><span style="color:var(--muted);font-size:.8rem">structural</span></td>
+        <td class="mono">:/?#[]@ !$&amp;'()*+,;=</td>
+        <td class="no">Depends</td>
+        <td>They carry structural meaning. <b>Used as structure</b> they stay as-is; <b>used as ordinary content</b> they must be encoded.</td>
+      </tr>
+      <tr>
+        <td><b>Other / unsafe</b></td>
+        <td>space, <span class="mono">&quot; &lt; &gt; \ ^ ` { } |</span>, control characters, and everything non-ASCII (accented letters, emoji)</td>
+        <td class="no">Always encoded</td>
+        <td>Illegal in a URL — always %XX.</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="ex">
+    <p><b>The single most important sentence:</b> the same character is treated differently depending on where it sits. A <span class="kbd">?</span> that opens the query string is skeleton and stays; but if a <b>parameter value</b> genuinely needs to contain a question mark it must be written <span class="kbd">%3F</span>, or it will be mistaken for the start of the query string.</p>
+  </div>
+
+  <!-- ④ the parts -->
+  <h2>④ Each part of a URL: what may stay as-is</h2>
+  <p class="sub">This is where people most often get stuck — the rules are not uniform across the whole URL, they are <b>per segment</b>.</p>
+  <table class="ct">
+    <thead><tr><th>Part</th><th>Example</th><th>Characters that may stay as-is</th></tr></thead>
+    <tbody>
+      <tr><td>scheme</td><td class="mono">https:</td><td class="mono">letters, digits, + - .</td></tr>
+      <tr><td>host</td><td class="mono">example.com</td><td class="mono">letters, digits, - . ~ % and some sub-delims</td></tr>
+      <tr><td>path</td><td class="mono">/café/menu</td><td class="mono">unreserved + <span class="mono">:@</span> and <span class="mono">/</span> (as a separator) + sub-delims</td></tr>
+      <tr><td>query</td><td class="mono">?q=café&amp;page=2</td><td class="mono">unreserved + <span class="mono">/?&amp;=</span> (as structure) + sub-delims</td></tr>
+      <tr><td>fragment</td><td class="mono">#section-3</td><td class="mono">same as query, plus <span class="mono">#</span> itself</td></tr>
+    </tbody>
+  </table>
+  <div class="ex">
+    <p><b>So the correct approach is to encode part by part:</b> encode the scheme, the host, each path segment, each parameter name and each parameter value <b>separately</b>, then join them with the structural characters — instead of throwing the whole URL at an encoder in one go (that encodes <span class="kbd">://</span> <span class="kbd">?</span> <span class="kbd">&amp;</span> too, and the URL breaks).</p>
+  </div>
+
+<figure class="article-visual"><img src="/assets/percent-encoding/02-url-structure.png" alt="Diagram separating a URL into its scheme, host, path, query, and fragment so only the data is encoded." loading="lazy" decoding="async"><figcaption>2/3 · A URL has structure. Keep its separators in place and encode the data within each part.</figcaption></figure>
+  <!-- ⑤ full walkthrough -->
+  <h2>⑤ A full walkthrough with a real example</h2>
+  <p class="sub">Turning <span class="kbd">https://example.com/café?q=café &amp; tea</span> into a legal URL.</p>
+  <div class="codebox"><pre><code>original: https://example.com/café?q=café &amp; tea
+
+<span class="cmt"># split into parts, encode each one, keep the structural characters:</span>
+scheme      https:                 <span class="cmt">→ unchanged</span>
+host        example.com            <span class="cmt">→ unchanged</span>
+path        /café                  <span class="cmt">→ /caf%C3%A9</span>
+param name  q                      <span class="cmt">→ unchanged</span>
+param value café &amp; tea             <span class="cmt">→ caf%C3%A9%20%26%20tea</span>
+
+result: https://example.com/caf%C3%A9?q=caf%C3%A9%20%26%20tea</code></pre></div>
+  <p class="note">Note that <span class="kbd">:</span> <span class="kbd">//</span> <span class="kbd">?</span> <span class="kbd">=</span> all <b>stay as they are</b>; only the accented letters, the spaces and the ampersand in the <i>content</i> were encoded.</p>
+
+<figure class="article-visual"><img src="/assets/percent-encoding/03-encode-parts.png" alt="Diagram showing scheme, host, path segment, query parameter name, and query parameter value as separate URL components." loading="lazy" decoding="async"><figcaption>3/3 · Encode each path segment and query name or value separately, then join them with URL separators.</figcaption></figure>
+  <!-- ⑥ common myths -->
+  <h2>⑥ Four common misunderstandings</h2>
+  <div class="ex">
+    <ul>
+      <li><b>Myth 1: "a space can be written as +".</b> Inside a URL <b>path or query string</b> the correct encoding for a space is <span class="kbd">%20</span>. <span class="kbd">+</span> means a space only inside an HTML <b>form submission</b> (<span class="kbd">application/x-www-form-urlencoded</span>). They are not the same thing, and mixing them up corrupts values.</li>
+      <li><b>Myth 2: "encoding twice is safer".</b> The opposite. Encoding an already-encoded string turns <span class="kbd">%</span> into <span class="kbd">%25</span> and makes the mess worse (<span class="kbd">%20</span> → <span class="kbd">%2520</span>). Encoding should happen <b>exactly once</b>.</li>
+      <li><b>Myth 3: "%xx and %XX are different".</b> The hex digits are <b>case-insensitive</b>: <span class="kbd">%3a</span> and <span class="kbd">%3A</span> decode to the same character. The spec still recommends <b>uppercase</b>, for easier comparison and tidier output.</li>
+      <li><b>Myth 4: "encoding is encryption".</b> Not at all. Percent-encoding is a <b>reversible, public format</b> — anyone can decode it back to the original text. It answers "can this travel safely?" and offers <b>no confidentiality whatsoever</b>. Do not rely on it to protect sensitive data.</li>
+    </ul>
+  </div>
+
+  <!-- ⑦ related -->
+  <h2>⑦ Where to go next</h2>
+  <div class="jump">
+    <a href="/">→ URL Encoder tool (actually encode / decode)</a>
+    <a href="/javascript">→ URL encoding in JavaScript, with code examples</a>
+  </div>
+
+  <p class="note">
+    This page is an explainer with no requests and no uploads · a static page, ready to read.
+  </p>
+
+    <section class="reltools">
+    <h2>Related tools</h2>
+    <p class="rt-sub">Every tool on this site runs entirely in your browser. Pick the encoding problem you have:</p>
+    <div class="rt-list">
+      <a href="/">URL Encoder / Decoder</a>
+      <a href="/utm-builder">UTM Builder</a>
+      <a href="/base64">Base64 Encoder / Decoder</a>
+      <a href="/html-entities">HTML Entity Encoder / Decoder</a>
+      <a href="/jwt">JWT Decode</a>
+      <a href="/javascript">URL Encoding in JavaScript</a>
+    </div>
+  </section>
+  <footer class="ft">
+    <nav>
+      <a href="/">URL Encoder</a> ·
+      <a href="/utm-builder">UTM Builder</a> ·
+      <a href="/base64">Base64</a> ·
+      <a href="/html-entities">HTML Entities</a> ·
+      <a href="/jwt">JWT</a> ·
+      <a href="/javascript">JavaScript Encoding</a> ·
+      <a href="/percent-encoding">Percent Encoding</a> ·
+      <a href="/about">About</a> ·
+      <a href="/privacy">Privacy</a> ·
+      <a href="/contact">Contact</a>
+    </nav>
+    <p class="copy">© 2026 PercentURL · All processing runs in your browser.</p>
+  </footer>
+</div>
+</body>
+</html>

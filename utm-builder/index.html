@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UTM Builder, UTM Generator &amp; UTM Maker — Campaign URL Builder with Live Percent-Encoding</title>
+<meta name="description" content="Free UTM builder, UTM generator, UTM maker, url builder and campaign URL builder — including the Google campaign URL builder workflow. Generate UTM-tagged links and watch every value get percent-encoded correctly as you type, plus what breaks when encoding is wrong.">
+<link rel="canonical" href="https://percenturl.com/utm-builder">
+<style>
+  :root{
+    --bg:#0f172a; --panel:#1e293b; --ink:#e2e8f0; --muted:#94a3b8;
+    --accent:#38bdf8; --accent2:#22d3ee; --line:#334155;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.5}
+  .wrap{max-width:880px;margin:0 auto;padding:20px}
+  h1{font-size:1.4rem;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:.92rem;margin:0 0 16px}
+  .notice{background:rgba(56,189,248,.12);border:1px solid var(--accent);
+          color:var(--ink);padding:10px 12px;border-radius:10px;font-size:.85rem;margin-bottom:16px}
+  .alias{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;
+         font-size:.84rem;color:var(--muted);margin:0 0 16px;line-height:1.6}
+  .alias b{color:var(--accent);font-weight:600}
+
+  h2.blk{font-size:1.05rem;margin:30px 0 4px;padding-top:18px;border-top:1px solid var(--line)}
+  h2.blk .n{color:var(--accent);margin-right:6px}
+  .blksub{color:var(--muted);font-size:.85rem;margin:0 0 14px}
+
+  label{display:block;font-size:.78rem;color:var(--muted);margin:14px 0 6px;
+        text-transform:uppercase;letter-spacing:.04em}
+  input[type=text]{width:100%;background:var(--panel);color:var(--ink);
+           border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:.95rem}
+  input[type=text]:focus{outline:none;border-color:var(--accent)}
+  .hint{color:var(--muted);font-size:.78rem;margin-top:5px}
+  .req{color:#fca5a5}
+
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+
+  textarea{width:100%;min-height:92px;background:var(--panel);color:var(--ink);
+           border:1px solid var(--line);border-radius:10px;padding:12px;font-size:.92rem;
+           font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .btn{flex:1;min-width:140px;border:none;border-radius:10px;padding:12px;font-size:1rem;font-weight:600;cursor:pointer}
+  .btn.copy{background:#0b1220;color:var(--ink);border:1px solid var(--line)}
+  .btn.go{background:var(--accent);color:#06121f}
+
+  .ctrl{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:10px 0}
+  .ctrl .t{font-size:.78rem;color:var(--muted);margin-bottom:8px}
+  .seg{display:flex;gap:6px;flex-wrap:wrap}
+  .seg button{flex:1;min-width:120px;background:#0b1220;color:var(--ink);border:1px solid var(--line);
+             border-radius:8px;padding:8px 6px;font-size:.8rem;cursor:pointer}
+  .seg button.active{background:var(--accent);color:#06121f;border-color:var(--accent);font-weight:600}
+
+  table.enc{width:100%;border-collapse:collapse;margin-top:10px;font-size:.84rem}
+  table.enc th,table.enc td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+  table.enc th{color:var(--muted);font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.03em}
+  table.enc td.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-all}
+  table.enc .ok{color:#34d399}
+  table.enc .chg{color:var(--accent)}
+  .empty{color:var(--muted);font-size:.85rem;margin-top:10px}
+
+  .warn{display:none;background:rgba(248,113,113,.12);border:1px solid #f87171;color:#fecaca;
+        padding:10px 12px;border-radius:10px;font-size:.85rem;margin-top:12px;white-space:pre-wrap}
+  .warn.show{display:block}
+
+  .fail{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0}
+  .fail h3{margin:0 0 8px;font-size:.95rem;color:var(--ink)}
+  .fail .line{margin:6px 0;font-size:.85rem}
+  .fail .k{color:var(--muted);display:inline-block;min-width:132px}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#0b1220;
+       border:1px solid var(--line);border-radius:6px;padding:1px 5px;font-size:.82rem;word-break:break-all}
+  .bad{color:#fca5a5}
+  .good{color:#34d399}
+  .why{color:var(--muted);font-size:.84rem;margin:6px 0 0}
+
+  .note{color:var(--muted);font-size:.78rem;margin-top:18px}
+  .ft{margin-top:28px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:.85rem}
+  .ft nav a{color:var(--accent);text-decoration:none;margin:0 2px}
+  .ft nav a:hover{text-decoration:underline}
+  .ft .copy{margin:8px 0 0}
+
+  /* internal-link additions */
+  .backhome{margin:0 0 14px;font-size:.82rem}
+  .backhome a{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--line)}
+  .backhome a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .more{margin-top:26px;border-top:1px solid var(--line);padding-top:16px}
+  .more h2{font-size:1.05rem;margin:0 0 4px}
+  .more-sub{color:var(--muted);font-size:.85rem;margin:0 0 12px}
+  .more-list{list-style:none;padding:0;margin:0}
+  .more-list li{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+                padding:10px 12px;margin:0 0 8px;font-size:.86rem;line-height:1.6}
+  .more-list a{color:var(--accent);text-decoration:none;font-weight:600}
+  .more-list a:hover{text-decoration:underline}
+  .more-info{margin:10px 0 0;font-size:.85rem}
+  .more-info a{color:var(--accent);text-decoration:none}
+  .more-info a:hover{text-decoration:underline}
+  /* related-tools horizontal interlink */
+  .reltools{margin-top:26px;border-top:1px solid var(--line);padding-top:16px}
+  .reltools h2{font-size:1.05rem;margin:0 0 4px}
+  .reltools .rt-sub{color:var(--muted);font-size:.85rem;margin:0 0 12px}
+  .reltools .rt-list{display:flex;flex-wrap:wrap;gap:8px}
+  .reltools .rt-list a{flex:1 1 200px;background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;padding:10px 12px;color:var(--accent);text-decoration:none;
+    font-size:.86rem;font-weight:600;display:flex;align-items:center}
+  .reltools .rt-list a:hover{border-color:var(--accent);text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>UTM Builder</h1>
+  <p class="sub">Build a campaign URL with UTM parameters — and watch every value get percent-encoded correctly as you type.</p>
+  <p class="backhome"><a href="/">← Back to the URL Encoder</a></p>
+
+  <p class="alias">Same tool, different names: <b>UTM builder</b> · <b>UTM generator</b> · <b>UTM maker</b> · <b>url builder</b> · <b>campaign URL builder</b> · <b>Google campaign URL builder</b>. All six describe one job — appending UTM parameters to a URL so analytics can tell where a visit came from. This page is that tool, with the encoding shown live as you type.</p>
+
+  <div class="notice">
+    Everything runs in your browser. Nothing you type is uploaded to any server.
+  </div>
+
+  <!-- ============ BLOCK 1 ============ -->
+  <h2 class="blk"><span class="n">1</span>Build the campaign URL</h2>
+  <p class="blksub">Fill in the destination and the parameters. The link is generated as you type — this is the part every campaign URL builder does.</p>
+
+  <label for="f_url">Website URL <span class="req">* required</span></label>
+  <input type="text" id="f_url" placeholder="https://example.com/landing" autocomplete="off">
+  <div class="hint">The full destination page. Existing query parameters and any #fragment are preserved.</div>
+
+  <div class="grid2">
+    <div>
+      <label for="f_source">Campaign source <span class="req">*</span> <code>utm_source</code></label>
+      <input type="text" id="f_source" placeholder="google, newsletter, facebook" autocomplete="off">
+    </div>
+    <div>
+      <label for="f_medium">Campaign medium <span class="req">*</span> <code>utm_medium</code></label>
+      <input type="text" id="f_medium" placeholder="cpc, email, paid-social" autocomplete="off">
+    </div>
+    <div>
+      <label for="f_campaign">Campaign name <span class="req">*</span> <code>utm_campaign</code></label>
+      <input type="text" id="f_campaign" placeholder="spring-sale-2026" autocomplete="off">
+    </div>
+    <div>
+      <label for="f_term">Campaign term <code>utm_term</code></label>
+      <input type="text" id="f_term" placeholder="paid keyword (optional)" autocomplete="off">
+    </div>
+    <div>
+      <label for="f_content">Campaign content <code>utm_content</code></label>
+      <input type="text" id="f_content" placeholder="hero-cta, ad-variant-b (optional)" autocomplete="off">
+    </div>
+    <div>
+      <label for="f_id">Campaign ID <code>utm_id</code></label>
+      <input type="text" id="f_id" placeholder="GA4 campaign id (optional)" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="ctrl">
+    <div class="t">Space encoded as</div>
+    <div class="seg" data-k="space">
+      <button data-v="%20" class="active">%20 — recommended</button>
+      <button data-v="+">+ — form style</button>
+    </div>
+    <div class="hint" id="spaceHint">%20 is unambiguous everywhere. See block 3 for why + is risky.</div>
+  </div>
+
+  <label for="out">Your campaign URL</label>
+  <textarea id="out" readonly placeholder="Your generated URL will appear here."></textarea>
+  <div class="row">
+    <button class="btn go" id="copyBtn">Copy URL</button>
+  </div>
+
+  <div class="warn" id="warn"></div>
+
+  <!-- ============ BLOCK 2 ============ -->
+  <h2 class="blk"><span class="n">2</span>Every value, encoded live</h2>
+  <p class="blksub">What you typed, versus what actually goes into the URL. RFC 3986 unreserved characters <code>A-Z a-z 0-9 - _ . ~</code> are kept; everything else is percent-encoded as UTF-8 bytes. Most UTM generators hand you the finished link and stop there — this one shows you the step in between.</p>
+
+  <table class="enc">
+    <thead>
+      <tr><th>Parameter</th><th>You typed</th><th>Goes into the URL</th><th>What changed</th></tr>
+    </thead>
+    <tbody id="encBody"></tbody>
+  </table>
+  <div class="empty" id="encEmpty">Fill in a parameter above to see its value encoded.</div>
+
+  <!-- ============ BLOCK 3 ============ -->
+  <h2 class="blk"><span class="n">3</span>How bad encoding breaks a UTM link</h2>
+  <p class="blksub">The parameters are right, the campaign still reports wrong — because of how characters were (or were not) encoded. Every case below is a real failure mode, and none of them care which tool produced the link: a <b>UTM maker</b>, a <b>UTM generator</b>, a <b>url builder</b>, a <b>campaign URL builder</b> or the <b>Google campaign URL builder</b> will all hand you a broken link if the value is encoded wrongly. Encoding behaviour breaks the report — not the choice of tool.</p>
+
+  <div class="fail">
+    <h3>An <code>&amp;</code> inside a value ends the value and starts a new parameter</h3>
+    <div class="line"><span class="k">You intended</span> <code>utm_campaign=spring-sale&amp;region=us</code></div>
+    <div class="line"><span class="k">Parsed as</span> <code>utm_campaign=spring-sale</code> <span class="bad">+</span> an orphan <code>region=us</code> nobody reports on</div>
+    <div class="line"><span class="k">Consequence</span> campaign name is cut short and the stray parameter pollutes your reports — no <b>campaign URL builder</b> can repair it afterwards, the split happens inside the URL itself</div>
+    <div class="line"><span class="k">Correct</span> <code class="good">utm_campaign=spring-sale%26region=us</code></div>
+  </div>
+
+  <div class="fail">
+    <h3>A <code>#</code> inside a value cuts off everything after it</h3>
+    <div class="line"><span class="k">You intended</span> <code>&amp;utm_campaign=q3-launch&amp;utm_content=hero#top</code></div>
+    <div class="line"><span class="k">Parsed as</span> <code>utm_content=hero</code> <span class="bad">is dropped</span> — everything after <code>#</code> is the fragment, not the query string</div>
+    <div class="line"><span class="k">Consequence</span> utm_content never reaches analytics at all, whichever <b>UTM generator</b> produced the link</div>
+    <div class="line"><span class="k">Correct</span> <code class="good">utm_content=hero%23top</code></div>
+  </div>
+
+  <div class="fail">
+    <h3>An <code>=</code> inside a value splits the name from the value</h3>
+    <div class="line"><span class="k">You intended</span> <code>utm_campaign=a=b</code></div>
+    <div class="line"><span class="k">Parsed as</span> <code>utm_campaign=a</code> <span class="bad">+</span> a stray <code>b</code></div>
+    <div class="line"><span class="k">Consequence</span> the campaign name arrives mangled — a <b>UTM maker</b> outputs this happily, because it is doing exactly what you asked</div>
+    <div class="line"><span class="k">Correct</span> <code class="good">utm_campaign=a%3Db</code></div>
+  </div>
+
+  <div class="fail">
+    <h3>A raw space breaks the link itself, before analytics ever sees it</h3>
+    <div class="line"><span class="k">You intended</span> <code>utm_campaign=spring sale</code></div>
+    <div class="line"><span class="k">What happens</span> many email clients and chat apps end the clickable link at the space — the click arrives as <code>utm_campaign=spring</code> and "sale" is plain text. Even a <b>Google campaign URL builder</b> link breaks here, because the break happens in the mail client, not in the URL</div>
+    <div class="line"><span class="k">Correct</span> <code class="good">utm_campaign=spring%20sale</code></div>
+  </div>
+
+  <div class="fail">
+    <h3><code>+</code> is ambiguous — it may read as a space or as a literal plus</h3>
+    <div class="line"><span class="k">You intended</span> <code>utm_campaign=spring+sale</code></div>
+    <div class="line"><span class="k">What happens</span> under form-style decoding it becomes "spring sale"; under a strict RFC 3986 reader it stays "spring+sale". <span class="bad">One campaign lands under two names.</span></div>
+    <div class="line"><span class="k">Consequence</span> one campaign splits into two rows in your reports — the <b>UTM builder</b> did its job, the value did not survive the trip</div>
+    <div class="line"><span class="k">Correct</span> <code class="good">utm_campaign=spring%20sale</code> — %20 means space everywhere, no guessing</div>
+  </div>
+
+  <div class="fail">
+    <h3>Double-encoding turns a real space into literal characters</h3>
+    <div class="line"><span class="k">You intended</span> <code>utm_campaign=spring sale</code> (already encoded once)</div>
+    <div class="line"><span class="k">Encoded twice</span> <code>%20</code> <span class="bad">→</span> <code>%2520</code></div>
+    <div class="line"><span class="k">Consequence</span> reports show the literal text <code>spring%2520sale</code> — a campaign name nobody recognises. It is the most common way a <b>url builder</b> quietly double-encodes</div>
+    <div class="line"><span class="k">Correct</span> encode each value exactly once</div>
+  </div>
+
+  <div class="fail">
+    <h3>Encoding the whole URL instead of each value kills every parameter</h3>
+    <div class="line"><span class="k">What people do</span> run <code>encodeURIComponent</code> over the entire URL</div>
+    <div class="line"><span class="k">Result</span> <code>?</code> becomes <code>%3F</code>, <code>&amp;</code> becomes <code>%26</code>, <code>=</code> becomes <code>%3D</code> — the server sees one long path and <span class="bad">zero query parameters</span></div>
+    <div class="line"><span class="k">Consequence</span> nothing is recorded at all — the <b>campaign URL builder</b> output looks right and tracks nothing</div>
+    <div class="line"><span class="k">Correct</span> encode each value; keep <code>?</code> <code>&amp;</code> <code>=</code> <code>#</code> as separators only</div>
+  </div>
+
+  <div class="fail">
+    <h3>A lone <code>%</code> is an invalid escape</h3>
+    <div class="line"><span class="k">You intended</span> <code>utm_campaign=50%-off</code></div>
+    <div class="line"><span class="k">What happens</span> <code>%-o</code> is not a valid escape; strict decoders reject it or leave it literal, and the value arrives corrupted. A <b>UTM generator</b> that does not escape the percent sign emits this without warning</div>
+    <div class="line"><span class="k">Correct</span> <code class="good">utm_campaign=50%25-off</code></div>
+  </div>
+
+  <div class="fail">
+    <h3>Non-ASCII text needs UTF-8, not Latin-1</h3>
+    <div class="line"><span class="k">You intended</span> <code>utm_campaign=café</code></div>
+    <div class="line"><span class="k">Encoded as Latin-1</span> you get mojibake; left raw, some servers mangle it on the way through</div>
+    <div class="line"><span class="k">Correct</span> <code class="good">utm_campaign=caf%C3%A9</code> — UTF-8 bytes, percent-encoded</div>
+    <p class="why">Every <b>UTM maker</b> has to make this choice — UTF-8 or Latin-1 — and getting it wrong stays invisible until the report shows mojibake. Type an accented or non-ASCII value into block 1 and watch block 2 encode it correctly as UTF-8.</p>
+  </div>
+
+  <p class="note">
+    No login · Unlimited use · No watermark · Runs only in your browser. This builder encodes every value once, as RFC 3986 with UTF-8, and leaves the structural characters to do their job.
+  </p>
+
+    <section class="reltools">
+    <h2>Related tools</h2>
+    <p class="rt-sub">Every tool on this site runs entirely in your browser. Pick the encoding problem you have:</p>
+    <div class="rt-list">
+      <a href="/">URL Encoder / Decoder</a>
+      <a href="/base64">Base64 Encoder / Decoder</a>
+      <a href="/html-entities">HTML Entity Encoder / Decoder</a>
+      <a href="/jwt">JWT Decode</a>
+      <a href="/javascript">URL Encoding in JavaScript</a>
+      <a href="/percent-encoding">What Is Percent-Encoding?</a>
+    </div>
+  </section>
+  <footer class="ft">
+    <nav>
+      <a href="/">URL Encoder</a> ·
+      <a href="/utm-builder">UTM Builder</a> ·
+      <a href="/base64">Base64</a> ·
+      <a href="/html-entities">HTML Entities</a> ·
+      <a href="/jwt">JWT</a> ·
+      <a href="/javascript">JavaScript Encoding</a> ·
+      <a href="/percent-encoding">Percent Encoding</a> ·
+      <a href="/about">About</a> ·
+      <a href="/privacy">Privacy</a> ·
+      <a href="/contact">Contact</a>
+    </nav>
+    <p class="copy">© 2026 PercentURL · All processing runs in your browser.</p>
+  </footer>
+</div>
+
+<script>
+const UNRESERVED = new Set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~'
+  .split('').map(c=>c.charCodeAt(0)));
+const state = { space:'%20' };
+
+function hex2(b){ return b.toString(16).toUpperCase().padStart(2,'0'); }
+
+/* encode a single character: unreserved kept as-is, everything else UTF-8 %XX */
+function encChar(ch){
+  if(ch===' ') return state.space==='+' ? '+' : '%20';
+  const bytes = new TextEncoder().encode(ch);
+  if(bytes.length===1 && UNRESERVED.has(bytes[0])) return ch;
+  return Array.from(bytes).map(b=>'%'+hex2(b)).join('');
+}
+function encValue(v){ return Array.from(v).map(encChar).join(''); }
+
+/* distinct transformations, e.g. space -> %20 x2 */
+function changes(v){
+  const counts = new Map();
+  for(const ch of Array.from(v)){
+    const e = encChar(ch);
+    if(e === ch) continue;
+    const label = ch === ' ' ? 'space' : ch;
+    const key = label + ' → ' + e;
+    counts.set(key, (counts.get(key)||0) + 1);
+  }
+  return [...counts.entries()];
+}
+
+const FIELDS = [
+  {id:'f_source',   key:'utm_source'},
+  {id:'f_medium',   key:'utm_medium'},
+  {id:'f_campaign', key:'utm_campaign'},
+  {id:'f_term',     key:'utm_term'},
+  {id:'f_content',  key:'utm_content'},
+  {id:'f_id',       key:'utm_id'},
+];
+const REQUIRED = ['f_source','f_medium','f_campaign'];
+
+const urlEl = document.getElementById('f_url');
+const outEl = document.getElementById('out');
+const warnEl = document.getElementById('warn');
+const encBody = document.getElementById('encBody');
+const encEmpty = document.getElementById('encEmpty');
+
+function val(id){ return document.getElementById(id).value.trim(); }
+
+/* append parameters, preserving any existing query string and #fragment */
+function buildUrl(){
+  const u = urlEl.value.trim();
+  if(!u) return '';
+  let main = u, frag = '';
+  const hi = u.indexOf('#');
+  if(hi >= 0){ frag = u.slice(hi); main = u.slice(0, hi); }
+  const pairs = FIELDS.filter(f => val(f.id) !== '');
+  if(!pairs.length) return u;
+  const qs = pairs.map(f => f.key + '=' + encValue(val(f.id))).join('&');
+  let sep;
+  if(/(?:[?&])$/.test(main)) sep = '';
+  else sep = main.indexOf('?') >= 0 ? '&' : '?';
+  return main + sep + qs + frag;
+}
+
+function collectWarnings(){
+  const w = [];
+  const u = urlEl.value.trim();
+  if(!u){
+    w.push('Add a destination URL to generate the link.');
+  } else if(!/^https?:\/\//i.test(u)){
+    w.push('The URL should start with http:// or https:// — a bare domain may not be parsed as a link.');
+  } else if(/\s/.test(u)){
+    w.push('The URL contains a raw space. Encode it, or remove it — links often break at the space.');
+  }
+  const missing = REQUIRED.filter(id => val(id) === '')
+    .map(id => document.getElementById(id).previousElementSibling);
+  if(missing.length){
+    const names = REQUIRED.filter(id => val(id) === '')
+      .map(id => id === 'f_source' ? 'utm_source' : id === 'f_medium' ? 'utm_medium' : 'utm_campaign');
+    w.push('Missing required: ' + names.join(', ') + '. GA4 needs source, medium and campaign to attribute the visit.');
+  }
+  const upper = FIELDS.filter(f => val(f.id) !== '' && val(f.id) !== val(f.id).toLowerCase());
+  if(upper.length){
+    w.push('Uppercase detected in ' + upper.map(f=>f.key).join(', ') +
+           '. Analytics treats "Facebook" and "facebook" as two different sources — use lowercase consistently.');
+  }
+  if(state.space === '+'){
+    w.push('You chose "+". Some tools read + as a space, others as a literal plus — the same campaign can split into two rows. %20 is safer.');
+  }
+  return w;
+}
+
+function render(){
+  outEl.value = buildUrl();
+
+  const rows = FIELDS.filter(f => val(f.id) !== '');
+  encBody.innerHTML = '';
+  encEmpty.style.display = rows.length ? 'none' : 'block';
+  for(const f of rows){
+    const raw = val(f.id);
+    const enc = encValue(raw);
+    const chg = changes(raw);
+    const tr = document.createElement('tr');
+    const chgHtml = chg.length
+      ? '<span class="chg">' + chg.map(([k,n]) => k + (n>1 ? ' ×'+n : '')).join('<br>') + '</span>'
+      : '<span class="ok">nothing — safe as-is</span>';
+    tr.innerHTML =
+      '<td>' + f.key + '</td>' +
+      '<td class="mono">' + escapeHtml(raw) + '</td>' +
+      '<td class="mono">' + escapeHtml(enc) + '</td>' +
+      '<td>' + chgHtml + '</td>';
+    encBody.appendChild(tr);
+  }
+
+  const w = collectWarnings();
+  if(w.length){ warnEl.textContent = '⚠️ ' + w.join('\n⚠️ '); warnEl.classList.add('show'); }
+  else { warnEl.classList.remove('show'); }
+}
+
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+document.querySelectorAll('.seg').forEach(seg=>{
+  const k = seg.dataset.k;
+  seg.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      seg.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      state[k] = b.dataset.v;
+      document.getElementById('spaceHint').textContent = state.space === '+'
+        ? 'Heads up: + is read as a space by some tools and as a literal plus by others.'
+        : '%20 is unambiguous everywhere. See block 3 for why + is risky.';
+      render();
+    });
+  });
+});
+
+['f_url','f_source','f_medium','f_campaign','f_term','f_content','f_id'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', render);
+});
+
+document.getElementById('copyBtn').addEventListener('click', async ()=>{
+  const b = document.getElementById('copyBtn');
+  if(!outEl.value){ b.textContent='Nothing to copy'; setTimeout(()=>b.textContent='Copy URL',1200); return; }
+  try{
+    await navigator.clipboard.writeText(outEl.value);
+    b.textContent = 'Copied';
+    setTimeout(()=>b.textContent='Copy URL', 1200);
+  }catch(e){
+    outEl.removeAttribute('readonly'); outEl.select(); document.execCommand('copy'); outEl.setAttribute('readonly','');
+    b.textContent = 'Copied';
+    setTimeout(()=>b.textContent='Copy URL', 1200);
+  }
+});
+
+render();
+</script>
+</body>
+</html>

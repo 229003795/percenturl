@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="URL decoder online: paste a percent-encoded string and get the original text back instantly, in your browser. Includes a measured comparison of how JavaScript, Python and servers treat %20 vs +, and why decoding sometimes returns the wrong text.">
+<title>URL Decoder Online — Decode Percent-Encoded Strings</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#1e293b; --ink:#e2e8f0; --muted:#94a3b8;
+    --accent:#38bdf8; --accent2:#22d3ee; --line:#334155;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.6}
+  .wrap{max-width:880px;margin:0 auto;padding:20px}
+  h1{font-size:1.4rem;margin:0 0 4px;line-height:1.4}
+  .sub{color:var(--muted);font-size:.92rem;margin:0 0 16px}
+  h2{font-size:1.05rem;margin:26px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  h3{font-size:.95rem;margin:18px 0 6px;color:var(--accent)}
+  .notice{background:rgba(56,189,248,.12);border:1px solid var(--accent);
+          color:var(--ink);padding:10px 12px;border-radius:10px;font-size:.85rem;margin-bottom:16px}
+  .note{color:var(--muted);font-size:.78rem;margin-top:18px}
+  .ft{margin-top:28px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:.85rem}
+  .ft nav a{color:var(--accent);text-decoration:none;margin:0 2px}
+  .ft nav a:hover{text-decoration:underline}
+  .ft .copy{margin:8px 0 0}
+  .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#0b1220;
+       border:1px solid var(--line);border-radius:6px;padding:1px 6px;color:var(--accent2);font-size:.85rem}
+  .ex{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 16px;margin-top:8px}
+  .ex ul,.ex ol{margin:10px 0;padding-left:22px}
+  .ex li{margin:8px 0}
+  .ex b{color:var(--ink)}
+  .ex p{font-size:.92rem}
+  .lead{font-size:1rem;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+        padding:14px 16px;margin:10px 0}
+  .lead b{color:var(--accent2)}
+  table.ct{width:100%;border-collapse:collapse;margin-top:10px;font-size:.85rem}
+  table.ct th,table.ct td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+  table.ct th{color:var(--muted);font-weight:600}
+  table.ct td.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .ok{color:#34d399}
+  .no{color:#f87171}
+  .step{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);
+        border-radius:8px;padding:10px 14px;margin:8px 0;font-size:.92rem}
+  .step .n{color:var(--accent);font-weight:600}
+  .codebox{background:#0b1220;border:1px solid var(--line);border-radius:10px;margin:10px 0;overflow:hidden}
+  .codebox pre{margin:0;padding:12px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+               font-size:.85rem;line-height:1.6;color:#cbd5e1}
+  .codebox .cmt{color:#64748b}
+  .codebox .lbl{display:block;background:#111c33;border-bottom:1px solid var(--line);padding:7px 12px;
+                font-size:.78rem;color:var(--muted)}
+  .jump{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .jump a{flex:1;min-width:180px;text-align:center;background:var(--panel);border:1px solid var(--line);
+          border-radius:10px;padding:10px 12px;color:var(--accent);text-decoration:none;font-size:.88rem}
+  .jump a:hover{border-color:var(--accent)}
+
+  .backhome{margin:0 0 14px;font-size:.82rem}
+  .backhome a{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--line)}
+  .backhome a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .reltools{margin-top:26px;border-top:1px solid var(--line);padding-top:16px}
+  .reltools h2{font-size:1.05rem;margin:0 0 4px}
+  .reltools .rt-sub{color:var(--muted);font-size:.85rem;margin:0 0 12px}
+  .reltools .rt-list{display:flex;flex-wrap:wrap;gap:8px}
+  .reltools .rt-list a{flex:1 1 200px;background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;padding:10px 12px;color:var(--accent);text-decoration:none;
+    font-size:.86rem;font-weight:600;display:flex;align-items:center}
+  .reltools .rt-list a:hover{border-color:var(--accent);text-decoration:underline}
+
+  /* decoder */
+  .tool{background:var(--panel);border:1px solid var(--accent);border-radius:12px;padding:14px;margin:6px 0 8px}
+  .tool-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+  .tool textarea,.tool input{width:100%;background:#0b1220;border:1px solid var(--line);border-radius:8px;
+    color:var(--ink);padding:10px 12px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.86rem;resize:vertical}
+  .tool textarea:focus,.tool input:focus{outline:none;border-color:var(--accent)}
+  .tool input[readonly]{color:var(--accent2)}
+  .btn{background:#0b1220;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:8px 14px;
+    font-size:.85rem;cursor:pointer;font-family:inherit}
+  .btn.on{background:rgba(56,189,248,.15);border-color:var(--accent);color:var(--accent);font-weight:600}
+  .btn:hover{border-color:var(--accent)}
+  .stats{display:flex;gap:10px;flex-wrap:wrap;font-size:.78rem;color:var(--muted);margin:2px 0 0}
+  .stats span{background:#0b1220;border:1px solid var(--line);border-radius:6px;padding:3px 8px}
+  .warn{color:#fbbf24;font-size:.8rem;margin:8px 0 0;min-height:1.2em}
+  .faq .q{font-size:.95rem;color:var(--accent);font-weight:600;margin:16px 0 4px}
+  .faq .a{font-size:.92rem;margin:0 0 4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>URL Decoder Online</h1>
+  <p class="sub">Paste a percent-encoded string and get the original text back immediately. Everything runs in your browser — nothing is uploaded, nothing is logged.</p>
+  <p class="backhome"><a href="/">← Back to the URL Encoder</a></p>
+
+  <div class="tool">
+    <div class="tool-row">
+      <textarea id="io-in" rows="3" spellcheck="false" placeholder="Paste here:  caf%C3%A9%20%26%20tea   or   q=caf%C3%A9+tea"></textarea>
+    </div>
+    <div class="tool-row">
+      <button class="btn on" id="m-pct" type="button">Decode · <span style="font-family:ui-monospace">%20</span> only</button>
+      <button class="btn" id="m-form" type="button">Decode · <span style="font-family:ui-monospace">+</span> also means space</button>
+      <button class="btn" id="m-enc" type="button">Encode →</button>
+      <button class="btn" id="m-sample" type="button">Sample</button>
+      <button class="btn" id="m-clear" type="button">Clear</button>
+    </div>
+    <div class="tool-row">
+      <input id="io-out" type="text" readonly placeholder="decoded result">
+    </div>
+    <p class="stats" id="io-stats"></p>
+    <p class="warn" id="io-warn"></p>
+  </div>
+  <p class="note">Two decode modes because the two conventions disagree — see <a href="#plus" style="color:var(--accent)">§②</a> for the measured difference. Use <b>%20 only</b> for anything taken from a URL path; use <b>+ also means space</b> for a query string or form value produced by a browser form.</p>
+
+  <!-- ① -->
+  <h2>① What decoding actually does</h2>
+  <p class="sub">Three steps, none of them magic.</p>
+  <div class="ex">
+    <ol>
+      <li><b>Read each <span class="kbd">%XX</span> group as one byte</b> — <span class="kbd">%20</span> is byte <span class="kbd">0x20</span>, <span class="kbd">%C3</span> is byte <span class="kbd">0xC3</span>.</li>
+      <li><b>Join the bytes back into a UTF-8 sequence</b> — this is why <span class="kbd">%C3%A9</span> is a single character, <span class="kbd">é</span>, and not two.</li>
+      <li><b>Leave every other character alone</b> — <span class="kbd">:</span> <span class="kbd">/</span> <span class="kbd">?</span> <span class="kbd">&amp;</span> <span class="kbd">=</span> pass straight through, because they were never encoded.</li>
+    </ol>
+  </div>
+  <table class="ct">
+    <thead><tr><th>Encoded</th><th>Byte(s)</th><th>Decodes to</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">%20</td><td class="mono">20</td><td>space</td><td>One byte, one group.</td></tr>
+      <tr><td class="mono">%2B</td><td class="mono">2B</td><td class="mono">+</td><td>A real plus sign that was encoded to survive.</td></tr>
+      <tr><td class="mono">%C3%A9</td><td class="mono">C3 A9</td><td class="mono">é</td><td>Two bytes, one character.</td></tr>
+      <tr><td class="mono">%E2%82%AC</td><td class="mono">E2 82 AC</td><td class="mono">€</td><td>Three bytes, one character.</td></tr>
+      <tr><td class="mono">%26</td><td class="mono">26</td><td class="mono">&amp;</td><td>Encoded so it is not read as a parameter separator.</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Why strings get encoded in the first place, measured locally: sending <span class="kbd">GET /hello world HTTP/1.1</span> over a raw socket to a local server returns <span class="kbd">400 Bad request syntax</span>, because the space is the delimiter between the three fields of the request line. <span class="kbd">%20</span> travels fine. Encoding is what lets content survive a trip the raw character cannot make.</p>
+
+  <!-- ② -->
+  <h2 id="plus">② The one choice that changes your answer: <span class="kbd">+</span></h2>
+  <p class="sub">Two conventions exist, they are not interchangeable, and picking the wrong one silently returns the wrong text.</p>
+  <div class="ex">
+    <ul>
+      <li><b>RFC 3986 percent-decoding</b> — only <span class="kbd">%XX</span> means anything. <span class="kbd">+</span> is a literal plus.</li>
+      <li><b><span class="kbd">application/x-www-form-urlencoded</span></b> — the HTML form convention, where <span class="kbd">+</span> was borrowed to mean a space. Query-string parsers commonly copy it.</li>
+    </ul>
+  </div>
+  <p>Below: the same input, <span class="kbd">a+b</span>, handed to real decoders. Measured on Node.js 22 and Python 3.13.</p>
+  <table class="ct">
+    <thead><tr><th>Decoder</th><th>Input</th><th>Result</th><th>Reads <span class="mono">+</span> as space?</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">decodeURIComponent('a+b')</td><td class="mono">a+b</td><td class="mono">a+b</td><td class="no">NO</td></tr>
+      <tr><td class="mono">new URLSearchParams('q=a+b').get('q')</td><td class="mono">a+b</td><td class="mono">a b</td><td class="ok">YES</td></tr>
+      <tr><td class="mono">urllib.parse.unquote('a+b')</td><td class="mono">a+b</td><td class="mono">a+b</td><td class="no">NO</td></tr>
+      <tr><td class="mono">urllib.parse.unquote_plus('a+b')</td><td class="mono">a+b</td><td class="mono">a b</td><td class="ok">YES</td></tr>
+      <tr><td class="mono">urllib.parse.parse_qs('q=a+b')</td><td class="mono">a+b</td><td class="mono">{'q': ['a b']}</td><td class="ok">YES</td></tr>
+    </tbody>
+  </table>
+  <div class="ex">
+    <p><b>The asymmetry worth internalising:</b> in JavaScript, <span class="kbd">encodeURIComponent('a b')</span> produces <span class="kbd">a%20b</span> — never a <span class="kbd">+</span> — yet <span class="kbd">URLSearchParams.toString()</span> in the same language produces <span class="kbd">q=a+b</span>. And <span class="kbd">decodeURIComponent</span> will not turn that <span class="kbd">+</span> back into a space. Same language, two conventions, and they do not round-trip unless you pair them deliberately.</p>
+  </div>
+  <p>A server confirms the other half. Three raw requests sent to a local Python server over a socket:</p>
+  <div class="codebox"><span class="lbl">Measured · raw request → what the server received</span><pre><code>GET /hello%20world HTTP/1.1   ->  200 OK    path = /hello%20world
+GET /hello+world   HTTP/1.1   ->  200 OK    path = /hello+world     <span class="cmt"># a literal plus, not a space</span>
+GET /hello world   HTTP/1.1   ->  400 Bad request syntax</code></pre></div>
+  <p class="note">A <span class="kbd">+</span> in a URL path is a plus sign, full stop. Nothing converts it, and nothing errors — which is what makes it an easy bug to ship.</p>
+
+  <!-- ③ -->
+  <h2>③ Four reasons a decoder returns the wrong thing</h2>
+  <div class="ex">
+    <ol>
+      <li><b>The string was encoded twice.</b> <span class="kbd">%20</span> encoded again becomes <span class="kbd">%2520</span>, because the second pass encodes the <span class="kbd">%</span> into <span class="kbd">%25</span>. Decoding once returns the <i>text</i> <span class="kbd">%20</span>, not a space. Measured in both runtimes: <span class="kbd">decodeURIComponent('a%2520b')</span> → <span class="kbd">a%20b</span>, and <span class="kbd">unquote('a%2520b')</span> → <span class="kbd">a%20b</span>. Seeing <span class="kbd">%25</span> inside a URL is the signature of a double encode — decode twice, or better, fix the code that encoded twice.</li>
+      <li><b>The wrong <span class="kbd">+</span> convention.</b> Covered above: <span class="kbd">c++</span> in a query value becomes <span class="kbd">c&nbsp;&nbsp;</span> under the form convention. That is why an encoder writes a genuine plus as <span class="kbd">%2B</span>.</li>
+      <li><b>A stray or truncated <span class="kbd">%</span>.</b> Measured: <span class="kbd">decodeURIComponent('%')</span> and <span class="kbd">decodeURIComponent('%2')</span> both throw <span class="kbd">URI malformed</span>. A percent sign left over from string concatenation does not degrade gracefully — it throws. If your decoder is failing on user input, look for a bare <span class="kbd">%</span>.</li>
+      <li><b>Hex case is not the problem — but it looks like one.</b> Measured: <span class="kbd">decodeURIComponent('%3a')</span> and <span class="kbd">decodeURIComponent('%3A')</span> both return <span class="kbd">:</span>. Lowercase and uppercase hex decode identically, so <span class="kbd">%3a</span> is never the reason a decode failed.</li>
+    </ol>
+  </div>
+
+  <!-- ④ -->
+  <h2>④ Doing it in your own code</h2>
+  <p class="sub">Both snippets below were run locally; the outputs shown are the actual results.</p>
+  <div class="codebox"><span class="lbl">JavaScript</span><pre><code>decodeURIComponent('caf%C3%A9%20%26%20tea')          <span class="cmt">// 'café & tea'</span>
+decodeURIComponent('q=caf%C3%A9+tea')                <span class="cmt">// 'q=café+tea'   + is kept</span>
+
+<span class="cmt">// for a query string, use the parser instead:</span>
+new URLSearchParams('q=caf%C3%A9+tea').get('q')      <span class="cmt">// 'café tea'</span>
+
+<span class="cmt">// guard against a stray percent sign:</span>
+function safeDecode(s){ try { return decodeURIComponent(s); } catch { return s; } }</code></pre></div>
+  <div class="codebox"><span class="lbl">Python</span><pre><code>from urllib.parse import unquote, unquote_plus, parse_qs
+
+unquote('caf%C3%A9%20%26%20tea')      <span class="cmt"># 'café & tea'</span>
+unquote('q=caf%C3%A9+tea')            <span class="cmt"># 'q=café+tea'   + is kept</span>
+unquote_plus('q=caf%C3%A9+tea')       <span class="cmt"># 'q=café tea'</span>
+parse_qs('q=caf%C3%A9+tea')           <span class="cmt"># {'q': ['café tea']}</span></code></pre></div>
+  <p class="note">Rule of thumb: <span class="kbd">unquote</span> / <span class="kbd">decodeURIComponent</span> for a path segment; <span class="kbd">unquote_plus</span> / <span class="kbd">URLSearchParams</span> for a query string or form value.</p>
+
+  <!-- FAQ -->
+  <h2>FAQ</h2>
+  <div class="faq">
+    <p class="q">How do I decode a URL online?</p>
+    <p class="a">Paste the encoded string into the box at the top of this page and pick the mode that matches where it came from: <b>%20 only</b> for a URL path, <b>+ also means space</b> for a query string or form value. It runs in your browser — the string is never sent anywhere.</p>
+
+    <p class="q">Why does %20 become a space but + stays a plus?</p>
+    <p class="a">Because the two conventions disagree. Standard percent-decoding only understands <span class="kbd">%XX</span>. The <span class="kbd">+</span> → space rule comes from HTML form encoding, and only query-string parsers that copy it apply it — measured above: <span class="kbd">decodeURIComponent('a+b')</span> returns <span class="kbd">a+b</span>, while <span class="kbd">URLSearchParams('q=a+b').get('q')</span> returns <span class="kbd">a b</span>.</p>
+
+    <p class="q">What is %2520?</p>
+    <p class="a">A space that was encoded twice. The first pass made <span class="kbd">%20</span>; the second encoded the <span class="kbd">%</span> into <span class="kbd">%25</span>. Decoding once gives back the text <span class="kbd">%20</span>; decoding twice gives the space.</p>
+
+    <p class="q">Is decoding the same as decrypting?</p>
+    <p class="a">No. Percent-encoding is a reversible public format — decoding needs no key and anyone can do it. It exists so that characters survive transport, not to hide anything. Never treat an encoded string as protected data.</p>
+
+    <p class="q">Does letter case matter in %3a vs %3A?</p>
+    <p class="a">No. The hex digits are case-insensitive and both decode to <span class="kbd">:</span>. Uppercase is the conventional output form, but either decodes correctly.</p>
+  </div>
+
+  <h2>Where to go next</h2>
+  <div class="jump">
+    <a href="/">→ URL Encoder / Decoder (full tool)</a>
+    <a href="/percent-encoding">→ Percent-encoding explained from first principles</a>
+    <a href="/javascript">→ URL encoding in JavaScript, with code examples</a>
+  </div>
+
+  <p class="note">
+    Decoding runs entirely in your browser — no requests, no uploads. Measured results on this page were produced on 2026-09-30 against Node.js 22 and Python 3.13, with the request-line results coming from raw TCP requests to a local server.
+  </p>
+
+    <section class="reltools">
+    <h2>Related tools</h2>
+    <p class="rt-sub">Every tool on this site runs entirely in your browser. Pick the encoding problem you have:</p>
+    <div class="rt-list">
+      <a href="/">URL Encoder / Decoder</a>
+      <a href="/utm-builder">UTM Builder</a>
+      <a href="/base64">Base64 Encoder / Decoder</a>
+      <a href="/html-entities">HTML Entity Encoder / Decoder</a>
+      <a href="/jwt">JWT Decode</a>
+      <a href="/javascript">URL Encoding in JavaScript</a>
+    </div>
+  </section>
+  <footer class="ft">
+    <nav>
+      <a href="/">URL Encoder</a> ·
+      <a href="/utm-builder">UTM Builder</a> ·
+      <a href="/base64">Base64</a> ·
+      <a href="/html-entities">HTML Entities</a> ·
+      <a href="/jwt">JWT</a> ·
+      <a href="/javascript">JavaScript Encoding</a> ·
+      <a href="/percent-encoding">Percent Encoding</a> ·
+      <a href="/about">About</a> ·
+      <a href="/privacy">Privacy</a> ·
+      <a href="/contact">Contact</a>
+    </nav>
+    <p class="copy">© 2026 PercentURL · All processing runs in your browser.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var inEl  = document.getElementById('io-in');
+  var outEl = document.getElementById('io-out');
+  var stats = document.getElementById('io-stats');
+  var warn  = document.getElementById('io-warn');
+  var ids   = ['m-pct','m-form','m-enc'];
+  var mode  = 'pct';
+
+  function paint(){
+    ids.forEach(function(id){
+      document.getElementById(id).className =
+        (id === 'm-' + mode) ? 'btn on' : 'btn';
+    });
+  }
+
+  function run(){
+    var v = inEl.value;
+    if (v === '') { outEl.value=''; stats.innerHTML=''; warn.textContent=''; return; }
+
+    var groups = v.match(/%[0-9A-Fa-f]{2}/g) || [];
+    var plus   = (v.match(/\+/g) || []).length;
+    var dbl    = /%25[0-9A-Fa-f]{2}/i.test(v);
+    var bare   = v.replace(/%[0-9A-Fa-f]{2}/g,'').indexOf('%') !== -1;
+    var s = [];
+    s.push('<span>' + groups.length + ' %XX group' + (groups.length===1?'':'s') + '</span>');
+    if (plus) s.push('<span>' + plus + ' literal +</span>');
+    stats.innerHTML = s.join('');
+
+    warn.textContent = '';
+    if (dbl)  warn.textContent = 'This looks double-encoded (%25 present) — one decode returns text containing %XX, not the original.';
+    else if (bare) warn.textContent = 'There is a % not followed by two hex digits — a strict decoder will throw on this.';
+
+    try {
+      if (mode === 'enc') {
+        outEl.value = encodeURIComponent(v);
+      } else if (mode === 'pct') {
+        outEl.value = decodeURIComponent(v);
+      } else {
+        outEl.value = decodeURIComponent(v.replace(/\+/g, ' '));
+      }
+    } catch (e) {
+      outEl.value = '';
+      if (mode !== 'enc') warn.textContent = 'Decode failed: ' + e.message + '. Look for a % that is not followed by two hex digits.';
+    }
+  }
+
+  function setMode(m){ mode = m; paint(); run(); }
+
+  inEl.addEventListener('input', run);
+  document.getElementById('m-pct').addEventListener('click', function(){ setMode('pct'); });
+  document.getElementById('m-form').addEventListener('click', function(){ setMode('form'); });
+  document.getElementById('m-enc').addEventListener('click', function(){ setMode('enc'); });
+  document.getElementById('m-sample').addEventListener('click', function(){
+    setMode('pct');
+    inEl.value = 'https://example.com/caf%C3%A9?q=caf%C3%A9%20%26%20tea';
+    run();
+  });
+  document.getElementById('m-clear').addEventListener('click', function(){
+    inEl.value = ''; run(); inEl.focus();
+  });
+
+  paint(); run();
+})();
+</script>
+</body>
+</html>

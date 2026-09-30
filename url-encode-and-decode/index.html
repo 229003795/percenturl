@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Encode a URL parameter value without breaking the rest of the link, or decode percent-encoded text. See the right mode, exact examples, and common fixes.">
+<title>URL Encode and Decode: Pick the Right Mode and Fix Common Errors</title>
+<style>
+:root{color-scheme:dark;--bg:#0f172a;--panel:#1e293b;--ink:#e2e8f0;--muted:#a8b5c7;--line:#334155;--accent:#38bdf8;--green:#34d399;--amber:#fbbf24}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:900px;margin:auto;padding:24px 20px 48px}a{color:var(--accent)}h1{font-size:clamp(1.8rem,5vw,2.45rem);line-height:1.2;margin:.25rem 0 .75rem}h2{font-size:1.35rem;margin:2.2rem 0 .5rem}h3{font-size:1.05rem;margin:1.3rem 0 .35rem}.muted,.sub{color:var(--muted)}.sub{margin:.2rem 0 1.2rem}.answer,.panel,.example{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0}.answer{border-left:4px solid var(--green)}.answer strong{color:var(--green)}.quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:14px 0}.quick>div{background:#0b1220;border:1px solid var(--line);border-radius:10px;padding:12px}.quick b{display:block;color:var(--accent);margin-bottom:4px}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}code{background:#0b1220;border-radius:4px;padding:.08rem .28rem;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1220;border-radius:8px;padding:12px;margin:.6rem 0}table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.94rem}th,td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}th{color:var(--muted)}li{margin:.4rem 0}.warning{border-left:4px solid var(--amber)}.tool{display:inline-block;background:var(--accent);color:#06121f;text-decoration:none;font-weight:700;padding:10px 15px;border-radius:8px;margin:.25rem 0}.nav{font-size:.9rem;margin:0 0 1rem}.footer{border-top:1px solid var(--line);margin-top:2.4rem;padding-top:1rem;color:var(--muted);font-size:.9rem}.footer a{margin-right:.55rem}
+.article-visual{margin:1.5rem 0 2rem;padding:0;overflow:hidden;border:1px solid rgba(148,163,184,.28);border-radius:14px;background:rgba(15,23,42,.72)}.article-visual img{display:block;width:100%;height:auto}.article-visual figcaption{padding:.7rem 1rem;color:#94a3b8;font-size:.88rem;line-height:1.5}</style>
+</head>
+<body><main class="wrap">
+<p class="nav"><a href="/">PercentURL</a> / URL encode and decode</p>
+<h1>URL Encode and Decode</h1>
+<p class="sub">Encode text for one URL value, preserve a complete link, or decode percent escapes back to readable text.</p>
+<section class="answer" aria-label="Quick answer"><strong>Quick answer:</strong> encode a single query value with component encoding so characters such as <code>&amp;</code> and <code>=</code> stay inside that value. For a complete URL, preserve its separators and encode only its data parts. To read an encoded string, decode it once as UTF-8. <a class="tool" href="/">Open the URL Encoder / Decoder</a></section>
+<div class="quick" aria-label="At a glance">
+<div><b>One value</b><code>tea &amp; milk</code> → <code>tea%20%26%20milk</code></div>
+<div><b>Space in a form field</b><code>tea milk</code> → <code>tea+milk</code></div>
+<div><b>Decode</b><code>caf%C3%A9</code> → <code>café</code></div>
+</div>
+<h2>Choose what you are encoding</h2>
+<p>“URL encode” can mean different jobs. Pick the scope before converting: a value is data inside a URL; a full URL also contains characters that act as separators.</p>
+<table><thead><tr><th>Your input</th><th>Use</th><th>Why</th></tr></thead><tbody>
+<tr><td>A search term, parameter value, or one path segment</td><td>Component encoding (<code>encodeURIComponent</code> style)</td><td>Escapes reserved characters in the data, including <code>&amp;</code>, <code>=</code>, <code>?</code>, and <code>/</code>.</td></tr>
+<tr><td>A complete URL whose structure should remain readable</td><td>Full-URL encoding (<code>encodeURI</code> style), or encode its data parts separately</td><td>Keeps delimiters such as <code>://</code>, <code>/</code>, <code>?</code>, and <code>&amp;</code> in place.</td></tr>
+<tr><td>Data submitted using <code>application/x-www-form-urlencoded</code></td><td>Form serialization</td><td>In this convention, a space is represented by <code>+</code>; a literal plus is <code>%2B</code>.</td></tr>
+<tr><td>A string containing <code>%XX</code> escapes</td><td>Decode once</td><td>Turns UTF-8 percent-encoded bytes back into readable text. Avoid decoding twice unless the data was intentionally encoded twice.</td></tr>
+</tbody></table>
+<h2>Encode a query value without breaking the URL</h2>
+<p>Suppose a search value is <code>red &amp; blue=green</code>. The ampersand and equals sign are part of the value, not separators between query parameters. Encode the value first, then place it after <code>q=</code>:</p>
+<div class="example"><pre>Value:         red &amp; blue=green
+Encoded value: red%20%26%20blue%3Dgreen
+Complete URL:  https://example.com/search?q=red%20%26%20blue%3Dgreen</pre></div>
+<p>If you insert the raw text as <code>?q=red &amp; blue=green</code>, a query-string parser can interpret the ampersand as the start of another parameter. Encoding the value preserves the intended boundary.</p>
+<figure class="article-visual"><img src="/assets/percent-encoding/02-url-structure.png" alt="URL structure diagram highlighting which punctuation is a separator and which characters are data." loading="lazy" decoding="async"><figcaption>Keep URL separators such as /, ?, and & in place; encode the values between them.</figcaption></figure>
+<h2>Why a space can be <code>%20</code> or <code>+</code></h2>
+<p><code>%20</code> is the percent-encoded UTF-8 byte for a space. A plus sign is a space marker in the form-encoding convention, but in an ordinary URL a literal <code>+</code> can mean plus. To represent an actual plus in form data, encode it as <code>%2B</code>.</p>
+<table><thead><tr><th>Original value</th><th>Percent style</th><th>Form style</th></tr></thead><tbody>
+<tr><td><code>a b</code></td><td><code>a%20b</code></td><td><code>a+b</code></td></tr>
+<tr><td><code>a+b</code></td><td><code>a%2Bb</code></td><td><code>a%2Bb</code></td></tr>
+</tbody></table>
+<p>When decoding, treat <code>+</code> as a space only when the data uses form encoding. Otherwise leave it as a plus sign.</p>
+<h2>Decode percent-encoded text</h2>
+<p>Read each <code>%XX</code> as one hexadecimal byte, then decode the byte sequence as UTF-8. A non-ASCII character may need several bytes: <code>é</code> is UTF-8 <code>C3 A9</code>, so it appears as <code>%C3%A9</code>.</p>
+<div class="example"><pre>Encoded: %E6%97%A5%E6%9C%AC%E8%AA%9E%20URL
+Decoded: 日本語 URL</pre></div>
+<p>Use the decoder on the encoded portion when possible. Decoding a complete link can make reserved characters visible again; that is useful for inspection, but may change how the link is parsed if copied into another URL without re-encoding its values.</p>
+<figure class="article-visual"><img src="/assets/percent-encoding/01-byte-encoding.png" alt="Diagram showing é becoming UTF-8 bytes C3 A9, then percent-encoded as %C3%A9." loading="lazy" decoding="async"><figcaption>Non-ASCII characters are encoded through their UTF-8 bytes, not as one character-sized escape.</figcaption></figure>
+<h2>Common errors and what to do</h2>
+<div class="panel"><h3>A URL becomes unreadable after encoding</h3><p>You likely encoded the entire address as one component. Its colon, slashes, question mark, and ampersands became data too. Encode each path segment or query name/value separately, then join them with the URL separators.</p></div>
+<div class="panel"><h3>A value is split at an ampersand</h3><p>Encode the ampersand inside the value as <code>%26</code>. Keep the real ampersands that separate query parameters.</p></div>
+<div class="panel"><h3>The output contains <code>%2520</code></h3><p>This usually means <code>%20</code> was encoded again: the percent sign became <code>%25</code>. Use the original text, or decode one layer before encoding once for the intended context.</p></div>
+<div class="panel warning"><h3>Decoding reports an invalid percent escape</h3><p>A percent sign must be followed by two hexadecimal digits, such as <code>%20</code>. Check for a truncated escape like <code>%2</code> or a stray <code>%</code>. Do not silently replace malformed data if exact recovery matters.</p></div>
+<h2>Quick checks before you copy</h2>
+<ul><li>Encode only the data portion, not URL structure.</li><li>Choose <code>%20</code> or form-style <code>+</code> to match the receiving system.</li><li>Encode a literal plus as <code>%2B</code> when the receiver treats plus as a space.</li><li>For non-ASCII text, use UTF-8 percent encoding.</li><li>Decode once, then inspect whether another encoded layer is genuinely expected.</li></ul>
+<section class="panel"><h2>Try it in the browser</h2><p>PercentURL's encoder supports component text and complete URLs, UTF-8 and ASCII modes, <code>%20</code> or form-style spaces, and decoding. Processing happens in your browser.</p><a class="tool" href="/">Open the URL Encoder / Decoder</a><p class="muted">For the byte-level background and character categories, see <a href="/percent-encoding">What Is Percent-Encoding?</a> For JavaScript API differences, see <a href="/javascript">URL Encoding in JavaScript</a>.</p></section>
+<footer class="footer"><a href="/">URL Encoder</a><a href="/percent-encoding">Percent Encoding</a><a href="/javascript">JavaScript Encoding</a><a href="/about">About</a><p>© 2026 PercentURL · Encoding runs in your browser.</p></footer>
+</main></body></html>
+

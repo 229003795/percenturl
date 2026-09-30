@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Use an online URLencoder that runs in your browser. Encode text for a URL privately and instantly, keep your data local, and avoid double encoding with practical examples.">
+<title>Online URLencoder — Encode Text for URLs in Your Browser</title>
+<style>
+:root{color-scheme:dark;--bg:#0f172a;--panel:#1e293b;--ink:#e2e8f0;--muted:#a8b5c7;--line:#334155;--accent:#38bdf8;--green:#34d399;--amber:#fbbf24}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:900px;margin:auto;padding:24px 20px 48px}a{color:var(--accent)}h1{font-size:clamp(1.8rem,5vw,2.45rem);line-height:1.2;margin:.25rem 0 .75rem}h2{font-size:1.35rem;margin:2.2rem 0 .5rem}.sub,.muted{color:var(--muted)}.sub{margin:.2rem 0 1.2rem}.answer,.panel,.example{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0}.answer{border-left:4px solid var(--green)}.answer strong{color:var(--green)}.tool{display:inline-block;background:var(--accent);color:#06121f;text-decoration:none;font-weight:700;padding:10px 15px;border-radius:8px;margin:.5rem 0}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}code{background:#0b1220;border-radius:4px;padding:.08rem .28rem;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1220;border-radius:8px;padding:12px;margin:.6rem 0}table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.94rem}th,td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}th{color:var(--muted)}li{margin:.4rem 0}.footer{border-top:1px solid var(--line);margin-top:2.4rem;padding-top:1rem;color:var(--muted);font-size:.9rem}.footer a{margin-right:.55rem}
+</style>
+</head>
+<body><main class="wrap"><article>
+<p><a href="/">PercentURL</a> / Online URLencoder</p>
+<h1>Online URLencoder: Encode Text in Your Browser, No Upload</h1>
+<p class="sub">A private, browser-based way to turn plain text into URL-safe characters—paste the value, encode it, copy the result, and place it where it belongs.</p>
+<section class="answer" aria-label="Quick answer"><strong>Quick answer:</strong> Paste the exact text you want inside a URL, encode it with the online URLencoder below, then copy the result into the correct component (<code>?q=</code>, a path segment, or a header value). Because encoding runs in your browser, the text you paste is never uploaded to a server. <br><a class="tool" href="/">Open the URL Encoder</a></section>
+<h2>Why use an online URLencoder that runs locally</h2>
+<p>An online URLencoder is only useful if you can trust it with the text you paste. PercentURL encodes entirely in your browser tab, so the value never leaves your device. That matters when the text is a search phrase, an email, a file name, or anything you would not paste into a server you do not control.</p>
+<ul><li><strong>Private:</strong> input is processed on your device; nothing is sent over the network to encode it.</li><li><strong>Instant:</strong> there is no upload step and no round trip to wait for.</li><li><strong>No install:</strong> open the page and encode—no app, no account, no extension.</li><li><strong>Portable:</strong> the same tool works on a phone, tablet, or desktop browser.</li></ul>
+<h2>How to encode text online</h2>
+<ol><li>Open the encoder and identify the exact text that will become one URL value or path segment.</li><li>Paste only that text into the input.</li><li>Encode it, then copy the result.</li><li>Insert the result into the intended part of your URL.</li><li>Review the finished link so its separators stay in the right places.</li></ol>
+<p>Encoding changes how text is represented; it does not check that the completed URL points to the right page or that the receiving service accepts the value. Keep the original text until you have verified the link.</p>
+<h2>Example: encode one value, keep the URL intact</h2>
+<p>These examples encode each input as a single component. They do not encode a complete link, which is why the structural marks stay outside the encoded value.</p>
+<table><thead><tr><th scope="col">Input value</th><th scope="col">Encoded value</th><th scope="col">What to notice</th></tr></thead><tbody>
+<tr><td><code>red shoes &amp; socks</code></td><td><code>red%20shoes%20%26%20socks</code></td><td>The ampersand belongs to the value, so it becomes <code>%26</code>.</td></tr>
+<tr><td><code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2d434c40486d48554c405d4148034e4240">[email&#160;protected]</a></code></td><td><code>name%40example.com</code></td><td>The at sign is represented as data within this component.</td></tr>
+<tr><td><code>50% off</code></td><td><code>50%25%20off</code></td><td>A literal percent sign becomes <code>%25</code>.</td></tr>
+<tr><td><code>folder/report 1.pdf</code></td><td><code>folder%2Freport%201.pdf</code></td><td>This encodes the slash as data. Use it only when the whole string is one value, not when the slash should separate path segments.</td></tr>
+<tr><td><code>東京 café</code></td><td><code>%E6%9D%B1%E4%BA%AC%20caf%C3%A9</code></td><td>Non-ASCII characters are represented by their UTF-8 bytes.</td></tr>
+</tbody></table>
+<h2>What “online” means here</h2>
+<p>Some encoders send your text to a server and return the result. PercentURL does the work in the page itself: the script reads your input, applies percent-encoding to the bytes, and shows the output. After the page loads, the encoding step needs no network call, so a spotty connection does not expose your text and does not block the result.</p>
+<p>If you paste sensitive values, close the tab when you are done. The input is not stored by the tool, but it remains in that tab’s history until you leave it.</p>
+<h2>Avoid double encoding</h2>
+<p>If already encoded text is encoded again, the percent signs themselves get encoded. For example, <code>%20</code> can become <code>%2520</code> because the percent sign becomes <code>%25</code>. The receiving page may then show the escape characters instead of a space.</p>
+<p>Before encoding, check whether the input already contains escapes such as <code>%20</code> or <code>%2F</code>. Decide whether those are intended encoded data or literal text, then encode once when inserting the raw value into its component.</p>
+<h2>Before you copy the finished link</h2>
+<ul><li>Did you encode only the value or component you intended?</li><li>Are <code>/</code>, <code>?</code>, <code>=</code>, and <code>&amp;</code> still in the right structural positions?</li><li>Did a literal percent sign become <code>%25</code>?</li><li>Did you avoid encoding the same value twice?</li><li>Does the receiving service expect <code>%20</code> or form-style <code>+</code> for spaces?</li></ul>
+<section class="panel"><h2>Encode your value now</h2><p>Use PercentURL’s browser-based online URLencoder to encode one value, review the finished URL in context, then share or submit it.</p><a class="tool" href="/">Open the URL Encoder / Decoder</a><p class="muted">For mode choices, see <a href="/url-encode-and-decode">URL encode and decode: choose the right mode</a>. For the byte rules, read <a href="/percent-encoding">What Is Percent-Encoding?</a></p></section>
+<footer class="footer"><a href="/">URL Encoder</a><a href="/url-encoder-online">URL Encoder Online</a><a href="/url-encode-and-decode">URL Encode and Decode</a><a href="/percent-encoding">Percent Encoding</a><a href="/about">About</a><p>© 2026 PercentURL · Encoding runs in your browser.</p></footer>
+</article></main><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

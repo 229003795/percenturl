@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — PercentURL URL Encoder / Decoder</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#1e293b; --ink:#e2e8f0; --muted:#94a3b8;
+    --accent:#38bdf8; --accent2:#22d3ee; --line:#334155;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.6}
+  .wrap{max-width:820px;margin:0 auto;padding:28px 20px}
+  h1{font-size:1.6rem;margin:0 0 6px}
+  .sub{color:var(--muted);font-size:.95rem;margin:0 0 22px}
+  h2{font-size:1.1rem;margin:26px 0 8px;color:var(--accent)}
+  p,li{font-size:.95rem;color:var(--ink)}
+  ul{padding-left:20px}
+  li{margin:6px 0}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0}
+  .ft{margin-top:34px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:.85rem}
+  .ft nav a{color:var(--accent);text-decoration:none;margin:0 2px}
+  .ft nav a:hover{text-decoration:underline}
+  .ft .copy{margin:8px 0 0}
+
+  /* internal-link additions */
+  .backhome{margin:0 0 14px;font-size:.82rem}
+  .backhome a{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--line)}
+  .backhome a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .more{margin-top:26px;border-top:1px solid var(--line);padding-top:16px}
+  .more h2{font-size:1.05rem;margin:0 0 4px}
+  .more-sub{color:var(--muted);font-size:.85rem;margin:0 0 12px}
+  .more-list{list-style:none;padding:0;margin:0}
+  .more-list li{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+                padding:10px 12px;margin:0 0 8px;font-size:.86rem;line-height:1.6}
+  .more-list a{color:var(--accent);text-decoration:none;font-weight:600}
+  .more-list a:hover{text-decoration:underline}
+  .more-info{margin:10px 0 0;font-size:.85rem}
+  .more-info a{color:var(--accent);text-decoration:none}
+  .more-info a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>About PercentURL</h1>
+  <p class="sub">A free, private URL encoder and decoder that runs entirely in your browser.</p>
+  <p class="backhome"><a href="/">← Back to the URL Encoder</a></p>
+
+  <div class="card">
+    <p>PercentURL turns any string or full URL into percent-encoded form (and decodes it back) so it can travel safely inside links, query strings, and APIs. Everything is computed on your device — there is no server, no account, and nothing you type is ever sent anywhere.</p>
+  </div>
+
+  <h2>What it does</h2>
+  <p>URL encoding replaces unsafe characters (spaces, <code>&amp;</code>, <code>=</code>, <code>?</code>, non-ASCII text, etc.) with a <code>%XX</code> escape so the data keeps its meaning when placed in a URL. Decoding reverses it. This is the same encoding used by web browsers and servers everywhere.</p>
+
+  <h2>Four controls</h2>
+  <ul>
+    <li><strong>Character set</strong> — <em>UTF-8</em> encodes any language correctly; <em>ASCII</em> keeps bytes 0–127 and escapes the rest (astral characters use <code>%uXXXX</code> for a safe round-trip).</li>
+    <li><strong>Space as</strong> — emit spaces as <code>%20</code> (strict) or <code>+</code> (form-style).</li>
+    <li><strong>Encoding mode</strong> — <em>RFC 3986</em> keeps only unreserved characters; <em>encodeURIComponent</em> keeps the wider set browsers use.</li>
+    <li><strong>Newlines</strong> — encode the whole input as one block, or encode each line separately.</li>
+  </ul>
+
+  <h2>Private by design</h2>
+  <ul>
+    <li>No login, no sign-up, no limits on use.</li>
+    <li>No backend, no database, no analytics that identify you.</li>
+    <li>Your text never leaves your browser. Close the tab and it is gone.</li>
+  </ul>
+
+  <footer class="ft">
+    <nav>
+      <a href="/">URL Encoder</a> ·
+      <a href="/utm-builder">UTM Builder</a> ·
+      <a href="/base64">Base64</a> ·
+      <a href="/html-entities">HTML Entities</a> ·
+      <a href="/jwt">JWT</a> ·
+      <a href="/javascript">JavaScript Encoding</a> ·
+      <a href="/percent-encoding">Percent Encoding</a> ·
+      <a href="/about">About</a> ·
+      <a href="/privacy">Privacy</a> ·
+      <a href="/contact">Contact</a>
+    </nav>
+    <p class="copy">© 2026 PercentURL · All processing runs in your browser.</p>
+  </footer>
+</div>
+</body>
+</html>

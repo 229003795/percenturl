@@ -32,3 +32,9 @@ was computed in Python by UTF-8 encoding and escaping every byte outside the unr
 ## License
 
 MIT
+
+## Website
+
+The Cloudflare Pages site is served from this repository root. Route pages live in matching folders as `index.html`; shared static files live under `assets/`.
+
+The PercentURL site content is in the root `index.html` and the route folders. Related educational pages include `/percent-encoding`, `/url-encode-and-decode`, and `/javascript`.

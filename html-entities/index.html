@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Entity Encoder &amp; Decoder — HTML Escape / Unescape Online (Named, Decimal &amp; Hex)</title>
+<meta name="description" content="Free HTML entity encoder and decoder. Escape &lt; &gt; &amp; &quot; ' as named, decimal or hex entities as you type — and see why HTML entities are NOT the same thing as URL encoding, with a plain rule for when to use each.">
+<link rel="canonical" href="https://percenturl.com/html-entities">
+<style>
+  :root{
+    --bg:#0f172a; --panel:#1e293b; --ink:#e2e8f0; --muted:#94a3b8;
+    --accent:#38bdf8; --accent2:#22d3ee; --line:#334155;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.5}
+  .wrap{max-width:880px;margin:0 auto;padding:20px}
+  h1{font-size:1.4rem;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:.92rem;margin:0 0 16px}
+  .notice{background:rgba(56,189,248,.12);border:1px solid var(--accent);
+          color:var(--ink);padding:10px 12px;border-radius:10px;font-size:.85rem;margin-bottom:16px}
+  .alias{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;
+         font-size:.84rem;color:var(--muted);margin:0 0 16px;line-height:1.6}
+  .alias b{color:var(--accent);font-weight:600}
+
+  h2.blk{font-size:1.05rem;margin:30px 0 4px;padding-top:18px;border-top:1px solid var(--line)}
+  h2.blk .n{color:var(--accent);margin-right:6px}
+  .blksub{color:var(--muted);font-size:.85rem;margin:0 0 14px}
+
+  label{display:block;font-size:.78rem;color:var(--muted);margin:14px 0 6px;
+        text-transform:uppercase;letter-spacing:.04em}
+  textarea{width:100%;min-height:120px;background:var(--panel);color:var(--ink);
+           border:1px solid var(--line);border-radius:10px;padding:12px;font-size:.95rem;
+           font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical}
+  textarea:focus{outline:none;border-color:var(--accent)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .btn{flex:1;min-width:130px;border:none;border-radius:10px;padding:11px;font-size:.95rem;font-weight:600;cursor:pointer}
+  .btn.copy{background:#0b1220;color:var(--ink);border:1px solid var(--line)}
+
+  .controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:8px 0 4px}
+  .ctrl{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .ctrl .t{font-size:.78rem;color:var(--muted);margin-bottom:8px}
+  .seg{display:flex;gap:6px;flex-wrap:wrap}
+  .seg button{flex:1;min-width:78px;background:#0b1220;color:var(--ink);border:1px solid var(--line);
+             border-radius:8px;padding:8px 6px;font-size:.78rem;cursor:pointer}
+  .seg button.active{background:var(--accent);color:#06121f;border-color:var(--accent);font-weight:600}
+  .hint{color:var(--muted);font-size:.78rem;margin-top:6px}
+
+  .readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
+  .ro{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+  .ro .k{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .ro .v{font-size:.92rem;margin-top:3px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-all}
+  .ro .v.acc{color:var(--accent)}
+
+  table.enc{width:100%;border-collapse:collapse;margin-top:10px;font-size:.83rem}
+  table.enc th,table.enc td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+  table.enc th{color:var(--muted);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.03em}
+  table.enc td.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-all}
+  table.enc .multi{color:var(--accent)}
+  table.enc .ascii{color:#34d399}
+  .empty{color:var(--muted);font-size:.85rem;margin-top:10px}
+
+  .warn{display:none;background:rgba(248,113,113,.12);border:1px solid #f87171;color:#fecaca;
+        padding:10px 12px;border-radius:10px;font-size:.85rem;margin-top:12px;white-space:pre-wrap}
+  .warn.show{display:block}
+
+  .live{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin:12px 0;font-size:.85rem}
+  .live .l{margin:6px 0;word-break:break-all}
+  .live .k{color:var(--muted);display:inline-block;min-width:190px}
+
+  .cmp{width:100%;border-collapse:collapse;margin:12px 0;font-size:.83rem}
+  .cmp th,.cmp td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+  .cmp th{color:var(--muted);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.03em}
+  .cmp td:first-child{color:var(--muted);white-space:nowrap}
+  .cmp code{font-size:.8rem}
+
+  .fail{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0}
+  .fail h3{margin:0 0 8px;font-size:.95rem}
+  .fail .line{margin:6px 0;font-size:.85rem}
+  .fail .k{color:var(--muted);display:inline-block;min-width:150px}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#0b1220;
+       border:1px solid var(--line);border-radius:6px;padding:1px 5px;font-size:.82rem;word-break:break-all}
+  .bad{color:#fca5a5}
+  .good{color:#34d399}
+  .why{color:var(--muted);font-size:.84rem;margin:6px 0 0}
+
+  .note{color:var(--muted);font-size:.78rem;margin-top:18px}
+  .ft{margin-top:28px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:.85rem}
+  .ft nav a{color:var(--accent);text-decoration:none;margin:0 2px}
+  .ft nav a:hover{text-decoration:underline}
+  .ft .copy{margin:8px 0 0}
+
+  /* internal-link additions */
+  .backhome{margin:0 0 14px;font-size:.82rem}
+  .backhome a{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--line)}
+  .backhome a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .more{margin-top:26px;border-top:1px solid var(--line);padding-top:16px}
+  .more h2{font-size:1.05rem;margin:0 0 4px}
+  .more-sub{color:var(--muted);font-size:.85rem;margin:0 0 12px}
+  .more-list{list-style:none;padding:0;margin:0}
+  .more-list li{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+                padding:10px 12px;margin:0 0 8px;font-size:.86rem;line-height:1.6}
+  .more-list a{color:var(--accent);text-decoration:none;font-weight:600}
+  .more-list a:hover{text-decoration:underline}
+  .more-info{margin:10px 0 0;font-size:.85rem}
+  .more-info a{color:var(--accent);text-decoration:none}
+  .more-info a:hover{text-decoration:underline}
+  /* related-tools horizontal interlink */
+  .reltools{margin-top:26px;border-top:1px solid var(--line);padding-top:16px}
+  .reltools h2{font-size:1.05rem;margin:0 0 4px}
+  .reltools .rt-sub{color:var(--muted);font-size:.85rem;margin:0 0 12px}
+  .reltools .rt-list{display:flex;flex-wrap:wrap;gap:8px}
+  .reltools .rt-list a{flex:1 1 200px;background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;padding:10px 12px;color:var(--accent);text-decoration:none;
+    font-size:.86rem;font-weight:600;display:flex;align-items:center}
+  .reltools .rt-list a:hover{border-color:var(--accent);text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>HTML Entity Encoder &amp; Decoder</h1>
+  <p class="sub">Escape or unescape HTML as you type — named, decimal or hex. Runs entirely in your browser.</p>
+  <p class="backhome"><a href="/">← Back to the URL Encoder</a></p>
+
+  <p class="alias">Also searched as <b>html encode</b> · <b>html escape</b> · <b>html entities</b> · <b>escape html</b> · <b>html entity decoder</b> · <b>html special characters</b>. It is one tool: text to HTML entities, and back.</p>
+
+  <div class="notice">
+    Everything runs in your browser. Nothing you type is uploaded to any server.
+  </div>
+
+  <!-- ============ BLOCK 1 ============ -->
+  <h2 class="blk"><span class="n">1</span>Escape or unescape</h2>
+  <p class="blksub">Pick a direction, type or paste, and the result updates live.</p>
+
+  <div class="controls">
+    <div class="ctrl">
+      <div class="t">Direction</div>
+      <div class="seg" data-k="mode">
+        <button data-v="encode" class="active">Encode</button>
+        <button data-v="decode">Decode</button>
+      </div>
+    </div>
+    <div class="ctrl">
+      <div class="t">Entity style</div>
+      <div class="seg" data-k="style">
+        <button data-v="named" class="active">Named &amp;amp;</button>
+        <button data-v="decimal">Decimal &amp;#38;</button>
+        <button data-v="hex">Hex &amp;#x26;</button>
+      </div>
+    </div>
+    <div class="ctrl">
+      <div class="t">Characters to escape</div>
+      <div class="seg" data-k="set">
+        <button data-v="minimal" class="active">Minimal &amp; &lt; &gt;</button>
+        <button data-v="standard">Standard &amp; &lt; &gt; " '</button>
+      </div>
+    </div>
+    <div class="ctrl">
+      <div class="t">Non-ASCII characters</div>
+      <div class="seg" data-k="nonascii">
+        <button data-v="asis" class="active">Keep as-is</button>
+        <button data-v="numeric">Numeric entity</button>
+      </div>
+    </div>
+  </div>
+  <div class="hint" id="dirHint">Escaping text into HTML entities. Switch to Decode to turn entities back into text.</div>
+
+  <label for="in" id="inLabel">Text to escape</label>
+  <textarea id="in" placeholder="Type or paste here — the output updates as you type."></textarea>
+
+  <label for="out">Result</label>
+  <textarea id="out" readonly placeholder="Result appears here."></textarea>
+  <div class="row">
+    <button class="btn copy" id="copyBtn">Copy result</button>
+  </div>
+
+  <div class="warn" id="warn"></div>
+
+  <!-- ============ BLOCK 2 ============ -->
+  <h2 class="blk"><span class="n">2</span>Live: what the encoder is actually doing</h2>
+  <p class="blksub">An HTML entity is a way to write a character using only ASCII. The <em>style</em> decides how it is spelled, and the <em>character set</em> decides which characters are touched at all. This readout shows the choice being made.</p>
+
+  <div class="readout">
+    <div class="ro"><div class="k">Mode</div><div class="v acc" id="roMode">Encoding</div></div>
+    <div class="ro"><div class="k">Entity style</div><div class="v" id="roStyle">Named</div></div>
+    <div class="ro"><div class="k">Escaping</div><div class="v" id="roSet">&amp; &lt; &gt;</div></div>
+    <div class="ro"><div class="k">Non-ASCII</div><div class="v" id="roNon">kept</div></div>
+    <div class="ro"><div class="k">Entities in output</div><div class="v" id="roCount">0</div></div>
+    <div class="ro"><div class="k">Output length</div><div class="v" id="roLen">0</div></div>
+  </div>
+
+  <table class="enc">
+    <thead>
+      <tr><th>Character</th><th>Code point</th><th>Entity</th><th>Kind</th></tr>
+    </thead>
+    <tbody id="charBody"></tbody>
+  </table>
+  <div class="empty" id="charEmpty">Type something above to see how each character becomes an entity.</div>
+
+  <!-- ============ BLOCK 3 ============ -->
+  <h2 class="blk"><span class="n">3</span>HTML entities are not URL encoding</h2>
+  <p class="blksub">This is the part almost every HTML-escape tool skips. HTML entities and percent-encoding (URL encoding) are <strong>two different systems</strong> that happen to both turn awkward characters into ASCII. They escape different characters, they live in different places, and they are decoded by different things. Using the wrong one does not just look wrong — it changes the value.</p>
+
+  <div class="live">
+    <div class="l"><span class="k">Your input</span> <code id="lvRaw">—</code></div>
+    <div class="l"><span class="k">HTML-escaped (for HTML)</span> <code id="lvHtml">—</code></div>
+    <div class="l"><span class="k">Percent-encoded (for a URL)</span> <code id="lvUrl">—</code></div>
+    <div class="l"><span class="k">Which one you want</span> <span id="lvWhich">—</span></div>
+  </div>
+
+  <table class="cmp">
+    <thead>
+      <tr><th></th><th>HTML entity</th><th>Percent-encoding (URL)</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>What it escapes</td>
+        <td>characters that have meaning <em>in HTML markup</em> — <code>&amp;</code> <code>&lt;</code> <code>&gt;</code> <code>"</code> <code>'</code></td>
+        <td>characters that are not safe <em>in a URL</em> — space, <code>&amp;</code> <code>?</code> <code>#</code> <code>/</code> <code>=</code> <code>+</code>, all non-ASCII</td>
+      </tr>
+      <tr>
+        <td>Looks like</td>
+        <td><code>&amp;amp;</code> <code>&amp;#38;</code> <code>&amp;#x26;</code></td>
+        <td><code>%26</code> <code>%20</code> <code>%3D</code></td>
+      </tr>
+      <tr>
+        <td>Applies inside</td>
+        <td>an HTML document: text, attributes, <code>&lt;title&gt;</code>, comments, email HTML</td>
+        <td>a URL: query values, path segments, form fields, redirect targets, <code>href</code> values</td>
+      </tr>
+      <tr>
+        <td>Decoded by</td>
+        <td>the HTML parser (the browser when it renders the page)</td>
+        <td>the server / HTTP stack when it parses the request line and query string</td>
+      </tr>
+      <tr>
+        <td><code>&amp;</code> becomes</td>
+        <td><code>&amp;amp;</code> — so the parser does not read it as the start of an entity</td>
+        <td><code>%26</code> — so the server does not read it as the next query parameter</td>
+      </tr>
+      <tr>
+        <td>Example</td>
+        <td><code>&amp;lt;b&amp;gt;</code> renders as the text <code>&lt;b&gt;</code></td>
+        <td><code>a%3Db%26c</code> arrives at the server as the value <code>a=b&amp;c</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="fail">
+    <h3><code>&amp;amp;</code> is not <code>%26</code></h3>
+    <div class="line"><span class="k">HTML entity</span> <code>&amp;amp;</code> is HTML's spelling of the character <code>&amp;</code>, read by the browser while rendering</div>
+    <div class="line"><span class="k">Percent-encoding</span> <code>%26</code> is URL's spelling of the character <code>&amp;</code>, read by the server while routing the request</div>
+    <div class="line"><span class="k">Same character, different system</span> putting <code>&amp;amp;</code> in a URL does <span class="bad">not</span> give the server an ampersand — it gives it the literal text <code>&amp;amp;</code></div>
+  </div>
+
+  <div class="fail">
+    <h3>Hex entities look like percent-encoding — they are unrelated</h3>
+    <div class="line"><span class="k">HTML hex entity</span> <code>&amp;#x26;</code> — starts with <code>&amp;#x</code>, ends with <code>;</code></div>
+    <div class="line"><span class="k">Percent-encoding</span> <code>%26</code> — starts with <code>%</code>, no semicolon</div>
+    <div class="line"><span class="k">Trap</span> because both are "a hex number for a character", people write <code>%x26</code> or <code>&amp;#%26;</code> — both are <span class="bad">invalid in either system</span></div>
+    <div class="line"><span class="k">Fix</span> pick the system by <em>where the value is going</em>, not by the character</div>
+  </div>
+
+  <div class="fail">
+    <h3>The <code>&amp;</code> between query parameters</h3>
+    <div class="line"><span class="k">In a URL</span> <code>?a=1&amp;b=2</code> — the <code>&amp;</code> really is the parameter separator</div>
+    <div class="line"><span class="k">In HTML source</span> that same link should be written <code>href="?a=1&amp;amp;b=2"</code>, so the HTML parser hands the browser the URL <code>?a=1&amp;b=2</code></div>
+    <div class="line"><span class="k">Why it bites</span> if you HTML-escape a URL and then also percent-encode it, or do it twice, the server receives <code>a=1%26b=2</code> <span class="bad">as a single value</span> instead of two parameters</div>
+    <div class="line"><span class="k">Fix</span> percent-encode the <em>values</em>, keep the structural <code>&amp;</code>, then HTML-escape the whole attribute once</div>
+  </div>
+
+  <div class="fail">
+    <h3>Order of operations: URL-encode first, then HTML-escape</h3>
+    <div class="line"><span class="k">You have</span> user text that must go into a link inside an HTML page</div>
+    <div class="line"><span class="k">Right order</span> percent-encode the value for the URL → build the URL → HTML-escape the finished URL for the attribute</div>
+    <div class="line"><span class="k">Wrong order</span> HTML-escape first, then percent-encode — you end up encoding the <code>&amp;amp;</code> itself and the link is <span class="bad">double-encoded</span></div>
+    <div class="line"><span class="k">Rule</span> the innermost layer is applied last: the URL lives inside the HTML, so encode the URL first</div>
+  </div>
+
+  <div class="fail">
+    <h3>Decoding the wrong system</h3>
+    <div class="line"><span class="k">A server receiving</span> <code>?q=&amp;lt;b&amp;gt;</code> does <span class="bad">not</span> turn it back into <code>&lt;b&gt;</code> — HTML entities are not its job</div>
+    <div class="line"><span class="k">A browser rendering</span> <code>%3Cb%3E</code> shows the literal text <code>%3Cb%3E</code> — percent-encoding is not its job either</div>
+    <div class="line"><span class="k">Fix</span> decode with the same system that encoded it, in the reverse order</div>
+  </div>
+
+  <h3 style="font-size:.95rem;margin:20px 0 4px">When to use which</h3>
+  <p class="why">Use <strong>HTML entities</strong> when the text will be rendered as HTML markup: user comments, CMS content, form input shown back to a user, values placed inside attributes, and any string you are assembling into an HTML document or an HTML email.</p>
+  <p class="why">Use <strong>percent-encoding</strong> when the text will be part of a URL: query-string values, path segments, form data, redirect targets, and any value you place into an <code>href</code>, <code>src</code>, or <code>action</code>.</p>
+  <p class="why">Use <strong>both</strong> — in the right order — when user text goes into a link on a page: percent-encode for the URL first, then HTML-escape the finished URL for the attribute. That is the only case where the two appear together, and the order is what keeps the link intact.</p>
+
+  <p class="note">
+    No login · Unlimited use · No watermark · Runs only in your browser. This tool converts exactly once, with the entity style and character set you choose, and shows you both while it works.
+  </p>
+
+    <section class="reltools">
+    <h2>Related tools</h2>
+    <p class="rt-sub">Every tool on this site runs entirely in your browser. Pick the encoding problem you have:</p>
+    <div class="rt-list">
+      <a href="/">URL Encoder / Decoder</a>
+      <a href="/utm-builder">UTM Builder</a>
+      <a href="/base64">Base64 Encoder / Decoder</a>
+      <a href="/jwt">JWT Decode</a>
+      <a href="/javascript">URL Encoding in JavaScript</a>
+      <a href="/percent-encoding">What Is Percent-Encoding?</a>
+    </div>
+  </section>
+  <footer class="ft">
+    <nav>
+      <a href="/">URL Encoder</a> ·
+      <a href="/utm-builder">UTM Builder</a> ·
+      <a href="/base64">Base64</a> ·
+      <a href="/html-entities">HTML Entities</a> ·
+      <a href="/jwt">JWT</a> ·
+      <a href="/javascript">JavaScript Encoding</a> ·
+      <a href="/percent-encoding">Percent Encoding</a> ·
+      <a href="/about">About</a> ·
+      <a href="/privacy">Privacy</a> ·
+      <a href="/contact">Contact</a>
+    </nav>
+    <p class="copy">© 2026 PercentURL · All processing runs in your browser.</p>
+  </footer>
+</div>
+
+<script>
+/* ---------- entity tables ---------- */
+var CORE_NAMED = { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' };
+var CORE_DEC   = { '&':'&#38;', '<':'&#60;', '>':'&#62;', '"':'&#34;', "'":'&#39;' };
+var CORE_HEX   = { '&':'&#x26;', '<':'&#x3C;', '>':'&#x3E;', '"':'&#x22;', "'":'&#x27;' };
+var MIN_SET    = ['&','<','>'];
+var STD_SET    = ['&','<','>','"',"'"];
+
+/* common named entities, for decoding */
+var NAMED = {
+  amp:'&', lt:'<', gt:'>', quot:'"', apos:"'", nbsp:'\u00A0',
+  copy:'\u00A9', reg:'\u00AE', trade:'\u2122', deg:'\u00B0', plusmn:'\u00B1',
+  times:'\u00D7', divide:'\u00F7', frac12:'\u00BD', frac14:'\u00BC', frac34:'\u00BE',
+  sup2:'\u00B2', sup3:'\u00B3', micro:'\u00B5', para:'\u00B6', sect:'\u00A7',
+  middot:'\u00B7', bull:'\u2022', hellip:'\u2026', mdash:'\u2014', ndash:'\u2013',
+  lsquo:'\u2018', rsquo:'\u2019', ldquo:'\u201C', rdquo:'\u201D', laquo:'\u00AB', raquo:'\u00BB',
+  larr:'\u2190', rarr:'\u2192', uarr:'\u2191', darr:'\u2193', harr:'\u2194',
+  ne:'\u2260', le:'\u2264', ge:'\u2265', infin:'\u221E', sum:'\u2211', radic:'\u221A',
+  int:'\u222B', asymp:'\u2248', equiv:'\u2261', prod:'\u220F', part:'\u2202', nabla:'\u2207',
+  isin:'\u2208', notin:'\u2209', cap:'\u2229', cup:'\u222A', there4:'\u2234', sim:'\u223C',
+  alpha:'\u03B1', beta:'\u03B2', gamma:'\u03B3', delta:'\u03B4', epsilon:'\u03B5',
+  theta:'\u03B8', lambda:'\u03BB', mu:'\u03BC', pi:'\u03C0', sigma:'\u03C3',
+  tau:'\u03C4', phi:'\u03C6', omega:'\u03C9', Omega:'\u03A9', Sigma:'\u03A3', Delta:'\u0394', Pi:'\u03A0',
+  euro:'\u20AC', pound:'\u00A3', cent:'\u00A2', yen:'\u00A5', curren:'\u00A4',
+  aacute:'\u00E1', eacute:'\u00E9', iacute:'\u00ED', oacute:'\u00F3', uacute:'\u00FA',
+  agrave:'\u00E0', egrave:'\u00E8', ccedil:'\u00E7', ntilde:'\u00F1', uuml:'\u00FC', ouml:'\u00F6', auml:'\u00E4',
+  heart:'\u2665', spades:'\u2660', clubs:'\u2663', diams:'\u2666', star:'\u2606'
+};
+var CHAR_TO_NAMED = {};
+for (var k in NAMED){ if(!(NAMED[k] in CHAR_TO_NAMED)) CHAR_TO_NAMED[NAMED[k]] = k; }
+
+/* ---------- encode ---------- */
+function encodeEntities(str, style, set, nonascii){
+  var allowed = set === 'standard' ? STD_SET : MIN_SET;
+  var out = '';
+  var chars = Array.from(str);
+  for (var i = 0; i < chars.length; i++){
+    var ch = chars[i];
+    var cp = ch.codePointAt(0);
+    var enc = null;
+    if (allowed.indexOf(ch) !== -1){
+      enc = style === 'named' ? CORE_NAMED[ch] : (style === 'decimal' ? CORE_DEC[ch] : CORE_HEX[ch]);
+    } else if (nonascii === 'numeric' && cp > 127){
+      enc = style === 'hex' ? '&#x' + cp.toString(16).toUpperCase() + ';' : '&#' + cp + ';';
+    }
+    out += (enc === null ? ch : enc);
+  }
+  return out;
+}
+
+/* ---------- decode ---------- */
+function decodeEntities(str){
+  return str.replace(/&(#[xX][0-9a-fA-F]+|#[0-9]+|[a-zA-Z][a-zA-Z0-9]*);/g, function(m, body){
+    if (body.charAt(0) === '#'){
+      var hex = body.charAt(1) === 'x' || body.charAt(1) === 'X';
+      var cp = hex ? parseInt(body.slice(2), 16) : parseInt(body.slice(1), 10);
+      if (!isFinite(cp) || cp < 0 || cp > 0x10FFFF) return m;
+      try { return String.fromCodePoint(cp); } catch(e){ return m; }
+    }
+    return Object.prototype.hasOwnProperty.call(NAMED, body) ? NAMED[body] : m;
+  });
+}
+
+/* count entities in a string */
+function countEntities(str){
+  var n = 0;
+  str.replace(/&(#[xX][0-9a-fA-F]+|#[0-9]+|[a-zA-Z][a-zA-Z0-9]*);/g, function(){ n++; return ''; });
+  return n;
+}
+
+/* percent-encode (RFC 3986 unreserved kept, everything else %XX) */
+function pctEncode(str){
+  var bytes = new TextEncoder().encode(str);
+  var out = '';
+  for (var i = 0; i < bytes.length; i++){
+    var b = bytes[i];
+    var c = String.fromCharCode(b);
+    out += /[A-Za-z0-9\-_.~]/.test(c) ? c : '%' + b.toString(16).toUpperCase().padStart(2,'0');
+  }
+  return out;
+}
+
+/* ---------- state ---------- */
+var state = { mode:'encode', style:'named', set:'minimal', nonascii:'asis' };
+
+var inEl   = document.getElementById('in');
+var outEl  = document.getElementById('out');
+var warnEl = document.getElementById('warn');
+var charBody  = document.getElementById('charBody');
+var charEmpty = document.getElementById('charEmpty');
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+  });
+}
+
+function run(){
+  var raw = inEl.value;
+  var output = '';
+  warnEl.classList.remove('show');
+
+  try{
+    if (state.mode === 'encode'){
+      output = encodeEntities(raw, state.style, state.set, state.nonascii);
+    } else {
+      output = decodeEntities(raw);
+    }
+  }catch(e){
+    warnEl.textContent = '⚠️ ' + (e && e.message ? e.message : String(e));
+    warnEl.classList.add('show');
+    output = '';
+  }
+
+  outEl.value = output;
+
+  document.getElementById('roMode').textContent  = state.mode === 'encode' ? 'Encoding' : 'Decoding';
+  document.getElementById('roStyle').textContent = state.style === 'named' ? 'Named' : (state.style === 'decimal' ? 'Decimal' : 'Hex');
+  document.getElementById('roSet').textContent   = state.set === 'standard' ? '& < > " \'' : '& < >';
+  document.getElementById('roNon').textContent   = state.nonascii === 'numeric' ? 'numeric' : 'kept';
+  document.getElementById('roCount').textContent = state.mode === 'encode'
+    ? countEntities(output)
+    : countEntities(raw);
+  document.getElementById('roLen').textContent   = output.length;
+
+  renderTable(raw, output);
+  renderLive(raw, output);
+}
+
+/* per-character table */
+function renderTable(raw, output){
+  charBody.innerHTML = '';
+  if (!raw){
+    charEmpty.style.display = 'block';
+    return;
+  }
+  charEmpty.style.display = 'none';
+
+  if (state.mode === 'encode'){
+    var allowed = state.set === 'standard' ? STD_SET : MIN_SET;
+    var chars = Array.from(raw);
+    var shown = chars.slice(0, 24);
+    for (var i = 0; i < shown.length; i++){
+      var ch = shown[i];
+      var cp = ch.codePointAt(0);
+      var isCore = allowed.indexOf(ch) !== -1;
+      var isNon  = cp > 127;
+      var ent = '—', kind = 'safe as-is', cls = 'ascii';
+      if (isCore){
+        ent = state.style === 'named' ? CORE_NAMED[ch] : (state.style === 'decimal' ? CORE_DEC[ch] : CORE_HEX[ch]);
+        kind = 'HTML-significant'; cls = 'multi';
+      } else if (isNon && state.nonascii === 'numeric'){
+        ent = state.style === 'hex' ? '&#x' + cp.toString(16).toUpperCase() + ';' : '&#' + cp + ';';
+        kind = 'non-ASCII'; cls = 'multi';
+      } else if (isNon){
+        kind = 'non-ASCII, kept'; cls = 'ascii';
+      }
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td class="mono">' + esc(ch === ' ' ? '␣' : ch) + '</td>' +
+        '<td class="mono">U+' + cp.toString(16).toUpperCase().padStart(4,'0') + '</td>' +
+        '<td class="mono ' + cls + '">' + esc(ent) + '</td>' +
+        '<td class="' + cls + '">' + esc(kind) + '</td>';
+      charBody.appendChild(tr);
+    }
+    if (chars.length > shown.length) addMore(chars.length - shown.length, 'characters');
+  } else {
+    var re = /&(#[xX][0-9a-fA-F]+|#[0-9]+|[a-zA-Z][a-zA-Z0-9]*);/g;
+    var m, n = 0;
+    while ((m = re.exec(raw)) !== null && n < 24){
+      var body = m[1];
+      var res, cp = null, kind = 'named entity', cls = 'multi';
+      if (body.charAt(0) === '#'){
+        var hex = body.charAt(1) === 'x' || body.charAt(1) === 'X';
+        cp = hex ? parseInt(body.slice(2), 16) : parseInt(body.slice(1), 10);
+        kind = hex ? 'numeric (hex)' : 'numeric (decimal)';
+      } else {
+        cp = Object.prototype.hasOwnProperty.call(NAMED, body) ? NAMED[body].codePointAt(0) : null;
+        if (cp === null){ kind = 'unknown name — left as-is'; cls = 'bad'; }
+      }
+      var decoded = m[0];
+      if (cp !== null){
+        try { decoded = String.fromCodePoint(cp); } catch(e){ decoded = m[0]; }
+      }
+      var tr2 = document.createElement('tr');
+      tr2.innerHTML =
+        '<td class="mono">' + esc(m[0]) + '</td>' +
+        '<td class="mono">' + (cp === null ? '—' : 'U+' + cp.toString(16).toUpperCase().padStart(4,'0')) + '</td>' +
+        '<td class="mono ' + cls + '">' + esc(decoded === ' ' ? '␣' : decoded) + '</td>' +
+        '<td class="' + cls + '">' + esc(kind) + '</td>';
+      charBody.appendChild(tr2);
+      n++;
+    }
+    if (n === 0){
+      var tr3 = document.createElement('tr');
+      tr3.innerHTML = '<td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td>no entities found in the input</td>';
+      charBody.appendChild(tr3);
+    }
+  }
+}
+
+function addMore(count, unit){
+  var tr = document.createElement('tr');
+  tr.innerHTML = '<td class="mono">…</td><td class="mono">…</td><td class="mono">…</td><td>+' + count + ' more ' + unit + '</td>';
+  charBody.appendChild(tr);
+}
+
+/* block 3 live comparison */
+function renderLive(raw, output){
+  var sample = raw || '';
+  var htmlSide = sample ? encodeEntities(sample, state.style, state.set, state.nonascii) : '—';
+  var urlSide  = sample ? pctEncode(sample) : '—';
+
+  document.getElementById('lvRaw').textContent  = sample || '—';
+  document.getElementById('lvHtml').textContent = sample ? htmlSide : '—';
+  document.getElementById('lvUrl').textContent  = sample ? urlSide : '—';
+
+  var which;
+  if (!sample){
+    which = 'Type something above to compare the two.';
+  } else {
+    which = 'Depends on the destination — HTML markup → the middle line; a URL → the bottom line. If the text goes into a link on a page, do the URL line first, then the HTML line on the result.';
+  }
+  document.getElementById('lvWhich').textContent = which;
+}
+
+/* ---------- wiring ---------- */
+document.querySelectorAll('.seg').forEach(function(seg){
+  var k = seg.dataset.k;
+  seg.querySelectorAll('button').forEach(function(b){
+    b.addEventListener('click', function(){
+      seg.querySelectorAll('button').forEach(function(x){ x.classList.remove('active'); });
+      b.classList.add('active');
+      state[k] = b.dataset.v;
+      if (k === 'mode'){
+        var enc = state.mode === 'encode';
+        document.getElementById('inLabel').textContent = enc ? 'Text to escape' : 'HTML entities to decode';
+        inEl.placeholder = enc ? 'Type or paste here — the output updates as you type.'
+                               : 'Paste text with entities — e.g. &lt;b&gt;Hi&lt;/b&gt; or &#x26;.';
+        document.getElementById('dirHint').textContent = enc
+          ? 'Escaping text into HTML entities. Switch to Decode to turn entities back into text.'
+          : 'Decoding HTML entities back to text. Named, decimal and hex entities are all handled.';
+      }
+      run();
+    });
+  });
+});
+
+inEl.addEventListener('input', run);
+document.getElementById('copyBtn').addEventListener('click', async function(){
+  var b = document.getElementById('copyBtn');
+  if (!outEl.value){ b.textContent = 'Nothing to copy'; setTimeout(function(){ b.textContent = 'Copy result'; }, 1200); return; }
+  try { await navigator.clipboard.writeText(outEl.value); }
+  catch(e){ outEl.removeAttribute('readonly'); outEl.select(); document.execCommand('copy'); outEl.setAttribute('readonly',''); }
+  b.textContent = 'Copied';
+  setTimeout(function(){ b.textContent = 'Copy result'; }, 1200);
+});
+
+/* seed a sample so block 3 shows something useful on load */
+inEl.value = '<a href="?q=a&b=c">Tom & Jerry</a>';
+run();
+</script>
+</body>
+</html>

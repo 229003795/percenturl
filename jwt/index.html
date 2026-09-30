@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JWT Decode — Decode a JWT Token Online + Why Every JWT Segment Must Be Base64url</title>
+<meta name="description" content="Decode a JWT online — header, payload and signature, live in your browser. Then the part every other JWT decoder skips: why the three segments must be base64url, what standard Base64's + / = actually do inside a URL, and whether a JWT in a query string or cookie needs percent-encoding.">
+<link rel="canonical" href="https://percenturl.com/jwt">
+<style>
+  :root{
+    --bg:#0f172a; --panel:#1e293b; --ink:#e2e8f0; --muted:#94a3b8;
+    --accent:#38bdf8; --accent2:#22d3ee; --line:#334155;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.5}
+  .wrap{max-width:880px;margin:0 auto;padding:20px}
+  h1{font-size:1.4rem;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:.92rem;margin:0 0 16px}
+  .notice{background:rgba(56,189,248,.12);border:1px solid var(--accent);
+          color:var(--ink);padding:10px 12px;border-radius:10px;font-size:.85rem;margin-bottom:16px}
+  .alias{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;
+         font-size:.84rem;color:var(--muted);margin:0 0 16px;line-height:1.6}
+  .alias b{color:var(--accent);font-weight:600}
+
+  h2.blk{font-size:1.05rem;margin:30px 0 4px;padding-top:18px;border-top:1px solid var(--line)}
+  h2.blk .n{color:var(--accent);margin-right:6px}
+  .blksub{color:var(--muted);font-size:.85rem;margin:0 0 14px}
+
+  label{display:block;font-size:.78rem;color:var(--muted);margin:14px 0 6px;
+        text-transform:uppercase;letter-spacing:.04em}
+  textarea{width:100%;min-height:120px;background:var(--panel);color:var(--ink);
+           border:1px solid var(--line);border-radius:10px;padding:12px;font-size:.95rem;
+           font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical}
+  textarea:focus{outline:none;border-color:var(--accent)}
+  input[type=text],input[type=password]{width:100%;background:var(--panel);color:var(--ink);
+           border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.9rem;
+           font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  input:focus{outline:none;border-color:var(--accent)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .btn{flex:1;min-width:130px;border:none;border-radius:10px;padding:11px;font-size:.95rem;font-weight:600;cursor:pointer}
+  .btn.copy{background:#0b1220;color:var(--ink);border:1px solid var(--line)}
+
+  .controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:8px 0 4px}
+  .ctrl{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .ctrl .t{font-size:.78rem;color:var(--muted);margin-bottom:8px}
+  .seg{display:flex;gap:6px;flex-wrap:wrap}
+  .seg button{flex:1;min-width:78px;background:#0b1220;color:var(--ink);border:1px solid var(--line);
+             border-radius:8px;padding:8px 6px;font-size:.78rem;cursor:pointer}
+  .seg button.active{background:var(--accent);color:#06121f;border-color:var(--accent);font-weight:600}
+  .hint{color:var(--muted);font-size:.78rem;margin-top:6px}
+
+  .readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
+  .ro{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+  .ro .k{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .ro .v{font-size:.92rem;margin-top:3px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-all}
+  .ro .v.acc{color:var(--accent)}
+  .ro .v.warnv{color:#fca5a5}
+  .ro .v.okv{color:#34d399}
+
+  table.enc{width:100%;border-collapse:collapse;margin-top:10px;font-size:.83rem}
+  table.enc th,table.enc td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+  table.enc th{color:var(--muted);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.03em}
+  table.enc td.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-all}
+  table.enc .multi{color:var(--accent)}
+  table.enc .ascii{color:#34d399}
+  table.enc .bad{color:#fca5a5}
+  .empty{color:var(--muted);font-size:.85rem;margin-top:10px}
+
+  .warn{display:none;background:rgba(248,113,113,.12);border:1px solid #f87171;color:#fecaca;
+        padding:10px 12px;border-radius:10px;font-size:.85rem;margin-top:12px;white-space:pre-wrap}
+  .warn.show{display:block}
+
+  .parts{display:grid;grid-template-columns:1fr;gap:10px;margin:12px 0}
+  .part{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .part .ph{font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px}
+  .part .pv{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82rem;
+            word-break:break-all;white-space:pre-wrap;margin:0}
+  .seg-h{color:#7dd3fc}.seg-p{color:#a78bfa}.seg-s{color:#fbbf24}
+
+  .live{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin:12px 0;font-size:.85rem}
+  .live .l{margin:6px 0;word-break:break-all}
+  .live .k{color:var(--muted);display:inline-block;min-width:200px}
+
+  .cmp{width:100%;border-collapse:collapse;margin:12px 0;font-size:.83rem}
+  .cmp th,.cmp td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+  .cmp th{color:var(--muted);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.03em}
+  .cmp td:first-child{color:var(--muted)}
+  .cmp code{font-size:.8rem}
+
+  .fail{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0}
+  .fail h3{margin:0 0 8px;font-size:.95rem}
+  .fail .line{margin:6px 0;font-size:.85rem}
+  .fail .k{color:var(--muted);display:inline-block;min-width:160px}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#0b1220;
+       border:1px solid var(--line);border-radius:6px;padding:1px 5px;font-size:.82rem;word-break:break-all}
+  .bad{color:#fca5a5}
+  .good{color:#34d399}
+  .why{color:var(--muted);font-size:.84rem;margin:6px 0 0}
+  .verdict{background:rgba(52,211,153,.10);border:1px solid #34d399;border-radius:10px;
+           padding:11px 13px;margin:12px 0;font-size:.86rem}
+  .verdict b{color:#6ee7b7}
+
+  .note{color:var(--muted);font-size:.78rem;margin-top:18px}
+  .ft{margin-top:28px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:.85rem}
+  .ft nav a{color:var(--accent);text-decoration:none;margin:0 2px}
+  .ft nav a:hover{text-decoration:underline}
+  .ft .copy{margin:8px 0 0}
+
+  /* internal-link additions */
+  .backhome{margin:0 0 14px;font-size:.82rem}
+  .backhome a{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--line)}
+  .backhome a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .more{margin-top:26px;border-top:1px solid var(--line);padding-top:16px}
+  .more h2{font-size:1.05rem;margin:0 0 4px}
+  .more-sub{color:var(--muted);font-size:.85rem;margin:0 0 12px}
+  .more-list{list-style:none;padding:0;margin:0}
+  .more-list li{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+                padding:10px 12px;margin:0 0 8px;font-size:.86rem;line-height:1.6}
+  .more-list a{color:var(--accent);text-decoration:none;font-weight:600}
+  .more-list a:hover{text-decoration:underline}
+  .more-info{margin:10px 0 0;font-size:.85rem}
+  .more-info a{color:var(--accent);text-decoration:none}
+  .more-info a:hover{text-decoration:underline}
+  /* related-tools horizontal interlink */
+  .reltools{margin-top:26px;border-top:1px solid var(--line);padding-top:16px}
+  .reltools h2{font-size:1.05rem;margin:0 0 4px}
+  .reltools .rt-sub{color:var(--muted);font-size:.85rem;margin:0 0 12px}
+  .reltools .rt-list{display:flex;flex-wrap:wrap;gap:8px}
+  .reltools .rt-list a{flex:1 1 200px;background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;padding:10px 12px;color:var(--accent);text-decoration:none;
+    font-size:.86rem;font-weight:600;display:flex;align-items:center}
+  .reltools .rt-list a:hover{border-color:var(--accent);text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>JWT Decode &amp; Encode</h1>
+  <p class="sub">Decode a JWT as you type — header, payload, signature — and see the encoding underneath. Runs entirely in your browser.</p>
+  <p class="backhome"><a href="/">← Back to the URL Encoder</a></p>
+
+  <p class="alias">Also searched as <b>jwt decode</b> · <b>jwt token decode</b> · <b>decode jwt</b> · <b>jwt parser</b> · <b>jwt decoder online</b> · <b>json web token decoder</b> · <b>decode bearer token</b>. It is one tool: a JWT in, its parts out — and back again.</p>
+
+  <div class="notice">
+    Everything runs in your browser. Nothing you paste is uploaded to any server — decode your token locally, not on someone else's machine.
+  </div>
+
+  <!-- ============ BLOCK 1 ============ -->
+  <h2 class="blk"><span class="n">1</span>Decode or encode</h2>
+  <p class="blksub">Pick a direction, paste or edit, and the result updates live.</p>
+
+  <div class="controls">
+    <div class="ctrl">
+      <div class="t">Direction</div>
+      <div class="seg" data-k="mode">
+        <button data-v="decode" class="active">Decode</button>
+        <button data-v="encode">Encode</button>
+      </div>
+    </div>
+    <div class="ctrl" id="algCtrl" style="display:none">
+      <div class="t">Signing algorithm</div>
+      <div class="seg" data-k="alg">
+        <button data-v="HS256" class="active">HS256</button>
+        <button data-v="HS384">HS384</button>
+        <button data-v="HS512">HS512</button>
+        <button data-v="none">none</button>
+      </div>
+    </div>
+    <div class="ctrl" id="secCtrl" style="display:none">
+      <div class="t">Signing secret (HMAC)</div>
+      <input type="password" id="secret" placeholder="your-256-bit-secret">
+    </div>
+  </div>
+  <div class="hint" id="dirHint">Paste a JWT below — it decodes as you type. A leading <code>Bearer </code> is ignored.</div>
+
+  <label for="in" id="inLabel">JWT to decode</label>
+  <textarea id="in" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></textarea>
+
+  <div id="encWrap" style="display:none">
+    <label for="encHeader">Header (JSON) — <code>alg</code> is set by the selector above</label>
+    <textarea id="encHeader" style="min-height:90px"></textarea>
+    <label for="encPayload">Payload (JSON)</label>
+    <textarea id="encPayload" style="min-height:140px"></textarea>
+  </div>
+
+  <label for="out" id="outLabel">Decoded parts</label>
+  <div class="parts" id="partsWrap">
+    <div class="part"><div class="ph">Header</div><p class="pv seg-h" id="pHeader">—</p></div>
+    <div class="part"><div class="ph">Payload</div><p class="pv seg-p" id="pPayload">—</p></div>
+    <div class="part"><div class="ph">Signature (base64url, not verified here)</div><p class="pv seg-s" id="pSig">—</p></div>
+  </div>
+  <textarea id="out" readonly placeholder="The signed token appears here." style="display:none"></textarea>
+  <div class="row">
+    <button class="btn copy" id="copyBtn">Copy</button>
+  </div>
+
+  <div class="warn" id="warn"></div>
+
+  <!-- ============ BLOCK 2 ============ -->
+  <h2 class="blk"><span class="n">2</span>Live: the encoding underneath the token</h2>
+  <p class="blksub">A JWT is three base64url segments joined by dots. The readout below shows the segments, their real byte sizes, and — the part that matters — <strong>which characters standard Base64 would have written that base64url had to avoid</strong>.</p>
+
+  <div class="readout">
+    <div class="ro"><div class="k">Mode</div><div class="v acc" id="roMode">Decoding</div></div>
+    <div class="ro"><div class="k">Segments</div><div class="v" id="roSegs">—</div></div>
+    <div class="ro"><div class="k">alg</div><div class="v" id="roAlg">—</div></div>
+    <div class="ro"><div class="k">Header bytes</div><div class="v" id="roHB">0</div></div>
+    <div class="ro"><div class="k">Payload bytes</div><div class="v" id="roPB">0</div></div>
+    <div class="ro"><div class="k">Signature bytes</div><div class="v" id="roSB">0</div></div>
+    <div class="ro"><div class="k">Padding <code>=</code> used</div><div class="v okv" id="roPad">none</div></div>
+    <div class="ro"><div class="k">Chars that would break in a URL</div><div class="v" id="roBreak">0</div></div>
+    <div class="ro"><div class="k">Token length</div><div class="v" id="roLen">0</div></div>
+    <div class="ro"><div class="k">Expiry</div><div class="v" id="roExp">—</div></div>
+  </div>
+
+  <table class="enc">
+    <thead>
+      <tr><th>Segment</th><th>base64url (as sent)</th><th>Bytes</th><th>Standard Base64 form</th><th>What standard Base64 adds</th></tr>
+    </thead>
+    <tbody id="segBody"></tbody>
+  </table>
+  <div class="empty" id="segEmpty">Paste a JWT above to break it into its three segments.</div>
+
+  <!-- ============ BLOCK 3 ============ -->
+  <h2 class="blk"><span class="n">3</span>Why every JWT segment must be base64url</h2>
+  <p class="blksub">This is the part almost every JWT decoder skips. Standard Base64 uses <code>+</code>, <code>/</code> and <code>=</code> — and all three are <em>meaningful characters in a URL, a query string and a cookie</em>. A JWT is built to travel in exactly those places, so it cannot use standard Base64. It uses the URL-safe variant instead. Here is the same token in both alphabets, live.</p>
+
+  <div class="live">
+    <div class="l"><span class="k">Your token, base64url (as sent)</span> <code id="lvUrl">—</code></div>
+    <div class="l"><span class="k">Same token in standard Base64</span> <code id="lvStd">—</code></div>
+    <div class="l"><span class="k">…and percent-encoded for a URL</span> <code id="lvPct">—</code></div>
+    <div class="l"><span class="k">What that shows</span> <span id="lvWhy">—</span></div>
+  </div>
+
+  <table class="cmp">
+    <thead>
+      <tr><th></th><th>base64url (what JWT uses)</th><th>Standard Base64</th><th>Percent-encoding (URL)</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Alphabet</td>
+        <td><code>A–Z a–z 0–9 - _</code></td>
+        <td><code>A–Z a–z 0–9 + /</code></td>
+        <td>not an alphabet — an escape layer on top of text</td>
+      </tr>
+      <tr>
+        <td>Padding</td>
+        <td>usually omitted</td>
+        <td><code>=</code> to a multiple of 4</td>
+        <td>n/a</td>
+      </tr>
+      <tr>
+        <td>Safe in a query string?</td>
+        <td><span class="good">yes, as-is</span></td>
+        <td><span class="bad">no</span> — <code>+</code> reads as a space, <code>=</code> collides with <code>key=value</code></td>
+        <td>yes — that is its job</td>
+      </tr>
+      <tr>
+        <td>Safe in a path segment?</td>
+        <td><span class="good">yes</span></td>
+        <td><span class="bad">no</span> — <code>/</code> splits the path</td>
+        <td>yes</td>
+      </tr>
+      <tr>
+        <td>Safe in a cookie?</td>
+        <td><span class="good">yes</span></td>
+        <td>usually — but <code>=</code> and <code>/</code> are fragile</td>
+        <td>unnecessary</td>
+      </tr>
+      <tr>
+        <td>Defined by</td>
+        <td>RFC 4648 §5 (base64url)</td>
+        <td>RFC 4648 §4</td>
+        <td>RFC 3986</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="fail">
+    <h3><code>+</code> in a query string is read as a space</h3>
+    <div class="line"><span class="k">A token with <code>+</code></span> <code>eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.abc+dEf</code></div>
+    <div class="line"><span class="k">Server receives</span> <code>abc dEf</code> <span class="bad">— the <code>+</code> became a space</span></div>
+    <div class="line"><span class="k">Result</span> the signature bytes differ → <span class="bad">signature verification fails</span>, on a token nobody tampered with</div>
+    <div class="line"><span class="k">Fix</span> use base64url (<code>+</code> → <code>-</code>) — which is what JWT does — or <code>%2B</code> if you are stuck with standard Base64</div>
+  </div>
+
+  <div class="fail">
+    <h3><code>/</code> splits a path segment</h3>
+    <div class="line"><span class="k">In a path</span> <code>/api/verify/eyJ0eXAiOiJKV1QifQ.Pj4/Pyc</code></div>
+    <div class="line"><span class="k">Router sees</span> two segments — <code>Pj4</code> and <code>Pyc</code> — <span class="bad">not one token</span></div>
+    <div class="line"><span class="k">Result</span> 404, or the token never arrives intact</div>
+    <div class="line"><span class="k">Fix</span> base64url (<code>/</code> → <code>_</code>), or <code>%2F</code></div>
+  </div>
+
+  <div class="fail">
+    <h3>Trailing <code>=</code> padding gets trimmed or misread</h3>
+    <div class="line"><span class="k">Standard Base64</span> pads to a multiple of 4 with <code>=</code></div>
+    <div class="line"><span class="k">In a query string</span> the <code>=</code> collides with the <code>key=value</code> separator; some stacks strip trailing <code>=</code> outright</div>
+    <div class="line"><span class="k">Fix</span> drop the padding — base64url omits it, and decoders re-add it</div>
+  </div>
+
+  <div class="fail">
+    <h3>Why the fix is an alphabet change, not an escape</h3>
+    <div class="line"><span class="k">JWT could have</span> used standard Base64 and percent-encoded every token: <code>%2B</code>, <code>%2F</code>, <code>%3D</code></div>
+    <div class="line"><span class="k">Why it does not</span> the token would grow by ~5–10% at every hop, and every intermediary would have to agree to encode and decode it — one that forgets corrupts the signature</div>
+    <div class="line"><span class="k">So instead</span> RFC 7515 swaps the three offending characters for three safe ones: <code>+</code>→<code>-</code>, <code>/</code>→<code>_</code>, and drop <code>=</code>. Same bytes, no escaping, safe in every URL-shaped context</div>
+  </div>
+
+  <h3 style="font-size:.95rem;margin:22px 0 4px">So does a JWT need percent-encoding in a query string or a cookie?</h3>
+  <p class="why">This is where people over-correct and break their own token. The short answer, for a token that is correctly base64url:</p>
+
+  <div class="verdict">
+    <p style="margin:0 0 8px"><b>Query string</b> — no. <code>?token=eyJhbGciOiJIUzI1NiJ9…</code> is already valid: every character in base64url (<code>A–Z a–z 0–9 - _</code>) and the <code>.</code> separators are unreserved in RFC 3986. Nothing needs escaping.</p>
+    <p style="margin:0 0 8px"><b>Cookie</b> — no. The cookie-octet set excludes whitespace, <code>"</code>, <code>,</code>, <code>;</code> and <code>\</code>. base64url contains none of those, so <code>Set-Cookie: token=eyJ…</code> is fine as-is.</p>
+    <p style="margin:0"><b>Authorization header</b> — no. Headers are not URLs. <code>Authorization: Bearer eyJ…</code> is sent literally; nothing is percent-decoded on the way in.</p>
+  </div>
+
+  <p class="why"><strong>You do need percent-encoding when the JWT is not alone in the value.</strong> The four real cases:</p>
+  <p class="why">
+    · <strong>You are passing <code>Bearer &lt;token&gt;</code> as a query parameter</strong> — the space is not safe. <code>?auth=Bearer%20eyJ…</code> (or <code>+</code>, but prefer <code>%20</code>). The token itself is still untouched.<br>
+    · <strong>The token sits inside a nested URL</strong> — a <code>redirect_uri</code>, a <code>next=</code> parameter, a link in a fragment. The inner URL must be percent-encoded as a whole; the JWT inside it is then carried along untouched.<br>
+    · <strong>You are handed standard Base64, not base64url</strong> — legacy systems, a JWS library configured with the standard alphabet, a signature you re-encoded yourself. Then <code>+</code> → <code>%2B</code>, <code>/</code> → <code>%2F</code>, <code>=</code> → <code>%3D</code> are <em>mandatory</em>, not optional.<br>
+    · <strong>You are being defensive</strong> — <code>encodeURIComponent(token)</code> is harmless: it leaves every base64url character and the dots unchanged, so a valid JWT passes through byte-for-byte. It costs nothing but length.
+  </p>
+
+  <div class="fail">
+    <h3>Double-encoding: the trap that breaks a working token</h3>
+    <div class="line"><span class="k">You percent-encode</span> the token, then it gets encoded again somewhere downstream</div>
+    <div class="line"><span class="k">Result</span> <code>%2B</code> <span class="bad">→</span> <code>%252B</code> — the receiver decodes once and gets the literal text <code>%2B</code>, not a <code>+</code></div>
+    <div class="line"><span class="k">Worse</span> if you percent-encoded a base64url token and the receiver base64url-decodes it, it decodes the <code>%XX</code> text as if it were data — the signature no longer matches</div>
+    <div class="line"><span class="k">Fix</span> encode exactly once, at exactly one layer, and only if that layer needs it. For a base64url JWT in a query string or cookie, that layer is <span class="good">none</span></div>
+  </div>
+
+  <div class="fail">
+    <h3>Truncating the token when you copy it</h3>
+    <div class="line"><span class="k">Symptom</span> the header decodes but the payload throws, or the signature is short</div>
+    <div class="line"><span class="k">Cause</span> a base64url segment with its padding stripped has a length that is <span class="bad">not</span> a multiple of 4 — some tools, spreadsheets and log viewers silently trim the tail</div>
+    <div class="line"><span class="k">Fix</span> copy the whole token, and check the segment count: a JWT is always <code>header.payload.signature</code></div>
+  </div>
+
+  <p class="note">
+    No login · Unlimited use · No watermark · Runs only in your browser. Decoding and encoding happen locally; the secret you type is never sent anywhere, and no signature is verified unless you do it yourself with the bytes shown above.
+  </p>
+
+    <section class="reltools">
+    <h2>Related tools</h2>
+    <p class="rt-sub">Every tool on this site runs entirely in your browser. Pick the encoding problem you have:</p>
+    <div class="rt-list">
+      <a href="/">URL Encoder / Decoder</a>
+      <a href="/utm-builder">UTM Builder</a>
+      <a href="/base64">Base64 Encoder / Decoder</a>
+      <a href="/html-entities">HTML Entity Encoder / Decoder</a>
+      <a href="/javascript">URL Encoding in JavaScript</a>
+      <a href="/percent-encoding">What Is Percent-Encoding?</a>
+    </div>
+  </section>
+  <footer class="ft">
+    <nav>
+      <a href="/">URL Encoder</a> ·
+      <a href="/utm-builder">UTM Builder</a> ·
+      <a href="/base64">Base64</a> ·
+      <a href="/html-entities">HTML Entities</a> ·
+      <a href="/jwt">JWT</a> ·
+      <a href="/javascript">JavaScript Encoding</a> ·
+      <a href="/percent-encoding">Percent Encoding</a> ·
+      <a href="/about">About</a> ·
+      <a href="/privacy">Privacy</a> ·
+      <a href="/contact">Contact</a>
+    </nav>
+    <p class="copy">© 2026 PercentURL · All processing runs in your browser.</p>
+  </footer>
+</div>
+
+<script>
+/* ---------- base64 (standard alphabet, then translate) ---------- */
+var B64STD = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+function bytesToStd(bytes, pad){
+  var out = '';
+  for (var i = 0; i < bytes.length; i += 3){
+    var b0 = bytes[i], b1 = bytes[i+1], b2 = bytes[i+2];
+    var h1 = i+1 < bytes.length, h2 = i+2 < bytes.length;
+    out += B64STD[b0 >> 2];
+    out += B64STD[((b0 & 3) << 4) | ((h1 ? b1 : 0) >> 4)];
+    out += h1 ? B64STD[((b1 & 15) << 2) | ((h2 ? b2 : 0) >> 6)] : '=';
+    out += h2 ? B64STD[b2 & 63] : '=';
+  }
+  if (!pad) out = out.replace(/=+$/, '');
+  return out;
+}
+function b64urlFromBytes(bytes){ return bytesToStd(bytes, false).replace(/\+/g, '-').replace(/\//g, '_'); }
+function stdFromBytes(bytes){ return bytesToStd(bytes, true); }
+
+function b64ToBytes(str){
+  var s = String(str).replace(/[\s\r\n]+/g, '');
+  if (!s) return [];
+  s = s.replace(/-/g, '+').replace(/_/g, '/');
+  var rem = s.length % 4;
+  if (rem === 1) throw { msg: 'This segment is not valid base64url: a length of 4n+1 is impossible. A character was probably dropped when the token was copied.' };
+  if (rem) s += '='.repeat(4 - rem);
+  if (!/^[A-Za-z0-9+/]*={0,2}$/.test(s))
+    throw { msg: 'This segment contains characters that are not valid base64url. A JWT segment may only use A-Z a-z 0-9 - _ (and optional = padding).' };
+  var out = [];
+  for (var i = 0; i < s.length; i += 4){
+    var n = (B64STD.indexOf(s[i]) << 18) | (B64STD.indexOf(s[i+1]) << 12) |
+            ((s[i+2] === '=' ? 0 : B64STD.indexOf(s[i+2])) << 6) |
+            (s[i+3] === '=' ? 0 : B64STD.indexOf(s[i+3]));
+    out.push((n >> 16) & 255);
+    if (s[i+2] !== '=') out.push((n >> 8) & 255);
+    if (s[i+3] !== '=') out.push(n & 255);
+  }
+  return out;
+}
+function textToBytes(s){ return Array.from(new TextEncoder().encode(s)); }
+function bytesToText(b){
+  try { return new TextDecoder('utf-8', { fatal: true }).decode(new Uint8Array(b)); }
+  catch(e){ throw { msg: 'These bytes are not valid UTF-8, so they are not JSON text. This usually means the token was truncated, or a segment is not base64url.' }; }
+}
+
+/* ---------- JWT ---------- */
+function decodeJwt(raw){
+  var t = String(raw).trim().replace(/^Bearer\s+/i, '');
+  if (!t) throw { msg: 'Paste a JWT to decode.' };
+  var parts = t.split('.');
+  if (parts.length < 2 || parts.length > 3)
+    throw { msg: 'A JWT is three parts separated by dots — header.payload.signature. This one has ' + parts.length + ' part' + (parts.length === 1 ? '' : 's') + '. If your token came from a log or a spreadsheet it may have been split or trimmed.' };
+  var hb = b64ToBytes(parts[0]);
+  var pb = b64ToBytes(parts[1]);
+  var header, payload;
+  try { header = JSON.parse(bytesToText(hb)); }
+  catch(e){ if (e && e.msg) throw e; throw { msg: 'The first segment (header) did not decode to JSON. This is probably not a JWT, or the token was truncated when copied.' }; }
+  try { payload = JSON.parse(bytesToText(pb)); }
+  catch(e){ if (e && e.msg) throw e; throw { msg: 'The second segment (payload) did not decode to JSON. The token may be truncated.' }; }
+  var sb = [];
+  if (parts[2]) { try { sb = b64ToBytes(parts[2]); } catch(e){ sb = []; } }
+  return { header: header, payload: payload, sig: parts[2] || '', parts: parts, hb: hb, pb: pb, sb: sb };
+}
+
+async function hmacSign(secret, alg, input){
+  var enc = new TextEncoder();
+  var hash = 'SHA-' + alg.slice(2);
+  var key = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: hash }, false, ['sign']);
+  var sig = await crypto.subtle.sign('HMAC', key, enc.encode(input));
+  return b64urlFromBytes(new Uint8Array(sig));
+}
+
+async function encodeJwt(headerText, payloadText, alg, secret){
+  var header, payload;
+  try { header = JSON.parse(headerText); }
+  catch(e){ throw { msg: 'The header is not valid JSON: ' + e.message }; }
+  try { payload = JSON.parse(payloadText); }
+  catch(e){ throw { msg: 'The payload is not valid JSON: ' + e.message }; }
+  header.alg = alg;
+  if (!header.typ) header.typ = 'JWT';
+  var h = b64urlFromBytes(textToBytes(JSON.stringify(header)));
+  var p = b64urlFromBytes(textToBytes(JSON.stringify(payload)));
+  var input = h + '.' + p;
+  if (alg === 'none') return { token: input + '.', header: header, payload: payload, hb: textToBytes(JSON.stringify(header)), pb: textToBytes(JSON.stringify(payload)), sb: [], sig: '', parts: [h, p, ''], signed: false };
+  if (!secret) throw { msg: 'Enter a signing secret to sign with ' + alg + '. Or choose none to build an unsigned token.' };
+  var sig = await hmacSign(secret, alg, input);
+  return { token: input + '.' + sig, header: header, payload: payload, hb: textToBytes(JSON.stringify(header)), pb: textToBytes(JSON.stringify(payload)), sb: b64ToBytes(sig), sig: sig, parts: [h, p, sig], signed: true };
+}
+
+/* ---------- helpers ---------- */
+function esc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+  });
+}
+function pctEncode(str){
+  var bytes = textToBytes(str), out = '';
+  for (var i = 0; i < bytes.length; i++){
+    var b = bytes[i], c = String.fromCharCode(b);
+    out += /[A-Za-z0-9\-_.~]/.test(c) ? c : '%' + b.toString(16).toUpperCase().padStart(2,'0');
+  }
+  return out;
+}
+function countBreaking(std){
+  var p = (std.match(/\+/g) || []).length;
+  var s = (std.match(/\//g) || []).length;
+  var e = (std.match(/=/g) || []).length;
+  return { plus: p, slash: s, eq: e, total: p + s + e };
+}
+function fmtDate(sec){
+  try { return new Date(sec * 1000).toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC'); }
+  catch(e){ return String(sec); }
+}
+function expiryOf(payload){
+  var now = Math.floor(Date.now() / 1000), r = { state: 'none', text: 'no exp claim' };
+  if (typeof payload.nbf === 'number' && now < payload.nbf) { r.state = 'future'; r.text = 'not yet valid — nbf ' + fmtDate(payload.nbf); }
+  else if (typeof payload.exp === 'number'){
+    if (now >= payload.exp) { r.state = 'expired'; r.text = 'expired ' + fmtDate(payload.exp); }
+    else { r.state = 'valid'; r.text = 'valid until ' + fmtDate(payload.exp); }
+  }
+  if (typeof payload.iat === 'number') r.iat = fmtDate(payload.iat);
+  return r;
+}
+
+/* ---------- state ---------- */
+var state = { mode: 'decode', alg: 'HS256' };
+var seq = 0;
+
+var inEl = document.getElementById('in');
+var outEl = document.getElementById('out');
+var warnEl = document.getElementById('warn');
+var encHeaderEl = document.getElementById('encHeader');
+var encPayloadEl = document.getElementById('encPayload');
+var secretEl = document.getElementById('secret');
+var segBody = document.getElementById('segBody');
+var segEmpty = document.getElementById('segEmpty');
+
+var SAMPLE_HEADER = '{\n  "alg": "HS256",\n  "typ": "JWT"\n}';
+var SAMPLE_PAYLOAD = '{\n  "sub": "1234567890",\n  "name": "John Doe",\n  "iat": 1516239022\n}';
+
+function showParts(header, payload, sig, token){
+  document.getElementById('pHeader').textContent = header ? JSON.stringify(header, null, 2) : '—';
+  document.getElementById('pPayload').textContent = payload ? JSON.stringify(payload, null, 2) : '—';
+  document.getElementById('pSig').textContent = sig || (token ? '(none — unsigned token)' : '—');
+}
+
+async function run(){
+  var mine = ++seq;
+  warnEl.classList.remove('show');
+  var decoded = null, encoded = null, err = null;
+
+  if (state.mode === 'decode'){
+    try { decoded = decodeJwt(inEl.value); }
+    catch(e){ err = (e && e.msg) ? e.msg : String(e); }
+  } else {
+    try { encoded = await encodeJwt(encHeaderEl.value, encPayloadEl.value, state.alg, secretEl.value); }
+    catch(e){ err = (e && e.msg) ? e.msg : String(e); }
+  }
+  if (mine !== seq) return;   /* a newer keystroke already superseded this run */
+
+  if (err){ warnEl.textContent = '⚠️ ' + err; warnEl.classList.add('show'); }
+
+  var header = decoded ? decoded.header : (encoded ? encoded.header : null);
+  var payload = decoded ? decoded.payload : (encoded ? encoded.payload : null);
+  var hb = decoded ? decoded.hb : (encoded ? encoded.hb : []);
+  var pb = decoded ? decoded.pb : (encoded ? encoded.pb : []);
+  var sb = decoded ? decoded.sb : (encoded ? encoded.sb : []);
+  var sig = decoded ? decoded.sig : (encoded ? encoded.sig : '');
+  var token = state.mode === 'decode'
+    ? String(inEl.value).trim().replace(/^Bearer\s+/i, '')
+    : (encoded ? encoded.token : '');
+  var segs = (decoded && decoded.parts) ? decoded.parts : (encoded ? encoded.parts : []);
+
+  showParts(header, payload, sig, token);
+  outEl.value = state.mode === 'decode'
+    ? (header ? JSON.stringify({ header: header, payload: payload }, null, 2) : '')
+    : (encoded ? encoded.token : '');
+
+  /* ---- block 2 readout ---- */
+  document.getElementById('roMode').textContent = state.mode === 'decode' ? 'Decoding' : 'Encoding';
+  document.getElementById('roSegs').textContent = segs.length ? segs.length + (segs.length === 3 ? ' (h.p.s)' : ' (h.p)') : '—';
+  document.getElementById('roAlg').textContent = (header && header.alg) ? String(header.alg) : '—';
+  document.getElementById('roHB').textContent = hb.length;
+  document.getElementById('roPB').textContent = pb.length;
+  document.getElementById('roSB').textContent = sb.length;
+  document.getElementById('roPad').textContent = token.indexOf('=') >= 0 ? 'yes — see below' : 'none (base64url)';
+  document.getElementById('roLen').textContent = token.length;
+
+  var stdTotal = 0;
+  for (var i = 0; i < segs.length; i++){
+    if (!segs[i]) continue;
+    try { stdTotal += countBreaking(stdFromBytes(b64ToBytes(segs[i]))).total; } catch(e){}
+  }
+  var rb = document.getElementById('roBreak');
+  rb.textContent = stdTotal === 0
+    ? '0 in this token'
+    : stdTotal + ' (+ / or =)';
+  rb.className = 'v ' + (stdTotal === 0 ? 'okv' : 'warnv');
+
+  var ex = payload ? expiryOf(payload) : { state: 'none', text: '—' };
+  var rex = document.getElementById('roExp');
+  rex.textContent = ex.text;
+  rex.className = 'v ' + (ex.state === 'expired' ? 'warnv' : (ex.state === 'valid' ? 'okv' : ''));
+
+  renderSegs(segs);
+  renderLive(token, segs, stdTotal);
+}
+
+function renderSegs(segs){
+  segBody.innerHTML = '';
+  if (!segs.length || !segs[0]){
+    segEmpty.style.display = 'block';
+    return;
+  }
+  segEmpty.style.display = 'none';
+  var names = ['Header', 'Payload', 'Signature'];
+  for (var i = 0; i < segs.length; i++){
+    var seg = segs[i];
+    var tr = document.createElement('tr');
+    if (!seg){
+      tr.innerHTML = '<td>' + names[i] + '</td><td class="mono">(none)</td><td class="mono">0</td><td class="mono">—</td><td>unsigned</td>';
+      segBody.appendChild(tr);
+      continue;
+    }
+    var bytes = [], std = '', brk = { plus: 0, slash: 0, eq: 0, total: 0 }, bad = false;
+    try { bytes = b64ToBytes(seg); std = stdFromBytes(bytes); brk = countBreaking(std); } catch(e){ bad = true; }
+    var short = seg.length > 34 ? seg.slice(0, 20) + '…' + seg.slice(-10) : seg;
+    var shortStd = std.length > 34 ? std.slice(0, 20) + '…' + std.slice(-10) : std;
+    var adds;
+    if (bad) adds = '<span class="bad">not valid base64url — the token may be truncated</span>';
+    else if (brk.total === 0) adds = '<span class="ascii">nothing — identical to base64url here</span>';
+    else adds = '<span class="bad">' + (brk.plus ? brk.plus + '× <code>+</code> ' : '') + (brk.slash ? brk.slash + '× <code>/</code> ' : '') + (brk.eq ? brk.eq + '× <code>=</code>' : '') + '</span>';
+    tr.innerHTML =
+      '<td>' + names[i] + '</td>' +
+      '<td class="mono">' + esc(short) + '</td>' +
+      '<td class="mono">' + (bad ? '—' : bytes.length) + '</td>' +
+      '<td class="mono">' + esc(shortStd || '—') + '</td>' +
+      '<td>' + adds + '</td>';
+    segBody.appendChild(tr);
+  }
+}
+
+function renderLive(token, segs, stdTotal){
+  var lvUrl = document.getElementById('lvUrl');
+  var lvStd = document.getElementById('lvStd');
+  var lvPct = document.getElementById('lvPct');
+  var lvWhy = document.getElementById('lvWhy');
+
+  if (!token){
+    lvUrl.textContent = '—'; lvStd.textContent = '—'; lvPct.textContent = '—';
+    lvWhy.textContent = 'Paste a JWT above to compare the two alphabets.';
+    return;
+  }
+  var stdParts = [];
+  for (var i = 0; i < segs.length; i++){
+    if (!segs[i]){ stdParts.push(''); continue; }
+    try { stdParts.push(stdFromBytes(b64ToBytes(segs[i]))); } catch(e){ stdParts.push('?'); }
+  }
+  var stdToken = stdParts.join('.');
+  lvUrl.textContent = token;
+  lvStd.textContent = stdToken;
+  lvPct.textContent = pctEncode(stdToken);
+
+  lvWhy.textContent = stdTotal === 0
+    ? 'This particular token happens to contain no + or / — so its standard-Base64 form looks identical to its base64url form. That is luck, not a guarantee: the next token will contain them. The rule has to hold for every token, which is why RFC 7515 fixes the alphabet instead of hoping.'
+    : 'Standard Base64 would have written ' + stdTotal + ' character(s) here as +, / or = — each of which is meaningful in a URL. That is exactly why the token is sent as base64url instead. The bottom line is that same token percent-encoded, which is what you would have to do to every hop if JWT had kept standard Base64.';
+}
+
+/* ---------- wiring ---------- */
+document.querySelectorAll('.seg').forEach(function(seg){
+  var k = seg.dataset.k;
+  seg.querySelectorAll('button').forEach(function(b){
+    b.addEventListener('click', function(){
+      seg.querySelectorAll('button').forEach(function(x){ x.classList.remove('active'); });
+      b.classList.add('active');
+      state[k] = b.dataset.v;
+      if (k === 'mode'){
+        var dec = state.mode === 'decode';
+        document.getElementById('algCtrl').style.display = dec ? 'none' : 'block';
+        document.getElementById('secCtrl').style.display = dec ? 'none' : 'block';
+        document.getElementById('encWrap').style.display = dec ? 'none' : 'block';
+        document.getElementById('inLabel').style.display = dec ? 'block' : 'none';
+        inEl.style.display = dec ? 'block' : 'none';
+        inEl.readOnly = false;
+        document.getElementById('partsWrap').style.display = dec ? 'grid' : 'none';
+        outEl.style.display = dec ? 'none' : 'block';
+        document.getElementById('outLabel').textContent = dec ? 'Decoded parts' : 'Signed token';
+        document.getElementById('dirHint').textContent = dec
+          ? 'Paste a JWT below — it decodes as you type. A leading Bearer is ignored.'
+          : 'Edit the header and payload JSON, choose an algorithm and a secret — the signed token is built as you type, locally, with the Web Crypto API. The sample payload signed with the secret your-256-bit-secret reproduces the token in the Decode tab exactly.';
+        if (!dec && !encHeaderEl.value){ encHeaderEl.value = SAMPLE_HEADER; encPayloadEl.value = SAMPLE_PAYLOAD; }
+      }
+      run();
+    });
+  });
+});
+
+inEl.addEventListener('input', run);
+encHeaderEl.addEventListener('input', run);
+encPayloadEl.addEventListener('input', run);
+secretEl.addEventListener('input', run);
+
+document.getElementById('copyBtn').addEventListener('click', async function(){
+  var b = document.getElementById('copyBtn');
+  var text = state.mode === 'decode' ? outEl.value : outEl.value;
+  if (!text){ b.textContent = 'Nothing to copy'; setTimeout(function(){ b.textContent = 'Copy'; }, 1200); return; }
+  try { await navigator.clipboard.writeText(text); }
+  catch(e){ outEl.removeAttribute('readonly'); outEl.select(); document.execCommand('copy'); outEl.setAttribute('readonly',''); }
+  b.textContent = 'Copied';
+  setTimeout(function(){ b.textContent = 'Copy'; }, 1200);
+});
+
+/* seed with the canonical jwt.io sample token (HS256, secret "your-256-bit-secret")
+   so block 3 has something real to show on load, and the Encode tab can reproduce it */
+inEl.value = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+run();
+</script>
+</body>
+</html>
