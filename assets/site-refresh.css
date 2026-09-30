@@ -180,3 +180,10 @@ table td, table th { border-color: #e1e7f0 !important; }
   .action-row { flex-direction: column; }
   .action-row .btn { width: 100%; }
 }
+
+/* Embedded PercentURL explainers */
+.video-feature { margin: 2rem 0; padding: 1.2rem; border: 1px solid rgba(148,163,184,.28); border-radius: 16px; background: rgba(15,23,42,.72); }
+.video-feature h2 { margin-top: 0; }
+.video-feature p { color: #a8b5c7; }
+.video-feature .video-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 10px; background: #020617; }
+.video-feature iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
