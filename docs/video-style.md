@@ -27,6 +27,6 @@ Use this system for every article explainer and its matching article diagrams.
 
 ## Series inventory
 
-Published: Percent-encoding fundamentals; URL decoding and the plus sign; JavaScript `encodeURI` vs `encodeURIComponent`; UTM campaign URLs; Base64 vs Base64URL in URLs; JWT structure and signatures.
+Published: Percent-encoding fundamentals; URL decoding and the plus sign; JavaScript `encodeURI` vs `encodeURIComponent`; UTM campaign URLs; Base64 vs Base64URL in URLs; JWT structure and signatures; HTML entities vs URL encoding.
 
-Next: HTML entities vs URL percent-encoding (guide: `html-entities/`).
+Next: choose the next uncovered guide from the site inventory.
