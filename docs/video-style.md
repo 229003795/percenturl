@@ -27,6 +27,6 @@ Use this system for every article explainer and its matching article diagrams.
 
 ## Series inventory
 
-Published: Percent-encoding fundamentals; URL decoding and the plus sign.
+Published: Percent-encoding fundamentals; URL decoding and the plus sign; JavaScript `encodeURI` vs `encodeURIComponent`; UTM campaign URLs.
 
-Next: JavaScript `encodeURI` vs `encodeURIComponent` (production starter at `javascript/`).
+Next: Base64 vs Base64URL in URLs (guide: `base64/`).
