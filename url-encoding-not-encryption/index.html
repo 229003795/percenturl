@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="URL encoding changes how characters are written; it does not protect secrets. Learn safer ways to handle passwords, tokens, and exposed credentials.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://percenturl.com/url-encoding-not-encryption/">
+<title>URL Encoding Is Not Encryption: Keep Passwords Out of Links</title>
+<style>
+:root{color-scheme:light;--bg:#f3f6fc;--panel:#fff;--ink:#10213b;--muted:#48617f;--line:#d7e2f2;--accent:#245cf0;--green:#07866f;--amber:#b45309}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:900px;margin:auto;padding:24px 20px 48px}article{min-width:0}a{color:var(--accent);text-underline-offset:3px}h1{font-size:clamp(1.8rem,5vw,2.45rem);line-height:1.2;margin:.25rem 0 .75rem}h2{font-size:1.35rem;line-height:1.3;margin:2.2rem 0 .5rem}h3{font-size:1.05rem;line-height:1.4;margin:1.3rem 0 .35rem}.sub,.muted{color:var(--muted)}.sub{margin:.2rem 0 1.2rem}.answer,.panel,.example{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0}.answer{border-left:4px solid var(--green)}.answer strong{color:var(--green)}.quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:10px;margin:14px 0}.quick>div{min-width:0;background:#0b1220;border:1px solid var(--line);border-radius:10px;padding:12px}.quick b{display:block;color:var(--accent);margin-bottom:4px}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:#e2e8f0!important}code{background:#0b1220;border-radius:4px;padding:.08rem .28rem;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;background:#0b1220;border-radius:8px;padding:12px;margin:.6rem 0;max-width:100%}li{margin:.4rem 0}.nav{font-size:.9rem;margin:0 0 1rem}.affiliate-box{border:1px solid #83aaff;background:rgba(49,94,251,.07);border-radius:12px;padding:16px 18px;margin:16px 0}.affiliate-disclosure{border-left:3px solid #d97706;padding:.6rem .8rem;background:rgba(251,191,36,.09);border-radius:4px;margin:12px 0;color:var(--ink)}.keeper-link{display:inline-block;font-weight:700;margin-top:4px}.footer{border-top:1px solid var(--line);margin-top:2.4rem;padding-top:1rem;color:var(--muted);font-size:.9rem}.footer a{margin-right:.55rem}
+</style>
+</head>
+<body><main class="wrap"><article>
+<p class="nav"><a href="/">PercentURL</a> / URL encoding and credentials</p>
+<h1>Password Managers and URL Encoding: Keep Credentials Out of Links</h1>
+<p class="sub">Percent-encoding makes text fit URL syntax. It does not encrypt passwords, access tokens, or API keys.</p>
+
+<section class="answer" aria-label="Quick answer"><strong>Quick answer:</strong> Never put passwords, session tokens, reset codes, or API keys in a URL or query string. Encoding them only changes their visible characters. If a credential has already appeared in a link, revoke or rotate it and check relevant access logs.</section>
+
+<p>A URL is easy to share—and easy to expose. Depending on the application and configuration, a password, API key, or access token placed in a URL may be recorded in browser history, application or proxy logs, monitoring systems, support tickets, or copied messages. Percent-encoding the value does not make it secret. <a href="https://www.rfc-editor.org/rfc/rfc3986#section-7.5" target="_blank" rel="noopener noreferrer">RFC 3986 §7.5</a> warns that sensitive information in URIs can be exposed through browser history and intermediary systems.</p>
+
+<h2>URL encoding changes representation, not secrecy</h2>
+<p>Percent-encoding represents certain bytes with a percent sign followed by two hexadecimal digits. It helps characters fit URL syntax, but it does not encrypt data or control who can read it. Anyone who can see a percent-encoded value can decode it.</p>
+<p>For example, a slash can be written as <code>%2F</code>. If a credential appears in a URL like this, the encoded spelling is still exposed:</p>
+<div class="example"><pre>https://api.example.com/report?api_key=YOUR_SECRET%2Fabc</pre></div>
+<p>The example is deliberately a placeholder, not a real key. <code>%2F</code> represents the slash character; it does not protect the value. A URL encoder or decoder is a formatting tool, not a password-protection tool.</p>
+
+<h2>Try a harmless example in the encoder</h2>
+<p>This ordinary text shows how encoding preserves a value’s characters without turning them into secrets. Try it in the <a href="/">PercentURL URL Encoder / Decoder</a>:</p>
+<div class="example"><pre>Input:  q=tea &amp; milk
+Output: q=tea%20%26%20milk</pre></div>
+<p><code>%26</code> represents the ampersand character (<code>&amp;</code>) and <code>%20</code> represents a space. This is harmless example text—not a password, token, or credential. In HTML source, <code>&amp;amp;</code> is the markup spelling for a literal ampersand; it is separate from percent-encoding. Encoding changes representation only and provides no confidentiality.</p>
+
+<h2>Why credentials in URLs are risky</h2>
+<p>URLs are handled by systems beyond the page a person sees. Depending on the application and configuration, a sensitive query value may be recorded in browser history, web-server or proxy logs, observability tools, screenshots, support systems, or shared links. A link may also be forwarded to people who were never meant to receive the credential.</p>
+<p>HTTPS protects data while it travels between a client and server, but it does not make a secret in a URL safe to store there. The browser, destination server, reverse proxies, logging services, or anyone who receives a copied link may still encounter it. Keeping credentials out of URLs reduces the number of places where they can be exposed.</p>
+
+<h2>Safer ways to handle credentials</h2>
+<ul>
+  <li><strong>Web sign-in forms:</strong> Send credentials in an HTTPS-protected request body. Avoid reflecting them in redirects, page URLs, or error messages, and follow your framework’s authentication guidance.</li>
+  <li><strong>API credentials:</strong> Use the authentication mechanism specified in the API documentation, such as an <code>Authorization</code> header over HTTPS. Do not put credentials in a URL. For <code>POST</code> or <code>PUT</code> requests, sensitive data may belong in the request body or headers as documented. Apply least privilege, set an appropriate lifetime, and keep a way to revoke the credential. <a href="https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer">OWASP’s REST guidance</a> likewise advises keeping passwords, tokens, and API keys out of URLs.</li>
+  <li><strong>Application secrets:</strong> Keep server-side keys in a managed secret store or protected server configuration with access controls. Do not embed private keys in public browser JavaScript, mobile app bundles, or source repositories.</li>
+  <li><strong>Marketing links:</strong> Use campaign labels that contain no personal or account data. Keep email addresses, reset links, private customer details, and credentials out of shareable query strings.</li>
+  <li><strong>Shared access:</strong> Use scoped, short-lived credentials or an access-grant workflow where possible. Give each person or service only the permissions it needs, and set an expiration or revocation path.</li>
+</ul>
+<p>These practices complement HTTPS, access controls, and careful logging. OWASP’s <a href="https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer">Logging Cheat Sheet</a> also covers protecting credentials and session identifiers in logs.</p>
+
+<h2>If a credential has already appeared in a link</h2>
+<p>Assume it may have been seen or stored. Take these steps promptly:</p>
+<ol>
+  <li><strong>Revoke or rotate it.</strong> Invalidate the exposed API key, token, session, or reset link. If a password was exposed, change it and change it anywhere it was reused. Invalidate a related session where supported.</li>
+  <li><strong>Issue a replacement safely.</strong> Use a fresh, appropriately scoped credential and deliver it through an approved secure channel. Do not reuse the exposed value.</li>
+  <li><strong>Review access and security logs.</strong> Look for unexpected use from the time the link was created or shared. Follow your organization’s incident-response process if a work account, production service, or customer data may be involved.</li>
+  <li><strong>Remove avoidable copies.</strong> Delete the link from messages, tickets, documents, pages, or repositories where you control it. Ask system owners to handle log retention or redaction under their procedures. Deleting a visible copy cannot guarantee every cached, forwarded, or logged copy is gone—keep the credential revoked.</li>
+  <li><strong>Prevent a repeat.</strong> Fix the link-generation or logging behavior, and add review checks so secrets are not written into URLs.</li>
+</ol>
+
+<h2>Where a password manager fits</h2>
+<p>A password manager can help people create and keep unique account passwords in a separate vault instead of reusing or sending them in messages. It does <strong>not</strong> make a credential safe after it is placed in a URL, and it cannot remove that URL from logs, history, or recipients’ devices. Password managers are one part of account hygiene; keeping credentials out of URLs and rotating exposed secrets remain necessary.</p>
+
+<section class="affiliate-box" aria-labelledby="keeper-heading">
+  <h2 id="keeper-heading">An optional password manager</h2>
+  <p>Keeper is one optional password-management product. Its public personal-product information describes password generation and vault storage. Compare current features and terms for your location before choosing any password manager.</p>
+  <p class="affiliate-disclosure">PercentURL participates in Keeper’s affiliate program and may earn commissions on qualifying referrals. The link on this page goes directly to Keeper; its referral attribution has not been verified.</p>
+  <a class="keeper-link" href="https://www.keepersecurity.com/personal.html" target="_blank" rel="sponsored noopener noreferrer">Visit Keeper’s official personal password manager page <span aria-hidden="true">↗</span></a>
+</section>
+
+<h2>Common questions</h2>
+<h3>Does URL encoding hide a password?</h3>
+<p>No. Percent-encoding changes how some characters are represented. It is not encryption, and the value can be decoded.</p>
+<h3>Does HTTPS make a token in a URL safe?</h3>
+<p>No. HTTPS protects data in transit, but the URL may still be visible to the browser, destination infrastructure, logs, monitoring tools, or anyone who receives a copied link. Keep credentials out of URLs.</p>
+<h3>Should I put an API key in a query parameter if the endpoint uses HTTPS?</h3>
+<p>No. Follow the API’s documented authentication method, such as an <code>Authorization</code> header over HTTPS. OWASP advises that passwords, security tokens, and API keys should not appear in URLs.</p>
+<h3>What if I already shared a password-reset or sign-in link?</h3>
+<p>Invalidate the link or token if possible, start a fresh reset flow, and review relevant access logs. If the link contains a password or reusable API credential, change or revoke that credential. Do not rely on deleting the message alone.</p>
+<h3>Can a password manager prevent URL leaks?</h3>
+<p>No. A password manager can help generate and store credentials, but URL construction, application logs, and incident response need separate safeguards.</p>
+
+<footer class="ft">
+  <div class="ft-intro"><span class="ft-mark" aria-hidden="true">%</span><div class="ft-intro-copy"><strong>PercentURL</strong><p>Free browser-based tools. Your text stays in your browser.</p></div></div>
+  <nav class="ft-nav" aria-label="Footer navigation">
+    <section class="ft-group" aria-labelledby="ft-tools-title"><h2 id="ft-tools-title">Tools</h2><ul><li><a href="/">URL Encoder / Decoder</a></li><li><a href="/url-decoder">URL Decoder</a></li><li><a href="/utm-builder">UTM Builder</a></li><li><a href="/base64">Base64 Encoder / Decoder</a></li><li><a href="/html-entities">HTML Entities</a></li><li><a href="/jwt">JWT Decoder</a></li></ul></section>
+    <section class="ft-group" aria-labelledby="ft-guides-title"><h2 id="ft-guides-title">Guides</h2><ul><li><a href="/url-encode-and-decode">Choose an encoding mode</a></li><li><a href="/percent-encoding">Percent-encoding</a></li><li><a href="/javascript">URL encoding in JavaScript</a></li><li><a href="/online-urlencoder">Online URL encoder guide</a></li></ul></section>
+    <section class="ft-group" aria-labelledby="ft-about-title"><h2 id="ft-about-title">About</h2><ul><li><a href="/about">About PercentURL</a></li><li><a href="/privacy">Privacy policy</a></li><li><a href="/contact">Contact</a></li></ul></section>
+  </nav>
+  <p class="copy">© 2026 PercentURL · All processing runs in your browser.</p>
+</footer>
+</article></main>
+</body></html>
