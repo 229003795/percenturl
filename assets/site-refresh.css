@@ -110,6 +110,80 @@ table td, table th { border-color: #e1e7f0 !important; }
 .more-list a, .ft a, .footer a { color: #315efb !important; }
 .ft, .footer { border-color: #dfe6f0 !important; color: #718098 !important; }
 
+/* Error feedback uses the same readable treatment across all tools. */
+.warn:not(#io-warn) {
+  border-color: #f1beb8 !important;
+  background: #fff1f0 !important;
+  color: #922f2b !important;
+}
+.warn#io-warn:empty { display: none; }
+.warn#io-warn:not(:empty) {
+  display: block;
+  min-height: 0;
+  margin: 10px 0 0;
+  padding: 9px 11px;
+  border: 1px solid #f1d590;
+  border-radius: 10px;
+  background: #fff9e9;
+  color: #75520a !important;
+}
+
+/* Compact in-page navigation for long tool and guide pages. */
+.detail-toc {
+  margin: 20px 0 28px;
+  padding: 12px 14px;
+  border: 1px solid #dfe6f0;
+  border-radius: 14px;
+  background: rgba(255,255,255,.78);
+}
+.detail-toc-label {
+  margin: 0 0 8px;
+  color: #718098;
+  font-size: .72rem;
+  font-weight: 720;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.detail-toc-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.detail-toc-list a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 1px solid #e3e9f2;
+  border-radius: 9px;
+  background: #fff;
+  color: #315efb;
+  font-size: .8rem;
+  line-height: 1.35;
+  text-decoration: none;
+}
+.detail-toc-list a:hover { border-color: #9db3ff; background: #f7f9ff; }
+.detail-toc-list a:focus-visible { outline: 3px solid rgba(49,94,251,.22); outline-offset: 2px; }
+.wrap h2[id] { scroll-margin-top: 20px; }
+@media (max-width: 640px) {
+  .detail-toc { margin: 16px 0 22px; padding: 10px 11px; }
+  .detail-toc-list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
+    padding: 1px 1px 5px;
+  }
+  .detail-toc-list li { flex: 0 0 auto; }
+  .detail-toc-list a { white-space: nowrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
 /* Homepage encoder workbench */
 .site-header {
   display: flex; align-items: center; justify-content: space-between; gap: 24px;
