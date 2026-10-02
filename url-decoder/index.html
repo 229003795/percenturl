@@ -73,6 +73,32 @@
   .tool textarea,.tool input{width:100%;background:#0b1220;border:1px solid var(--line);border-radius:8px;
     color:var(--ink);padding:10px 12px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     font-size:.86rem;resize:vertical}
+  .tool textarea.result{min-height:58px;max-height:320px;overflow:auto;overflow-wrap:anywhere;white-space:pre-wrap}
+  .input-pane,.output-pane{width:100%;min-width:0;padding:12px;border:1px solid #e5ebf4;border-radius:12px;background:#f7f9fd}
+  .pane-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 7px}
+  .pane-heading label{margin:0;color:var(--muted);font-size:.76rem;font-weight:700;letter-spacing:.045em}
+  .pane-heading .pane-hint{color:#8290a4;font-size:.74rem}
+  .input-pane textarea,.output-pane textarea{margin:0}
+  .mode-controls{display:flex;gap:8px;width:100%;padding:4px;border-radius:11px;background:#eef2f8}
+  .mode-controls .btn{flex:1 1 0;min-width:0;min-height:42px;white-space:normal}
+  .utility-controls{display:flex;gap:8px;width:100%;margin:0}
+  .utility-controls .btn{flex:0 0 auto}
+  .result-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;margin:2px 0 0}
+  .result-heading label{margin:0;color:var(--muted);font-size:.76rem;font-weight:700;letter-spacing:.045em}
+  .result-heading .btn{padding:6px 10px;font-size:.78rem}
+  .result-heading .stats{margin:0;flex:1 1 auto}
+  .result-heading .btn:disabled{opacity:.48;cursor:not-allowed}
+  .warn .recovery{display:inline-flex;width:auto;margin:6px 0 0;padding:6px 9px;border-radius:8px;
+    border:1px solid #e2c56e;background:#fffdf6;color:#75520a;font:inherit;font-size:.78rem;font-weight:650;cursor:pointer}
+  .warn .recovery:focus-visible{outline:3px solid rgba(49,94,251,.22);outline-offset:2px}
+  @media(max-width:600px){
+    .tool{padding:11px}
+    .mode-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+    .mode-controls .btn{width:100%;padding:8px 9px}
+    .utility-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+    .utility-controls .btn{width:100%;padding:8px 9px}
+    .pane-heading .pane-hint{font-size:.7rem}
+  }
   .tool textarea:focus,.tool input:focus{outline:none;border-color:var(--accent)}
   .tool input[readonly]{color:var(--accent2)}
   .btn{background:#0b1220;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:8px 14px;
@@ -95,23 +121,33 @@
   <p class="backhome"><a href="/">← Back to the URL Encoder</a></p>
 
   <div class="tool">
-    <div class="tool-row">
-      <textarea id="io-in" rows="3" spellcheck="false" placeholder="Paste here:  caf%C3%A9%20%26%20tea   or   q=caf%C3%A9+tea"></textarea>
-    </div>
-    <div class="tool-row">
+    <section class="input-pane" aria-labelledby="input-label">
+      <div class="pane-heading"><label id="input-label" for="io-in">ENCODED INPUT</label><span class="pane-hint">Paste a URL or encoded text</span></div>
+      <textarea id="io-in" rows="3" spellcheck="false" placeholder="caf%C3%A9%20%26%20tea   or   q=caf%C3%A9+tea"></textarea>
+    </section>
+    <p class="warn" id="io-warn"></p>
+    <div class="tool-row mode-controls" role="group" aria-label="Decoding mode">
       <button class="btn on" id="m-pct" type="button">Decode · <span style="font-family:ui-monospace">%20</span> only</button>
       <button class="btn" id="m-form" type="button">Decode · <span style="font-family:ui-monospace">+</span> also means space</button>
+    </div>
+    <div class="tool-row utility-controls" role="group" aria-label="Other actions">
       <button class="btn" id="m-enc" type="button">Encode →</button>
-      <button class="btn" id="m-sample" type="button">Sample</button>
+      <button class="btn" id="m-sample" type="button">Load example</button>
       <button class="btn" id="m-clear" type="button">Clear</button>
     </div>
-    <div class="tool-row">
-      <input id="io-out" type="text" readonly placeholder="decoded result">
-    </div>
-    <p class="stats" id="io-stats"></p>
-    <p class="warn" id="io-warn"></p>
+    <section class="output-pane" aria-labelledby="result-label">
+      <div class="result-heading">
+        <label id="result-label" for="io-out">DECODED RESULT</label>
+        <p class="stats" id="io-stats"></p>
+        <button class="btn" id="copy-result" type="button" disabled>Copy result</button>
+        <span class="copy-status" id="copy-status" role="status" aria-live="polite" aria-atomic="true"></span>
+      </div>
+      <div class="tool-row">
+        <textarea class="result" id="io-out" rows="2" readonly spellcheck="false" placeholder="Decoded result will appear here"></textarea>
+      </div>
+    </section>
   </div>
-  <p class="note">Two decode modes because the two conventions disagree — see <a href="#plus" style="color:var(--accent)">§②</a> for the measured difference. Use <b>%20 only</b> for anything taken from a URL path; use <b>+ also means space</b> for a query string or form value produced by a browser form.</p>
+  <p class="note">Use <b>%20 only</b> for a URL path, or <b>+ also means space</b> for a query/form value. <a href="#plus" style="color:var(--accent)">Why the difference?</a></p>
 
   <!-- ① -->
   <h2>① What decoding actually does</h2>
@@ -261,19 +297,23 @@ parse_qs('q=caf%C3%A9+tea')           <span class="cmt"># {'q': ['café tea']}</
   var outEl = document.getElementById('io-out');
   var stats = document.getElementById('io-stats');
   var warn  = document.getElementById('io-warn');
+  var copyButton = document.getElementById('copy-result');
+  var copyStatus = document.getElementById('copy-status');
   var ids   = ['m-pct','m-form','m-enc'];
   var mode  = 'pct';
 
   function paint(){
     ids.forEach(function(id){
-      document.getElementById(id).className =
-        (id === 'm-' + mode) ? 'btn on' : 'btn';
+      var button = document.getElementById(id);
+      var active = id === 'm-' + mode;
+      button.className = active ? 'btn on' : 'btn';
+      if (id !== 'm-enc') button.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
   }
 
   function run(){
     var v = inEl.value;
-    if (v === '') { outEl.value=''; stats.innerHTML=''; warn.textContent=''; return; }
+    if (v === '') { outEl.value=''; outEl.style.height=''; copyButton.disabled=true; stats.innerHTML=''; warn.textContent=''; return; }
 
     var groups = v.match(/%[0-9A-Fa-f]{2}/g) || [];
     var plus   = (v.match(/\+/g) || []).length;
@@ -296,9 +336,31 @@ parse_qs('q=caf%C3%A9+tea')           <span class="cmt"># {'q': ['café tea']}</
       } else {
         outEl.value = decodeURIComponent(v.replace(/\+/g, ' '));
       }
+      copyButton.disabled = !outEl.value;
+      outEl.style.height = 'auto';
+      outEl.style.height = Math.min(outEl.scrollHeight, 320) + 'px';
     } catch (e) {
       outEl.value = '';
-      if (mode !== 'enc') warn.textContent = 'Decode failed: ' + e.message + '. Look for a % that is not followed by two hex digits.';
+      copyButton.disabled = true;
+      outEl.style.height = '';
+      if (mode !== 'enc') {
+        warn.replaceChildren(document.createTextNode('Decode failed: ' + e.message + '. '));
+        if (bare) {
+          warn.appendChild(document.createTextNode('Fix the stray % by treating it as a literal character: '));
+          var recover = document.createElement('button');
+          recover.type = 'button';
+          recover.className = 'recovery';
+          recover.textContent = 'Escape stray % and retry';
+          recover.addEventListener('click', function(){
+            inEl.value = inEl.value.replace(/%(?![0-9A-Fa-f]{2})/g, '%25');
+            run();
+            inEl.focus();
+          });
+          warn.appendChild(recover);
+        } else {
+          warn.appendChild(document.createTextNode('Check that each % escape has two hex digits and that the encoded bytes form valid UTF-8.'));
+        }
+      }
     }
   }
 
@@ -315,6 +377,23 @@ parse_qs('q=caf%C3%A9+tea')           <span class="cmt"># {'q': ['café tea']}</
   });
   document.getElementById('m-clear').addEventListener('click', function(){
     inEl.value = ''; run(); inEl.focus();
+  });
+
+  copyButton.addEventListener('click', async function(){
+    if (!outEl.value) return;
+    try {
+      await navigator.clipboard.writeText(outEl.value);
+    } catch (e) {
+      outEl.focus();
+      outEl.select();
+      if (!document.execCommand('copy')) {
+        copyStatus.textContent = 'Copy failed — select and copy the result manually.';
+        return;
+      }
+    }
+    copyStatus.textContent = 'Copied';
+    copyButton.textContent = 'Copied';
+    window.setTimeout(function(){ copyStatus.textContent=''; copyButton.textContent='Copy result'; }, 1400);
   });
 
   paint(); run();

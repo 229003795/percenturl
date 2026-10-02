@@ -377,7 +377,21 @@ const inp=document.getElementById('in');
 const out=document.getElementById('out');
 const tag=document.getElementById('modeTag');
 const errbox=document.getElementById('errbox');
-function showErr(msg){ errbox.textContent='⚠️ '+msg; errbox.classList.add('show'); }
+function showErr(msg){
+  errbox.replaceChildren(document.createTextNode('⚠️ '+msg));
+  if(state.target==='url' && /complete URL/i.test(msg)){
+    const fix=document.createElement('button');
+    fix.type='button';
+    fix.className='error-action';
+    fix.textContent='Switch to Component mode';
+    fix.addEventListener('click',()=>{
+      document.querySelector('.seg[data-k="target"] button[data-v="component"]').click();
+      document.getElementById('encBtn').click();
+    });
+    errbox.appendChild(fix);
+  }
+  errbox.classList.add('show');
+}
 function clearErr(){ errbox.classList.remove('show'); }
 
 document.getElementById('encBtn').addEventListener('click',()=>{
