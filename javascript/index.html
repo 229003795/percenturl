@@ -125,7 +125,7 @@
 
   <div class="row">
     <button class="btn encode" id="encBtn">Run the selected function</button>
-    <button class="btn copy" id="copyBtn">Copy result</button>
+    <button class="btn copy" id="copyBtn" disabled>Copy result</button>
   </div>
 
   <label class="outlabel" for="out">Output <span class="tag" id="modeTag">result</span></label>
@@ -227,17 +227,42 @@ encodeUrl('https://example.com/café?q=café');</code></pre>
     </div>
   </section>
   <footer class="ft">
-    <nav>
-      <a href="/">URL Encoder</a> ·
-      <a href="/utm-builder">UTM Builder</a> ·
-      <a href="/base64">Base64</a> ·
-      <a href="/html-entities">HTML Entities</a> ·
-      <a href="/jwt">JWT</a> ·
-      <a href="/javascript">JavaScript Encoding</a> ·
-      <a href="/percent-encoding">Percent Encoding</a> ·
-      <a href="/about">About</a> ·
-      <a href="/privacy">Privacy</a> ·
-      <a href="/contact">Contact</a>
+    <div class="ft-intro">
+      <span class="ft-mark" aria-hidden="true">%</span>
+      <div class="ft-intro-copy">
+        <strong>PercentURL</strong>
+        <p>Free browser-based tools. Your text stays in your browser.</p>
+      </div>
+    </div>
+    <nav class="ft-nav" aria-label="Footer navigation">
+      <section class="ft-group" aria-labelledby="ft-tools-title">
+        <h2 id="ft-tools-title">Tools</h2>
+        <ul>
+          <li><a href="/">URL Encoder / Decoder</a></li>
+          <li><a href="/url-decoder">URL Decoder</a></li>
+          <li><a href="/utm-builder">UTM Builder</a></li>
+          <li><a href="/base64">Base64 Encoder / Decoder</a></li>
+          <li><a href="/html-entities">HTML Entities</a></li>
+          <li><a href="/jwt">JWT Decoder</a></li>
+        </ul>
+      </section>
+      <section class="ft-group" aria-labelledby="ft-guides-title">
+        <h2 id="ft-guides-title">Guides</h2>
+        <ul>
+          <li><a href="/url-encode-and-decode">Choose an encoding mode</a></li>
+          <li><a href="/percent-encoding">Percent-encoding</a></li>
+          <li><a href="/javascript">URL encoding in JavaScript</a></li>
+          <li><a href="/online-urlencoder">Online URL encoder guide</a></li>
+        </ul>
+      </section>
+      <section class="ft-group" aria-labelledby="ft-about-title">
+        <h2 id="ft-about-title">About</h2>
+        <ul>
+          <li><a href="/about">About PercentURL</a></li>
+          <li><a href="/privacy">Privacy policy</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </section>
     </nav>
     <p class="copy">© 2026 PercentURL · All processing runs in your browser.</p>
   </footer>
@@ -253,6 +278,7 @@ document.querySelectorAll('.seg').forEach(seg=>{
       seg.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
       b.classList.add('active');
       state[k]=b.dataset.v;
+      clearOutput();
       runLive();
     });
   });
@@ -260,6 +286,11 @@ document.querySelectorAll('.seg').forEach(seg=>{
 
 const inp=document.getElementById('in');
 const out=document.getElementById('out');
+const copyBtn=document.getElementById('copyBtn');
+let outputIsValid=false;
+function syncCopyButton(){ copyBtn.disabled=!outputIsValid || out.value.length===0; }
+syncCopyButton();
+function clearOutput(){ out.value=''; outputIsValid=false; syncCopyButton(); }
 const tag=document.getElementById('modeTag');
 
 // full URL: encode each part with encodeURIComponent and keep the structural characters
@@ -326,15 +357,19 @@ function runLive(){
 }
 
 document.getElementById('encBtn').addEventListener('click',()=>{
+  clearOutput();
   try{
     const v = applyFn(inp.value, state.fn, state.target);
+    outputIsValid=v!==null;
     out.value = (v===null) ? '⚠️ That does not look like a complete URL (it should start with http:// or https://). If you only want to encode a piece of text, switch to Component mode.' : v;
+    syncCopyButton();
     tag.textContent = state.fn + (state.target==='url'?' · url':'');
-  }catch(e){ out.value='⚠️ '+ (e.message||String(e)); }
+  }catch(e){ out.value='⚠️ '+ (e.message||String(e)); outputIsValid=false; syncCopyButton(); }
 });
 
-document.getElementById('copyBtn').addEventListener('click',async()=>{
-  const b=document.getElementById('copyBtn');
+copyBtn.addEventListener('click',async()=>{
+  if(copyBtn.disabled) return;
+  const b=copyBtn;
   try{ await navigator.clipboard.writeText(out.value);
     const o=b.textContent; b.textContent='Copied'; setTimeout(()=>b.textContent=o,1200);
   }catch(e){ out.removeAttribute('readonly'); out.select(); document.execCommand('copy'); out.setAttribute('readonly',''); }
@@ -350,7 +385,7 @@ document.querySelectorAll('.codebox .copycode').forEach(btn=>{
   });
 });
 
-inp.addEventListener('input', runLive);
+inp.addEventListener('input',()=>{ clearOutput(); runLive(); });
 runLive();
 </script>
 <script src="/assets/detail-enhancements.js" defer></script>

@@ -96,7 +96,7 @@
 <div class="wrap">
   <header class="site-header">
     <a class="brand" href="/" aria-label="PercentURL home"><span class="brand-mark">%</span>PercentURL</a>
-    <nav aria-label="Main navigation"><a href="/percent-encoding">Guides</a><a href="/url-decoder">Decoder</a><a href="/utm-builder">UTM Builder</a></nav>
+    <nav aria-label="Main navigation"><a href="#task-hub-title">Tools</a><a href="/percent-encoding">Guides</a><a href="/about">About</a></nav>
     <a class="header-cta" href="#encoder">Open encoder <span aria-hidden="true">↗</span></a>
   </header>
 
@@ -176,7 +176,7 @@
     <div class="editor-pane output-pane">
       <label class="outlabel" for="out">Output <span class="tag" id="modeTag">encoded</span></label>
       <textarea id="out" readonly placeholder="Your result will appear here…"></textarea>
-      <div class="row copy-row"><button class="btn copy" id="copyBtn"><span aria-hidden="true">▢</span> Copy result</button></div>
+      <div class="row copy-row"><button class="btn copy" id="copyBtn" disabled><span aria-hidden="true">▢</span> Copy result</button></div>
     </div>
   </div>
 
@@ -184,6 +184,44 @@
     No sign-up · Unlimited use · No watermark · Runs only in your browser.
   </p>
   </section>
+
+  <section class="more task-hub" aria-labelledby="task-hub-title">
+    <div class="task-hub-head">
+      <div><p class="tool-kicker">TOOLS & GUIDES</p><h2 id="task-hub-title">Start with a task</h2>
+        <p class="more-sub">Open a popular tool, or browse by what you need to do.</p></div>
+      <label class="tool-search"><span class="sr-only">Search tools and guides</span><span aria-hidden="true">⌕</span><input id="toolSearch" type="search" placeholder="Find a tool…" autocomplete="off"></label>
+    </div>
+    <div class="popular-tools" aria-label="Popular tools">
+      <a class="popular-tool" href="#encoder"><span class="popular-tool-icon">↗</span><span><strong>URL Encoder</strong><small>Encode a value or URL</small></span><span class="task-arrow" aria-hidden="true">→</span></a>
+      <a class="popular-tool" href="/url-decoder"><span class="popular-tool-icon teal">↙</span><span><strong>URL Decoder</strong><small>Read encoded text</small></span><span class="task-arrow" aria-hidden="true">→</span></a>
+      <a class="popular-tool" href="/utm-builder"><span class="popular-tool-icon amber">#</span><span><strong>UTM Builder</strong><small>Build campaign links</small></span><span class="task-arrow" aria-hidden="true">→</span></a>
+    </div>
+    <h3 class="browse-tools-heading">Browse by task</h3>
+    <div class="task-groups" id="taskGroups">
+      <section class="task-group" aria-labelledby="task-encode">
+        <div class="task-group-title"><span class="task-icon" aria-hidden="true">↗</span><h3 id="task-encode">Encode and build URLs</h3></div>
+        <a class="task-link" href="/url-encode-and-decode"><span><strong>Encode or decode a URL</strong><small>Choose a mode for your input</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
+        <a class="task-link" href="/url-encoder-online"><span><strong>URL Encoder Online</strong><small>Encode text or a full URL in your browser</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
+      </section>
+      <section class="task-group" aria-labelledby="task-decode">
+        <div class="task-group-title"><span class="task-icon teal" aria-hidden="true">↙</span><h3 id="task-decode">Decode and inspect</h3></div>
+        <a class="task-link" href="/base64"><span><strong>Base64 Encoder / Decoder</strong><small>Convert Base64 and understand URL-safe text</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
+        <a class="task-link" href="/jwt"><span><strong>JWT Decoder</strong><small>Inspect a token’s header and payload</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
+        <a class="task-link" href="/html-entities"><span><strong>HTML Entity Encoder / Decoder</strong><small>Convert HTML special characters</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
+      </section>
+      <section class="task-group" aria-labelledby="task-learn">
+        <div class="task-group-title"><span class="task-icon amber" aria-hidden="true">i</span><h3 id="task-learn">Learn and look up</h3></div>
+        <a class="task-link featured" href="/percent-encoding"><span><strong>Percent-encoding guide</strong><small>Learn what %20 and %XX mean</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
+        <a class="task-link" href="/javascript"><span><strong>URL encoding in JavaScript</strong><small>Pick the right built-in function</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
+        <a class="task-link" href="/online-urlencoder"><span><strong>URL encoder guide</strong><small>Learn how browser-based encoding works</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
+      </section>
+    </div>
+    <p class="tool-search-empty" id="toolSearchEmpty" hidden>No matching tools. Try “URL”, “Base64”, or “guide”.</p>
+    <p class="more-info">
+      <a href="/about">About</a> · <a href="/privacy">Privacy</a> · <a href="/contact">Contact</a>
+    </p>
+  </section>
+
 
   <!-- percent-encoding character reference table -->
   <details class="tbl">
@@ -198,49 +236,51 @@
     </table>
   </details>
 
-  <!-- other tools on this site: descriptive in-body internal links (not just the footer) -->
-  <section class="more">
-    <h2>More tools on this site</h2>
-    <p class="more-sub">Every tool runs entirely in your browser — nothing is uploaded. Pick the encoding problem you have:</p>
-    <ul class="more-list">
-      <li><a href="/utm-builder">UTM Builder</a> — build a campaign URL and watch every parameter value get percent-encoded live, plus the nine ways a UTM link breaks once it is in a URL.</li>
-      <li><a href="/base64">Base64 Encoder / Decoder</a> — encode or decode as you type, see which character set and alphabet are in use, and what <code>+</code>, <code>/</code> and <code>=</code> actually do inside a URL.</li>
-      <li><a href="/html-entities">HTML Entity Encoder / Decoder</a> — escape <code>&amp;lt;</code> <code>&amp;gt;</code> <code>&amp;amp;</code> as named, decimal or hex entities, and why HTML entities are not URL encoding.</li>
-      <li><a href="/jwt">JWT Decode</a> — decode a JSON Web Token into its header, payload and signature, and see why every JWT segment must be base64url instead of standard Base64.</li>
-      <li><a href="/javascript">URL Encoding in JavaScript</a> — how <code>encodeURI</code>, <code>encodeURIComponent</code> and <code>escape</code> differ, when to use each, and code you can copy straight into your project.</li>
-      <li><a href="/percent-encoding">What Is Percent-Encoding?</a> — the concept page: why a URL is full of things like <code>%20</code> and <code>%C3%A9</code>, explained from first principles.</li>
-      <li><a href="/url-encoder-online">URL Encoder Online</a> — encode any text or a whole URL in the browser and see exactly which characters stay and which become <code>%XX</code>.</li>
-      <li><a href="/url-decoder">URL Decoder Online</a> — paste a percent-encoded URL or string and read it back as plain text, with every <code>%XX</code> group shown as it is decoded.</li>
-      <li><a href="/url-encode-and-decode">URL Encode and Decode</a> — one box for both directions: encode a component or a full URL, or decode it back, with the live before-and-after side by side.</li>
-      <li><a href="/online-urlencoder">Online URLencoder</a> — why a browser-side encoder keeps your text local (nothing is uploaded) and how that beats a server round-trip.</li>
-    </ul>
-    <p class="more-info">
-      <a href="/about">About</a> · <a href="/privacy">Privacy</a> · <a href="/contact">Contact</a>
-    </p>
-  </section>
-
   <footer class="ft">
-    <nav>
-      <a href="/">URL Encoder</a> ·
-      <a href="/utm-builder">UTM Builder</a> ·
-      <a href="/base64">Base64</a> ·
-      <a href="/html-entities">HTML Entities</a> ·
-      <a href="/jwt">JWT</a> ·
-      <a href="/javascript">JavaScript Encoding</a> ·
-      <a href="/percent-encoding">Percent Encoding</a> ·
-      <a href="/url-encoder-online">URL Encoder Online</a> ·
-      <a href="/url-decoder">URL Decoder</a> ·
-      <a href="/url-encode-and-decode">URL Encode / Decode</a> ·
-      <a href="/online-urlencoder">Online URLencoder</a> ·
-      <a href="/about">About</a> ·
-      <a href="/privacy">Privacy</a> ·
-      <a href="/contact">Contact</a>
+    <div class="ft-intro">
+      <span class="ft-mark" aria-hidden="true">%</span>
+      <div class="ft-intro-copy">
+        <strong>PercentURL</strong>
+        <p>Free URL tools that run in your browser.</p>
+        <span class="ft-privacy"><span aria-hidden="true">✓</span> Your text stays on your device</span>
+      </div>
+    </div>
+    <nav class="ft-nav" aria-label="Footer navigation">
+      <section class="ft-group" aria-labelledby="ft-tools-title">
+        <h2 id="ft-tools-title">Tools</h2>
+        <ul>
+          <li><a href="/#encoder">URL Encoder / Decoder</a></li>
+          <li><a href="/url-decoder">URL Decoder</a></li>
+          <li><a href="/utm-builder">UTM Builder</a></li>
+          <li><a href="/base64">Base64</a></li>
+          <li><a href="/html-entities">HTML Entities</a></li>
+          <li><a href="/jwt">JWT Decoder</a></li>
+        </ul>
+      </section>
+      <section class="ft-group" aria-labelledby="ft-guides-title">
+        <h2 id="ft-guides-title">Guides</h2>
+        <ul>
+          <li><a href="/percent-encoding">Percent-encoding</a></li>
+          <li><a href="/javascript">URL encoding in JavaScript</a></li>
+          <li><a href="/url-encode-and-decode">Choose an encoding mode</a></li>
+          <li><a href="/online-urlencoder">URL encoder guide</a></li>
+        </ul>
+      </section>
+      <section class="ft-group" aria-labelledby="ft-about-title">
+        <h2 id="ft-about-title">About</h2>
+        <ul>
+          <li><a href="/about">About PercentURL</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </section>
     </nav>
-    <p class="copy">© 2026 PercentURL · All processing runs in your browser.</p>
+    <div class="ft-bottom"><p class="copy">© 2026 PercentURL</p><nav class="ft-legal" aria-label="Legal"><a href="/privacy">Privacy policy</a></nav></div>
   </footer>
 </div>
 
 <script>
+const toolSearch=document.getElementById('toolSearch');
+if(toolSearch){toolSearch.addEventListener('input',()=>{const q=toolSearch.value.trim().toLowerCase();let matches=0;document.querySelectorAll('.popular-tool,.task-link').forEach(link=>{const hit=!q||link.textContent.toLowerCase().includes(q);link.hidden=!hit;if(hit)matches++});document.querySelectorAll('.task-group').forEach(group=>{group.hidden=!group.querySelector('.task-link:not([hidden])')});document.querySelector('.popular-tools').hidden=!document.querySelector('.popular-tool:not([hidden])');document.getElementById('toolSearchEmpty').hidden=matches>0;});}
 const state = { charset:'utf-8', space:'%20', mode:'rfc3986', newline:'single', target:'component', batch:false };
 
 document.querySelectorAll('.seg').forEach(seg=>{
@@ -250,6 +290,7 @@ document.querySelectorAll('.seg').forEach(seg=>{
       seg.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
       b.classList.add('active');
       state[k]=b.dataset.v;
+      out.value=''; syncCopyButton();
       clearErr();
     });
   });
@@ -258,6 +299,7 @@ const batchEl=document.getElementById('batchToggle');
 batchEl.addEventListener('click',()=>{
   state.batch=!state.batch;
   batchEl.classList.toggle('on',state.batch);
+  out.value=''; syncCopyButton();
   clearErr();
 });
 
@@ -381,6 +423,10 @@ const inp=document.getElementById('in');
 const out=document.getElementById('out');
 const tag=document.getElementById('modeTag');
 const errbox=document.getElementById('errbox');
+const copyBtn=document.getElementById('copyBtn');
+function syncCopyButton(){ copyBtn.disabled = out.value.length===0; }
+syncCopyButton();
+inp.addEventListener('input',()=>{ out.value=''; syncCopyButton(); clearErr(); });
 function showErr(msg){
   errbox.replaceChildren(document.createTextNode('⚠️ '+msg));
   if(state.target==='url' && /complete URL/i.test(msg)){
@@ -400,16 +446,18 @@ function clearErr(){ errbox.classList.remove('show'); }
 
 document.getElementById('encBtn').addEventListener('click',()=>{
   clearErr();
+  out.value=''; syncCopyButton();
   try{
     let v;
     if(state.target==='url') v=processUrl(inp.value,true);
     else v = state.batch ? inp.value.split(/\r?\n/).map(encodeLine).join('\n') : encodeText(inp.value);
-    out.value=v; tag.textContent='encoded';
+    out.value=v; tag.textContent='encoded'; syncCopyButton();
   }catch(e){ showErr(e.msg||String(e)); }
 });
 
 document.getElementById('decBtn').addEventListener('click',()=>{
   clearErr();
+  out.value=''; syncCopyButton();
   try{
     let v; const errors=[];
     if(state.target==='url'){
@@ -423,12 +471,13 @@ document.getElementById('decBtn').addEventListener('click',()=>{
       v=decodeLine(inp.value);
     }
     if(errors.length) showErr(errors.join('\n'));
-    out.value=v; tag.textContent='decoded';
+    out.value=v; tag.textContent='decoded'; syncCopyButton();
   }catch(e){ showErr(e.msg||String(e)); }
 });
 
-document.getElementById('copyBtn').addEventListener('click',async()=>{
-  const b=document.getElementById('copyBtn');
+copyBtn.addEventListener('click',async()=>{
+  if(!out.value) return;
+  const b=copyBtn;
   try{
     await navigator.clipboard.writeText(out.value);
     const o=b.textContent; b.textContent='Copied'; setTimeout(()=>b.textContent=o,1200);
