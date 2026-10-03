@@ -187,7 +187,7 @@
   <!-- ============ BLOCK 3 ============ -->
   <h2 class="blk"><span class="n">3</span>How bad encoding breaks a UTM link</h2>
   <p class="blksub">The parameters are right, the campaign still reports wrong — because of how characters were (or were not) encoded. Every case below is a real failure mode, and none of them care which tool produced the link: a <b>UTM maker</b>, a <b>UTM generator</b>, a <b>url builder</b>, a <b>campaign URL builder</b> or the <b>Google campaign URL builder</b> will all hand you a broken link if the value is encoded wrongly. Encoding behaviour breaks the report — not the choice of tool.</p>
-  <figure class="article-visual"><img src="/assets/percent-encoding/05-utm-url.png" alt="UTM campaign URL made from a destination and source, medium, and campaign parameters." loading="lazy" decoding="async"><figcaption>Start the query once with ?, then separate encoded parameter values with &amp;.</figcaption></figure>
+  <figure class="article-visual"><picture><source type="image/webp" srcset="/assets/percent-encoding/05-utm-url.webp"><img src="/assets/percent-encoding/05-utm-url.png" width="1672" height="941" alt="UTM campaign URL made from a destination and source, medium, and campaign parameters." loading="lazy" decoding="async"></picture><figcaption>Start the query once with ?, then separate encoded parameter values with &amp;.</figcaption></figure>
 
   <div class="fail">
     <h3>An <code>&amp;</code> inside a value ends the value and starts a new parameter</h3>

@@ -165,6 +165,7 @@ table td, table th { border-color: #e1e7f0 !important; }
   box-shadow: 0 12px 30px rgba(26, 49, 80, .07);
 }
 .article-visual img { display: block; width: 100%; height: auto; }
+.article-visual picture { display: block; }
 .article-visual figcaption { padding: .8rem 1rem !important; color: #66758b !important; font-size: .9rem; }
 
 .more { border-color: #dfe6f0 !important; }

@@ -117,7 +117,7 @@
   </table>
   <p class="note">Key idea: <b>percent-encoding encodes bytes, not characters</b>. That is why <span class="kbd">é</span> becomes two %XX groups and <span class="kbd">€</span> becomes three, while an ASCII letter stays exactly as it is.</p>
 
-<figure class="article-visual"><img src="/assets/percent-encoding/01-byte-encoding.png" alt="Diagram showing the character é encoded to UTF-8 bytes C3 A9 and then to percent-encoded bytes %C3%A9." loading="lazy" decoding="async"><figcaption>1/3 · Characters become UTF-8 bytes first; each byte is written as % plus two hexadecimal digits.</figcaption></figure>
+<figure class="article-visual"><picture><source type="image/webp" srcset="/assets/percent-encoding/01-byte-encoding.webp"><img src="/assets/percent-encoding/01-byte-encoding.png" width="1672" height="941" alt="Diagram showing the character é encoded to UTF-8 bytes C3 A9 and then to percent-encoded bytes %C3%A9." loading="lazy" decoding="async"></picture><figcaption>1/3 · Characters become UTF-8 bytes first; each byte is written as % plus two hexadecimal digits.</figcaption></figure>
   <!-- ③ three classes -->
   <h2>③ Characters fall into three classes</h2>
   <p class="sub">RFC 3986 splits ASCII into three classes, and that is what decides whether a character can stay as-is in a URL.</p>
@@ -165,7 +165,7 @@
     <p><b>So the correct approach is to encode part by part:</b> encode the scheme, the host, each path segment, each parameter name and each parameter value <b>separately</b>, then join them with the structural characters — instead of throwing the whole URL at an encoder in one go (that encodes <span class="kbd">://</span> <span class="kbd">?</span> <span class="kbd">&amp;</span> too, and the URL breaks).</p>
   </div>
 
-<figure class="article-visual"><img src="/assets/percent-encoding/02-url-structure.png" alt="Diagram separating a URL into its scheme, host, path, query, and fragment so only the data is encoded." loading="lazy" decoding="async"><figcaption>2/3 · A URL has structure. Keep its separators in place and encode the data within each part.</figcaption></figure>
+<figure class="article-visual"><picture><source type="image/webp" srcset="/assets/percent-encoding/02-url-structure.webp"><img src="/assets/percent-encoding/02-url-structure.png" width="1672" height="941" alt="Diagram separating a URL into its scheme, host, path, query, and fragment so only the data is encoded." loading="lazy" decoding="async"></picture><figcaption>2/3 · A URL has structure. Keep its separators in place and encode the data within each part.</figcaption></figure>
   <!-- ⑤ full walkthrough -->
   <h2>⑤ A full walkthrough with a real example</h2>
   <p class="sub">Turning <span class="kbd">https://example.com/café?q=café &amp; tea</span> into a legal URL.</p>
@@ -181,7 +181,7 @@ param value café &amp; tea             <span class="cmt">→ caf%C3%A9%20%26%20
 result: https://example.com/caf%C3%A9?q=caf%C3%A9%20%26%20tea</code></pre></div>
   <p class="note">Note that <span class="kbd">:</span> <span class="kbd">//</span> <span class="kbd">?</span> <span class="kbd">=</span> all <b>stay as they are</b>; only the accented letters, the spaces and the ampersand in the <i>content</i> were encoded.</p>
 
-<figure class="article-visual"><img src="/assets/percent-encoding/03-encode-parts.png" alt="Diagram showing scheme, host, path segment, query parameter name, and query parameter value as separate URL components." loading="lazy" decoding="async"><figcaption>3/3 · Encode each path segment and query name or value separately, then join them with URL separators.</figcaption></figure>
+<figure class="article-visual"><picture><source type="image/webp" srcset="/assets/percent-encoding/03-encode-parts.webp"><img src="/assets/percent-encoding/03-encode-parts.png" width="1672" height="941" alt="Diagram showing scheme, host, path segment, query parameter name, and query parameter value as separate URL components." loading="lazy" decoding="async"></picture><figcaption>3/3 · Encode each path segment and query name or value separately, then join them with URL separators.</figcaption></figure>
   <!-- ⑥ common myths -->
   <h2>⑥ Four common misunderstandings</h2>
   <div class="ex">

@@ -195,7 +195,7 @@
   <!-- ============ BLOCK 3 ============ -->
   <h2 class="blk"><span class="n">3</span>Putting Base64 in a URL: how <code>+</code> and <code>/</code> break it</h2>
   <p class="blksub">Standard Base64 uses <code>+</code> and <code>/</code>. Both are meaningful characters in a URL, so the moment the value travels in a link or a query string, the meaning can change. This is the step almost every Base64 tool skips.</p>
-  <figure class="article-visual"><img src="/assets/percent-encoding/07-base64url.png" alt="Base64url keeps the same bytes while replacing plus and slash with hyphen and underscore and omitting padding." loading="lazy" decoding="async"><figcaption>Base64url changes the alphabet for safe transport; it does not encrypt the data.</figcaption></figure>
+  <figure class="article-visual"><picture><source type="image/webp" srcset="/assets/percent-encoding/07-base64url.webp"><img src="/assets/percent-encoding/07-base64url.png" width="1672" height="941" alt="Base64url keeps the same bytes while replacing plus and slash with hyphen and underscore and omitting padding." loading="lazy" decoding="async"></picture><figcaption>Base64url changes the alphabet for safe transport; it does not encrypt the data.</figcaption></figure>
 
   <div class="live">
     <div class="l"><span class="k">Your output, standard</span> <code id="lvStd">—</code></div>
