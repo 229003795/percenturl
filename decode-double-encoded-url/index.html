@@ -47,7 +47,7 @@ text = raw_bytes.decode("shift_jis")  # "リP"</code></pre>
 <aside class="caution"><strong>Important:</strong> repeated decoding is not a general repair button. RFC 3986 warns that encoding or decoding the same string more than once can make percent data get misread as another escape. Decode only the layers you can explain, and parse a URL into components before decoding data inside them.</aside>
 
 <h2>Decode a URL value without changing the rest of the link</h2>
-<p>If you only need to inspect a normal UTF-8 URL value, open the <a href="/url-decoder">PercentURL URL Decoder</a>. For a full URL, use <a href="/url-encode-and-decode">URL Encode and Decode</a> and choose the relevant mode. These browser tools do not infer an unknown legacy character set; use the source application’s charset information for that step.</p>
+<p>If you only need to inspect a normal UTF-8 URL value, open the <a href="/url-decoder/">PercentURL URL Decoder</a>. For a full URL, use <a href="/url-encode-and-decode/">URL Encode and Decode</a> and choose the relevant mode. These browser tools do not infer an unknown legacy character set; use the source application’s charset information for that step.</p>
 
 <h2>Common questions</h2>
 <h3>Why does my URL still contain percent signs after decoding?</h3><p>Those signs may be part of another percent-encoding layer, or they may be literal data. Decode one layer and inspect the result before deciding what it means.</p>
@@ -56,5 +56,5 @@ text = raw_bytes.decode("shift_jis")  # "リP"</code></pre>
 
 <h2>References</h2><ul class="sources"><li><a href="https://www.rfc-editor.org/rfc/rfc3986#section-2.1" target="_blank" rel="noopener noreferrer">RFC 3986 §2.1 — Percent-Encoding</a> and <a href="https://www.rfc-editor.org/rfc/rfc3986#section-2.4" target="_blank" rel="noopener noreferrer">§2.4 — When to Encode or Decode</a>.</li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent" target="_blank" rel="noopener noreferrer">MDN: decodeURIComponent()</a> — decoding a URI component and malformed UTF-8 behavior.</li><li><a href="https://encoding.spec.whatwg.org/#shift_jis" target="_blank" rel="noopener noreferrer">WHATWG Encoding Standard: Shift_JIS</a> — the web platform’s Shift_JIS decoding algorithm.</li></ul>
 
-<footer class="footer"><a href="/">PercentURL URL Encoder / Decoder</a> · <a href="/percent-encoding">Percent-encoding guide</a> · <a href="/url-encode-and-decode">Encode and decode tool</a></footer>
+<footer class="footer"><a href="/">PercentURL URL Encoder / Decoder</a> · <a href="/percent-encoding/">Percent-encoding guide</a> · <a href="/url-encode-and-decode/">Encode and decode tool</a></footer>
 </article></main></body></html>
