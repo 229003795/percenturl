@@ -28,6 +28,14 @@
 <div class="example"><div class="code-row"><b>Twice encoded</b><code>%2583%258A%2550</code></div><div class="code-row"><b>After one decode</b><code>%83%8A%50</code></div><div class="code-row"><b>Bytes, then Shift_JIS</b><code>83 8A 50 → リP</code></div></div>
 <p>I reproduced this round trip locally with Python’s standard <code>urllib.parse</code> and <code>shift_jis</code> codec. The character result was checked as Unicode code points <code>U+30EA U+0050</code>, matching <code>リP</code>. This proves this constructed example—not the encoding of any particular third-party website.</p>
 <p>For your own string, keep a copy of the original. Remove one percent layer and inspect the output. If it now contains valid <code>%XX</code> byte escapes, identify the source charset from the application or site that created it. Only then convert those bytes using that charset.</p>
+<p>In Python, the same two operations can be kept explicit so you can inspect the bytes between them:</p>
+<pre><code>from urllib.parse import unquote, unquote_to_bytes
+
+encoded_twice = "%2583%258A%2550"
+one_layer = unquote(encoded_twice)  # "%83%8A%50"
+raw_bytes = unquote_to_bytes(one_layer)  # bytes 83 8A 50
+text = raw_bytes.decode("shift_jis")  # "リP"</code></pre>
+<p>Use this only when the source really used Shift_JIS. If the source charset is unknown, the correct decoded characters are unknown too.</p>
 
 <h2>How to tell whether another decode is justified</h2>
 <div class="steps"><div><span class="step-no">1</span><strong>Save the original</strong><span>Keep an unchanged copy so you can compare every step.</span></div><div><span class="step-no">2</span><strong>Decode one layer</strong><span>Check whether escapes such as <code>%25</code> became new <code>%XX</code> triplets.</span></div><div><span class="step-no">3</span><strong>Check bytes and charset</strong><span>Use the source application's documented charset; stop if it is unknown.</span></div></div>
