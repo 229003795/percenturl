@@ -50,7 +50,7 @@ Complete URL:  https://example.com/search?q=red%20%26%20blue%3Dgreen</pre></div>
 Decoded: 日本語 URL</pre></div>
 <p>Use the decoder on the encoded portion when possible. Decoding a complete link can make reserved characters visible again; that is useful for inspection, but may change how the link is parsed if copied into another URL without re-encoding its values.</p>
 <figure class="article-visual"><picture><source type="image/webp" srcset="/assets/percent-encoding/01-byte-encoding.webp"><img src="/assets/percent-encoding/01-byte-encoding.png" width="1672" height="941" alt="Diagram showing é becoming UTF-8 bytes C3 A9, then percent-encoded as %C3%A9." loading="lazy" decoding="async"></picture><figcaption>Non-ASCII characters are encoded through their UTF-8 bytes, not as one character-sized escape.</figcaption></figure>
-<h2>Common errors and what to do</h2>
+<h2 id="common-errors">Common errors and what to do</h2>
 <div class="panel"><h3>A URL becomes unreadable after encoding</h3><p>You likely encoded the entire address as one component. Its colon, slashes, question mark, and ampersands became data too. Encode each path segment or query name/value separately, then join them with the URL separators.</p></div>
 <div class="panel"><h3>A value is split at an ampersand</h3><p>Encode the ampersand inside the value as <code>%26</code>. Keep the real ampersands that separate query parameters.</p></div>
 <div class="panel"><h3>The output contains <code>%2520</code></h3><p>This usually means <code>%20</code> was encoded again: the percent sign became <code>%25</code>. Use the original text, or decode one layer before encoding once for the intended context.</p></div>
