@@ -37,6 +37,10 @@
   .btn.copy{background:#0b1220;color:var(--ink);border:1px solid var(--line)}
   .outlabel{display:flex;justify-content:space-between;align-items:center}
   .tag{color:#34d399;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+  /* Keep accessible names for assistive technology while removing the redundant pane captions. */
+  .input-pane > label[for="in"],.output-pane > label[for="out"]{font-size:0;line-height:0;margin:0 0 6px}
+  .input-pane > label[for="in"] .field-hint{display:none}
+  .output-pane > label[for="out"] .tag{font-size:.78rem;line-height:1.2}
   .note{color:var(--muted);font-size:.78rem;margin-top:18px}
   .ft{margin-top:28px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:.85rem}
   .ft nav a{color:var(--accent);text-decoration:none;margin:0 2px}
