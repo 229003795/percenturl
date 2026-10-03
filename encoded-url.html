@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Learn what an encoded URL means, read percent-encoded UTF-8 bytes, handle plus signs, and decode nested URL values one layer at a time.">
+<title>Encoded URL: Meaning, Examples, and How to Decode It</title><link rel="canonical" href="https://percenturl.com/encoded-url">
+<style>
+:root{color-scheme:light;--bg:#f3f6fb;--panel:#fff;--ink:#17263c;--muted:#53657d;--line:#d9e2ef;--accent:#245fe8;--green:#087867;--amber:#b7791f}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -12%,#e5edff 0,transparent 42%),var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:900px;margin:0 auto;padding:24px 20px 32px}article{min-width:0}a{color:var(--accent)}h1{font-size:clamp(1.8rem,5vw,2.45rem);line-height:1.2;margin:.25rem 0 .75rem}h2{font-size:1.35rem;margin:2.2rem 0 .5rem}.sub,.muted{color:var(--muted)}.sub{margin:.2rem 0 1.2rem}.answer,.panel,.example{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0}.answer{border-left:4px solid var(--green)}.answer strong{color:var(--green)}.tool{display:inline-block;background:var(--accent);color:#06121f;text-decoration:none;font-weight:700;padding:10px 15px;border-radius:8px;margin:.5rem 0}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}code{background:#0b1220;border-radius:4px;padding:.08rem .28rem;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1220;border-radius:8px;padding:12px;margin:.6rem 0}table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.94rem}th,td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}th{color:var(--muted)}li{margin:.4rem 0}.footer{border-top:1px solid var(--line);margin-top:2.4rem;padding-top:1rem;color:var(--muted);font-size:.9rem}.footer a{margin-right:.55rem}
+
+/* Local footer concept preview only */
+  .footer-reference{margin-top:34px;padding:28px 26px 0;background:#f8fafd;border:1px solid #e1e8f0;border-radius:18px;color:#53657d}
+  .footer-main{padding-bottom:23px}
+  .footer-brand-area{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;gap:4px 24px;padding-bottom:22px;border-bottom:1px solid #e1e8f0}
+  .footer-brand-name{grid-column:1;grid-row:1;display:flex;align-items:center;gap:10px;color:#17263c;text-decoration:none;font-size:1.18rem;font-weight:780;letter-spacing:-.025em}
+  .footer-brand-mark{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:#245fe8;color:#fff;font-weight:800;font-size:1.15rem}
+  .footer-brand-mark svg{display:block;width:72%;height:72%}
+  .footer-brand-area>p{grid-column:1;grid-row:2;max-width:420px;margin:3px 0 0;color:#5f7086;font-size:.92rem;line-height:1.55}
+  .footer-mini-contacts{grid-column:2;grid-row:1/3;display:grid;grid-template-columns:repeat(auto-fit,minmax(94px,1fr));gap:9px;min-width:210px}
+  .footer-mini-contact{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 11px;border:1px solid #dbe4ef;border-radius:10px;background:#fff;color:#365778;text-decoration:none;font-size:.86rem;font-weight:650;white-space:nowrap}
+  .footer-mini-contact:hover{border-color:#a9bfea;color:#245fe8}
+  .footer-mini-contact svg,.footer-channel-pending svg{display:block;width:18px;height:18px;flex:none}
+  .footer-link-columns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px;padding-top:22px}
+  .footer-link-group h2{margin:2px 0 12px;color:#213a5b;font-size:.94rem;font-weight:720;letter-spacing:.005em}
+  .footer-link-group nav{display:grid;gap:10px}
+  .footer-link-group a{color:#53657d;text-decoration:none;font-size:.88rem;line-height:1.35}
+  .footer-link-group a:hover{color:#245fe8;text-decoration:underline}
+  .footer-audience{margin-top:15px;padding-top:12px;border-top:1px solid #e1e8f0}
+  .footer-audience h3{margin:0 0 9px;color:#213a5b;font-size:.82rem;font-weight:700}
+  .footer-audience nav{display:grid;gap:9px}
+  .footer-link-group .all-tools{margin:0;background:#fff}
+  .footer-link-group .all-tools summary{padding:10px 11px;font-size:.8rem}
+  .footer-link-group .explore-grid{grid-template-columns:1fr;padding:7px 11px 10px}
+  .footer-link-group .explore-group h3{display:none}
+  .footer-link-group .explore-group a{padding:5px 0}
+  .footer-reference-bottom{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:16px;border-top:1px solid #dce4ed;padding:15px 0 17px;color:#75849a;font-size:.78rem}
+  .footer-reference-bottom p{grid-column:2;margin:0;text-align:center}
+  .footer-reference-bottom a{grid-column:3;justify-self:end}
+  .footer-reference-bottom a{color:#64758b;text-decoration:underline;text-underline-offset:3px}
+  @media(max-width:760px){.footer-link-columns{gap:18px}.footer-brand-area{gap:4px 16px}}
+  @media(max-width:520px){.footer-reference{padding:20px 16px 0}.footer-brand-area{grid-template-columns:1fr;gap:5px;padding-bottom:17px}.footer-brand-name,.footer-brand-area>p{grid-column:1;grid-row:auto}.footer-brand-area>p{max-width:none;margin:3px 0 8px}.footer-mini-contacts{grid-column:1;grid-row:auto;grid-template-columns:repeat(2,minmax(0,1fr));min-width:0;max-width:320px}.footer-mini-contact{padding:7px 8px;font-size:.78rem}.footer-link-columns{grid-template-columns:repeat(2,minmax(0,1fr));gap:19px 14px;padding-top:18px}.footer-link-group:last-child{grid-column:1/-1}.footer-link-group h2{margin-bottom:9px}.footer-link-group a{font-size:.82rem}.footer-reference-bottom{display:flex;align-items:center;flex-direction:column;gap:7px}.footer-reference-bottom p{align-self:center;text-align:center}.footer-reference-bottom a{align-self:center}}  .footer-main{display:block;grid-template-columns:none;gap:0;padding-bottom:23px}
+  /* Contact channels: only verified destinations are active; new profiles can be added later. */
+  .footer-brand-area{display:block;padding-bottom:22px;border-bottom:1px solid #e1e8f0}
+  .footer-brand-area>p{max-width:760px;margin:7px 0 0}
+  .footer-mini-contacts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0;max-width:none;margin-top:14px}
+  .footer-mini-contact,.footer-channel-pending{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:7px 11px;border:1px solid #dbe4ef;border-radius:10px;background:#fff;color:#365778;font-size:.84rem;font-weight:650;white-space:nowrap}
+  .footer-mini-contact{text-decoration:none}
+  .footer-mini-contact:hover{border-color:#a9bfea;color:#245fe8}
+  .footer-mini-contact svg,.footer-channel-pending svg{display:block;width:18px;height:18px;flex:none;color:#486789}
+  .footer-channel-pending{border-style:dashed;background:#f5f7fa;color:#8290a2;font-weight:550;cursor:default}
+  .footer-mini-contact svg{color:#3a68ad}
+  .footer-mini-contact.channel-youtube svg{color:#ff0033}
+  .footer-channel-pending.channel-github svg{color:#24292f}
+  .footer-channel-pending.channel-x svg{color:#000}
+  .footer-channel-pending.channel-bluesky svg{color:#0560ff}
+  .footer-channel-pending.channel-mastodon svg{color:#6364ff}
+  .footer-channel-pending.channel-rss svg{color:#f26522}
+  .channel-mark{width:18px;height:18px;flex:none}
+  @media(max-width:760px){.footer-brand-area{grid-column:auto;display:block;grid-template-columns:none;gap:0}.footer-brand-name,.footer-brand-area>p{grid-column:auto;grid-row:auto}.footer-mini-contacts{grid-column:auto;grid-row:auto;min-width:0;max-width:none}}
+  @media(max-width:520px){.footer-brand-area{display:block;padding-bottom:17px}.footer-brand-name,.footer-brand-area>p{grid-column:auto;grid-row:auto}.footer-brand-area>p{max-width:none;margin:7px 0 0}.footer-mini-contacts{display:flex;grid-column:auto;grid-row:auto;flex-wrap:wrap;grid-template-columns:none;min-width:0;max-width:none;margin-top:12px}.footer-mini-contact,.footer-channel-pending{padding:7px 9px;font-size:.78rem}}
+  .footer-link-columns{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .footer-connect nav.footer-mini-contacts{display:grid;grid-template-columns:1fr;gap:8px;margin:0;min-width:0}
+  .footer-connect .footer-mini-contact,.footer-connect .footer-channel-pending{justify-content:flex-start;width:100%;min-height:38px;padding:7px 9px;font-size:.82rem}
+  @media(max-width:760px){.footer-link-columns{grid-template-columns:repeat(2,minmax(0,1fr));gap:21px 18px}.footer-link-group:last-child{grid-column:auto}.footer-connect nav.footer-mini-contacts{display:grid;grid-template-columns:1fr}}
+  @media(max-width:520px){.footer-link-columns{grid-template-columns:repeat(2,minmax(0,1fr));gap:19px 14px}.footer-link-group:last-child{grid-column:auto}.footer-connect .footer-mini-contact,.footer-connect .footer-channel-pending{font-size:.78rem}}
+.wrap table th,.wrap table td{overflow-wrap:anywhere;word-break:normal}</style>
+<style id="percenturl-shared-shell">
+.pu-shared-header,.pu-shared-footer{width:min(1080px,100%);margin-left:auto;margin-right:auto;color:var(--ink,#17263c)}
+.pu-shared-header{min-height:68px;padding:11px clamp(16px,3vw,28px);display:flex;align-items:center;justify-content:space-between;gap:18px;border-bottom:1px solid var(--line,#d8e2f0)}
+.pu-shared-brand{display:inline-flex;align-items:center;gap:10px;color:var(--ink,#17263c);font-size:1.12rem;font-weight:760;letter-spacing:-.025em;text-decoration:none;white-space:nowrap}
+.pu-shared-mark{display:grid;place-items:center;flex:none;width:38px;height:38px;border-radius:12px;background:#245fe8}
+.pu-shared-mark svg{display:block;width:72%;height:72%}
+.pu-shared-nav{display:flex;align-items:center;gap:22px}
+.pu-shared-nav a{color:var(--muted,#65758c);font-size:.88rem;font-weight:650;text-decoration:none}
+.pu-shared-nav a:hover,.pu-shared-footer a:hover{color:#245fe8}
+.pu-shared-footer{margin-top:36px;padding:22px clamp(16px,3vw,28px) 12px;border-top:1px solid var(--line,#d8e2f0)}
+.pu-shared-footer-brand{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:18px;border-bottom:1px solid var(--line,#d8e2f0)}
+.pu-shared-footer-brand p{max-width:570px;margin:0;color:var(--muted,#65758c);font-size:.88rem;line-height:1.55}
+.pu-shared-footer-columns{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;padding:18px 0}
+.pu-shared-footer-columns section{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.pu-shared-footer-columns h2{margin:0 0 2px;color:var(--ink,#17263c);font-size:.9rem;line-height:1.35}
+.pu-shared-footer a{color:var(--muted,#65758c);font-size:.83rem;text-decoration:none}
+.pu-shared-footer-bottom{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-top:12px;border-top:1px solid var(--line,#d8e2f0);color:var(--muted,#65758c);font-size:.76rem}
+@media(max-width:700px){.pu-shared-footer-columns{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px}.pu-shared-footer-brand{align-items:flex-start;flex-direction:column;gap:10px}}
+@media(max-width:430px){.pu-shared-header{gap:10px;padding-left:14px;padding-right:14px}.pu-shared-brand{gap:8px;font-size:1rem}.pu-shared-mark{width:34px;height:34px;border-radius:10px}.pu-shared-nav{gap:10px}.pu-shared-nav a{font-size:.72rem}.pu-shared-footer-bottom{align-items:flex-start;flex-direction:column;gap:6px}}
+</style>
+<style>
+.diagram{margin:1.2rem 0;padding:14px;background:#fff;border:1px solid var(--line);border-radius:14px}.diagram svg{display:block;width:100%;height:auto;max-height:210px}.diagram figcaption{margin-top:.5rem;color:var(--muted);font-size:.9rem}.callout{border-left:4px solid var(--accent)}.source-list li{overflow-wrap:anywhere}
+</style>
+<style>
+/* Match the footer to this page's .wrap content width. */
+.footer-reference{width:min(860px,calc(100% - 40px));margin:0 auto}
+</style>
+<style>
+/* Match homepage header geometry; preserve each page's theme colors. */
+.pu-shared-header{height:96px;min-height:96px;padding:0 28px;border-bottom:0;gap:18px}
+.pu-shared-brand{gap:12px;font-size:27.5px;font-weight:750;letter-spacing:-.025em}
+.pu-shared-mark{width:44px;height:44px;border-radius:14px}
+.pu-shared-nav{gap:24px;margin-left:auto}
+.pu-shared-nav a{font-size:.88rem}
+@media(max-width:720px){.pu-shared-header{flex-wrap:nowrap;height:90px;min-height:90px;padding:0 16px;gap:12px}.pu-shared-brand{gap:9px;font-size:1.08rem}.pu-shared-mark{width:38px;height:38px;border-radius:12px}.pu-shared-nav{flex:0 1 auto;justify-content:flex-end;gap:10px;white-space:nowrap}.pu-shared-nav a{font-size:.7rem}}
+@media(max-width:420px){.pu-shared-header{padding-left:11px;padding-right:11px}.pu-shared-nav{gap:9px}.pu-shared-nav a{font-size:.72rem}}
+@media(max-width:380px){.pu-shared-header{flex-wrap:wrap;height:auto;min-height:0;padding-top:11px;padding-bottom:11px;gap:9px}.pu-shared-nav{flex:1 0 100%;justify-content:flex-end}}
+</style>
+<style>
+/* Align header edges with this page's text content box. */
+.pu-shared-header{width:min(860px,calc(100% - 40px));padding:0;margin-left:auto;margin-right:auto}
+@media(max-width:720px){.pu-shared-header{width:calc(100% - 40px);padding:0}}
+@media(max-width:420px){.pu-shared-header{padding-left:0;padding-right:0}}
+@media(max-width:380px){.pu-shared-header{padding-top:11px;padding-bottom:11px}}
+</style>
+<style>
+:root{color-scheme:light;--bg:#f3f6fb;--panel:#fff;--ink:#17263c;--muted:#53657d;--line:#d9e2ef;--accent:#245fe8;--green:#087867}
+body{background:radial-gradient(ellipse at 50% -12%,#e5edff 0,transparent 42%),var(--bg);color:var(--ink)}
+.answer,.panel,.example{background:#f7f9fd;border-color:var(--line)}
+.answer{border-left-color:#0a8f80}.answer strong{color:#087867}.tool{background:#245fe8;color:#fff}
+code,pre{background:#f0f4fa;color:#17263c}.example{overflow-wrap:anywhere}
+.article-note{max-width:100%;margin:22px 0 0;padding:13px 15px;border:1px solid #d9e2ef;border-radius:10px;background:#f7f9fd;color:#53657d;overflow-wrap:anywhere}
+@media(max-width:560px){table{font-size:.82rem}th,td{padding:7px}}
+</style>
+<style>
+.video-embed{margin:1.5rem 0}
+.video-embed h2{margin:.4rem 0 .65rem}
+.video-frame{width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:12px;background:#0b1220}
+.video-frame iframe{display:block;width:100%;height:100%;border:0}
+.video-link{margin:.45rem 0 0;color:var(--muted);font-size:.9rem}
+</style><style id="percenturl-detail-sections-v2">
+/* Detail-page editorial system: calm section rhythm, one light surface per example, and clear table hierarchy. */
+.wrap h2:not(.footer-reference h2):not(.reltools h2):not(.panel h2):not(.blk){font-size:clamp(1.12rem,2.1vw,1.3rem);line-height:1.35;font-weight:740;letter-spacing:-.012em;color:var(--ink,#17263c);margin:2.15rem 0 .72rem;padding:0 0 .55rem;border-bottom:1px solid #e2e9f3}
+.wrap h2:not(.footer-reference h2):not(.reltools h2):not(.panel h2):not(.blk):first-child{margin-top:1.15rem}
+.wrap h3:not(.footer-reference h3):not(.fail h3){font-size:1rem;line-height:1.42;font-weight:700;color:var(--ink,#17263c);margin:1.25rem 0 .5rem}
+.wrap article p,.wrap>p{line-height:1.7;margin:.6rem 0 .95rem}
+.wrap article ul,.wrap article ol,.wrap>ul,.wrap>ol{padding-left:1.35rem;margin:.65rem 0 1.1rem}
+.wrap article li,.wrap>ul li,.wrap>ol li{line-height:1.7;margin:.38rem 0}
+.wrap table{width:100%;margin:1.05rem 0 1.35rem;border:1px solid #e0e7f1;border-radius:11px;border-collapse:separate;border-spacing:0;overflow:hidden;background:#fff}
+.wrap th,.wrap td{padding:10px 12px;line-height:1.6;text-align:left;vertical-align:top;border:0;border-bottom:1px solid #e8edf4}
+.wrap th+th,.wrap td+td{border-left:1px solid #edf1f6}
+.wrap th{background:#f3f6fb;color:#344b68;font-weight:700}
+.wrap tbody tr:last-child td{border-bottom:0}
+.wrap .example,.wrap .codebox,.wrap .step{margin:1rem 0 1.2rem;border:1px solid #e1e8f2;border-radius:11px;background:#f7f9fc;box-shadow:none}
+.wrap .example{padding:14px 16px}
+.wrap .codebox{padding:13px 15px}
+.wrap .step{padding:11px 14px;border-left:3px solid #9bb7f7;background:#f5f8fd}
+.wrap .example pre,.wrap .codebox pre{max-width:100%;overflow:auto;margin:.6rem 0;padding:12px 14px;border:0;border-radius:8px;background:#edf2f8;line-height:1.65}
+.wrap .note,.wrap .notice,.wrap .article-note,.wrap .answer{line-height:1.65}
+.wrap .note{margin:1rem 0;padding:11px 14px;border:0;border-left:3px solid #8baeff;border-radius:0 9px 9px 0;background:#f3f7fd;color:#435873;font-size:.9rem}
+.wrap .answer{margin:1rem 0 1.35rem}
+.wrap .panel{border-color:#e1e8f2;box-shadow:none}
+@media(max-width:600px){.wrap h2:not(.footer-reference h2):not(.reltools h2):not(.panel h2):not(.blk){margin-top:1.7rem}.wrap table{font-size:.9rem}.wrap th,.wrap td{padding:8px 9px}}
+</style></head>
+<body>
+<header class="pu-shared-header">
+  <a class="pu-shared-brand" href="/" aria-label="PercentURL home"><span class="pu-shared-mark"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="16.5" cy="15.5" r="4.2" fill="#fff"/><circle cx="31.5" cy="32.5" r="4.2" fill="#fff"/><path d="M31 12.5 17 35.5" fill="none" stroke="#fff" stroke-width="4.4" stroke-linecap="round"/></svg></span><span>PercentURL</span></a>
+  <nav class="pu-shared-nav" aria-label="Main navigation"><a href="/url-encode-and-decode">Encoding guide</a><a href="/percent-encoding">Percent encoding</a></nav>
+</header>
+<main class="wrap"><article>
+<p><a href="/">PercentURL</a> / Encoded URL</p>
+<h1>Encoded URL: Meaning, Examples, and How to Decode It</h1>
+<p class="sub">An encoded URL uses percent escapes to represent data inside URL components. Learn how to read those escapes without changing the link's structure.</p>
+<section class="answer" aria-label="Quick answer"><strong>Quick answer:</strong> In a percent-encoded URL, a sequence such as <code>%20</code> represents a byte written with two hexadecimal digits. Decode the component you need after parsing the URL; do not blindly decode the complete URL or repeatedly decode nested values. <a class="tool" href="/">Open the URL Encode / Decode tool</a></section>
+<section class="video-embed" aria-label="Encoded URL explainer video">
+  <h2>Watch the short explainer</h2>
+  <div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/RvhiKAiYNUE" title="Encoded URL: Meaning, Examples, and How to Decode It" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+  <p class="video-link"><a href="https://youtu.be/RvhiKAiYNUE" target="_blank" rel="noopener noreferrer">Watch this video on YouTube</a></p>
+</section><h2>What does “encoded URL” mean?</h2>
+<p>People use “encoded URL” to mean a URL that contains percent-encoded characters. A percent escape has the form <code>%HH</code>, where <code>HH</code> is a pair of hexadecimal digits representing one byte. For example, <code>%20</code> is the byte value 0x20, commonly used for a space in a URL component.</p>
+<p>That does not mean every character in the entire link has been replaced. A URL has parts—such as its scheme, host, path, query, and fragment—and visible characters like <code>?</code>, <code>=</code>, and <code>&amp;</code> often separate those parts. Percent encoding applies to data in a component; those structural separators usually need to remain recognizable.</p>
+<h2>Read the percent escapes as bytes</h2>
+<p>For non-ASCII text, a character may become several UTF-8 bytes, and each byte gets its own percent escape. The check mark <code>✓</code>, for example, is UTF-8 bytes <code>E2 9C 93</code>, so its percent-encoded form is <code>%E2%9C%93</code>. Three escapes here represent one Unicode character.</p>
+<p>The percent escapes alone do not tell you every detail of the original input. The decoder also needs the correct character encoding and the right component boundary. Percent encoding is a representation, not encryption: anyone with the URL can decode it.</p>
+<h2>Example: encoded data inside a query</h2>
+<p>Suppose a search phrase is <code>tea &amp; cake</code>, and <code>sort</code> is a separate query parameter. Encode the phrase as one value, then assemble the URL:</p>
+<div class="example"><p><strong>Value</strong></p><pre>tea &amp; cake</pre><p><strong>Encoded value</strong></p><pre>tea%20%26%20cake</pre><p><strong>URL with a separate sort parameter</strong></p><pre>https://example.com/search?q=tea%20%26%20cake&amp;sort=recent</pre></div>
+<p>The <code>%26</code> belongs to the search phrase. The final literal <code>&amp;</code> separates <code>q</code> from <code>sort</code>. Decoding the entire query string before parsing could turn the phrase's encoded ampersand into something that looks like another separator.</p>
+<h2>Spaces and plus signs are context-dependent</h2>
+<p>A space in a generic URL component is commonly written as <code>%20</code>. In <code>application/x-www-form-urlencoded</code> query data, a space is serialized as <code>+</code>; in that same form convention, a literal plus is represented as <code>%2B</code>. A plus sign in another URL component, such as a path, is not automatically a space. Check how the URL was produced and how the recipient parses it.</p>
+<h2>Decode nested URLs one layer at a time</h2>
+<p>Consider a redirect URL whose <code>next</code> parameter contains another URL. The outer query has to encode characters that belong to the inner link. When the outer query is parsed, its parameter value becomes the inner URL; then parse that inner URL to read its own query:</p>
+<div class="example"><pre>https://example.com/redirect?next=https%3A%2F%2Fshop.example%2Fsearch%3Fq%3Dtea%2520cake</pre><p>Parsing <code>next</code> yields:</p><pre>https://shop.example/search?q=tea%20cake</pre><p>Parsing the inner query value <code>q</code> then yields <code>tea cake</code>.</p></div>
+<p>In JavaScript, use the URL parser for each layer instead of manually decoding the full string repeatedly:</p>
+<div class="example"><pre>const outer = new URL("https://example.com/redirect?next=https%3A%2F%2Fshop.example%2Fsearch%3Fq%3Dtea%2520cake");
+const innerText = outer.searchParams.get("next");
+const inner = new URL(innerText);
+const query = inner.searchParams.get("q"); // "tea cake"</pre></div>
+<p>Here the outer query parser removes one encoding layer to recover the inner URL. The inner query parser then reads its <code>q</code> value. Each parser handles the structure for its own URL.</p>
+<h2>Why does <code>%2520</code> appear?</h2>
+<p><code>%25</code> represents a percent sign. So <code>%2520</code> decodes once to the three characters <code>%20</code>. That can be correct when an encoded value is intentionally carried inside another encoded component, as in the nested example. In a plain search value, it can also be a sign that already-encoded text was encoded again. Decide what each layer represents before decoding; do not apply repeated decoding just to make escapes disappear.</p>
+<table><thead><tr><th>What you see</th><th>What it can mean</th><th>Safe next step</th></tr></thead><tbody>
+<tr><td><code>%20</code></td><td>A percent escape for the space byte in a common URL component.</td><td>Parse the URL and decode the intended component.</td></tr>
+<tr><td><code>%2520</code></td><td>A percent sign encoded as <code>%25</code>, followed by <code>20</code>; it may be nested or accidentally encoded twice.</td><td>Identify the outer and inner data layers before decoding again.</td></tr>
+<tr><td><code>+</code></td><td>A form-style space in query data, or a literal plus in another context.</td><td>Check the serialization and parser convention.</td></tr>
+<tr><td>A broken percent escape</td><td>The percent sign is not followed by two hexadecimal digits, or the resulting bytes do not match the decoder's character encoding.</td><td>Keep the original value and locate the malformed sequence before changing it.</td></tr>
+</tbody></table>
+<h2>Use an online decoder carefully</h2>
+<p>For a whole link, choose a tool mode intended for a complete URL and preserve its separators. For one parameter value, select only that value and decode it once. If the content is a nested URL, parse the outer query first and the inner URL second. These steps help keep data characters from turning into URL syntax.</p>
+<p>PercentURL's browser-based tool can encode or decode text values and whole URLs. For a hands-on comparison of modes, see <a href="/url-encode-and-decode">URL Encode and Decode: choose the right mode</a>. For the byte-level notation, read <a href="/percent-encoding">Percent-encoding explained</a>; for a tool-focused guide, see <a href="/url-decoder">Decode a URL online</a>.</p>
+<aside class="article-note" aria-label="Related guide">Related guide: <a href="/encoded-url">Encoded URL: meaning, examples, and safe decoding</a>.</aside>
+<h2>References</h2>
+<ul class="source-list"><li><a href="https://www.rfc-editor.org/rfc/rfc3986.html#section-2.1">RFC 3986 §2.1 — Percent-Encoding</a></li><li><a href="https://www.rfc-editor.org/rfc/rfc3986.html#section-2.2">RFC 3986 §2.2 — Reserved Characters</a></li><li><a href="https://www.rfc-editor.org/rfc/rfc3986.html#section-2.4">RFC 3986 §2.4 — When to Encode or Decode</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams#percent_encoding">MDN — URLSearchParams percent encoding and plus signs</a></li></ul>
+<aside class="article-note" aria-label="Related guide">For a worked nested-link example, read <a href="/online-url-encode-redirect">Online URL encode: put a redirect URL in a query parameter</a>.</aside></article></main>
+<footer class="footer-reference" aria-label="PercentURL footer">
+  <div class="footer-main">
+    <section class="footer-brand-area" aria-label="PercentURL">
+      <a class="footer-brand-name" href="/" aria-label="PercentURL home"><span class="footer-brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="16.5" cy="15.5" r="4.2" fill="#fff"/><circle cx="31.5" cy="32.5" r="4.2" fill="#fff"/><path d="M31 12.5 17 35.5" fill="none" stroke="#fff" stroke-width="4.4" stroke-linecap="round"/></svg></span>PercentURL</a>
+      <p>Free browser-based tools to encode and decode text, parameter values, and whole URLs. Choose character and space handling, process multiple lines, and build UTM links — your data stays in your browser.</p>
+    </section>
+    <div class="footer-link-columns">
+      <section class="footer-link-group"><h2>Quick tools</h2><nav aria-label="Quick tools"><a href="/url-encoder-online">URL Encoder</a><a href="/#tool">URL Decoder</a><a href="/utm-builder">UTM Builder</a></nav></section>
+      <section class="footer-link-group"><h2>Explore</h2><nav aria-label="Explore"><a href="/url-encode-and-decode">Choose an encoding mode</a><a href="/percent-encoding">Percent-encoding</a><a href="/javascript">URL encoding in JavaScript</a><a href="/online-urlencoder">Online URL encoder guide</a><a href="/encoded-url">Encoded URL: meaning and examples</a><a href="/base64">Base64</a><a href="/html-entities">HTML Entities</a><a href="/jwt">JWT decoder</a></nav></section>
+      <section class="footer-link-group"><h2>PercentURL</h2><nav aria-label="About PercentURL"><a href="/about">About</a><a href="/contact">Contact</a><a href="/privacy">Privacy policy</a><a href="/#error-guide">Common encoding errors</a></nav></section>
+      <section class="footer-link-group footer-connect"><h2>Connect</h2><nav class="footer-mini-contacts" aria-label="Contact and social channels">
+        <a class="footer-mini-contact channel-email" href="/cdn-cgi/l/email-protection#8ae9e2efedf8e5ede5cafaeff8e9efe4fefff8e6a4e9e5e7" aria-label="Email PercentURL"><svg class="channel-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg>Email</a>
+        <a class="footer-mini-contact channel-youtube" href="https://www.youtube.com/channel/UCuScgMUGNsvqRn6ZizXoZtg" target="_blank" rel="noopener noreferrer" aria-label="PercentURL on YouTube"><svg class="channel-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4L15.9 12z"/></svg>YouTube</a>
+        <span class="footer-channel-pending channel-github" aria-label="GitHub profile not connected"><svg class="channel-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.56.1.76-.24.76-.54v-2.08c-3.1.67-3.76-1.32-3.76-1.32-.5-1.28-1.24-1.62-1.24-1.62-1.02-.7.08-.69.08-.69 1.12.08 1.71 1.15 1.71 1.15 1 .72 2.62.5 3.26.38.1-.73.39-1.22.71-1.5-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.21 1.15-2.99-.12-.28-.5-1.42.11-2.95 0 0 .94-.3 3.05 1.14a10.6 10.6 0 0 1 5.55 0c2.12-1.44 3.05-1.14 3.05-1.14.61 1.53.23 2.67.11 2.95.72.78 1.15 1.77 1.15 2.99 0 4.29-2.61 5.23-5.1 5.5.4.35.76 1.03.76 2.08v3.62c0 .3.2.65.77.54A11.1 11.1 0 0 0 12 .9Z"/></svg>GitHub</span>
+        <span class="footer-channel-pending channel-bluesky" aria-label="Bluesky profile not connected"><svg class="channel-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5.2 3.4C8 5.5 11 9.8 12 12c1-2.2 4-6.5 6.8-8.6 2-1.5 5.2-2.7 5.2 1 0 .8-.5 6.1-.8 7-.9 3.1-4 3.9-6.8 3.4 4.8.8 6 3.5 3.4 6.2-5 5.2-7.1-1.3-7.7-3.2-.1-.4-.2-.6-.2-.4 0-.2-.1 0-.2.4-.6 1.9-2.7 8.4-7.7 3.2-2.6-2.7-1.4-5.4 3.4-6.2-2.8.5-5.9-.3-6.8-3.4C.3 10.5-.2 5.2 0 4.4c0-3.7 3.2-2.5 5.2-1Z"/></svg>Bluesky</span>
+        <span class="footer-channel-pending channel-x" aria-label="X profile not connected"><svg class="channel-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3L12 14.7 5.6 22H2.4l7.3-8.4L1.8 2h6.5l4.5 6.7L18.9 2Zm-1.1 18h1.7L7.3 3.9H5.5L17.8 20Z"/></svg>X</span>
+        <span class="footer-channel-pending channel-mastodon" aria-label="Mastodon profile not connected"><svg class="channel-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.3 6.1c-.3-2.3-2.4-4.1-4.8-4.4C14.9 1.5 13.4 1.4 12 1.4s-2.9.1-4.5.3C5.1 2 3 3.8 2.7 6.1c-.4 3-.4 6.9.1 9.8.5 2.7 2.8 4.5 5.5 4.9 1.8.3 3.6.4 5.4.3 2.1-.1 3.9-.7 3.9-.7v-2.2s-1.8.6-3.8.7c-2 .1-4.1-.1-4.4-2.2l-.1-.8c1.9.5 4 .6 6 .4 2.4-.2 4.5-1.2 4.8-3.8.4-2.8.4-3.6.4-6.4ZM17.2 13h-2.7V7.3c0-1.2-.5-1.8-1.5-1.8s-1.7.7-1.7 2.1v3.1H8.7V7.6c0-1.4-.6-2.1-1.7-2.1s-1.5.6-1.5 1.8V13H2.8V7.1c0-1.3.3-2.3 1-3.1.7-.8 1.6-1.2 2.8-1.2 1.3 0 2.3.5 2.9 1.5L12 5.8l2.5-1.5c.6-1 1.6-1.5 2.9-1.5 1.2 0 2.1.4 2.8 1.2.7.8 1 1.8 1 3.1V13Z"/></svg>Mastodon</span>
+        <span class="footer-channel-pending channel-rss" aria-label="RSS feed not connected"><svg class="channel-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="5" cy="19" r="1.4" fill="currentColor" stroke="none"/><path d="M4 11a9 9 0 0 1 9 9M4 5a15 15 0 0 1 15 15"/></svg>RSS</span>
+      </nav></section>
+    </div>
+  </div>
+  <div class="footer-reference-bottom"><p>© 2026 PercentURL · All processing runs in your browser.</p><a href="/privacy">Privacy policy</a></div>
+</footer>
+
+
+
+
+
+
+
+
+
+
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"9a49bec77fcd476ea5c4ead947517895","r":1,"spa":2}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"9a49bec77fcd476ea5c4ead947517895","r":1,"spa":2}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"9a49bec77fcd476ea5c4ead947517895","r":1,"spa":2}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"9a49bec77fcd476ea5c4ead947517895","r":1,"spa":2}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"9a49bec77fcd476ea5c4ead947517895","r":1,"spa":2}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"9a49bec77fcd476ea5c4ead947517895","r":1,"spa":2}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"9a49bec77fcd476ea5c4ead947517895","r":1,"spa":2}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"9a49bec77fcd476ea5c4ead947517895","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
+
+

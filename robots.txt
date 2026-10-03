@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://percenturl.com/sitemap.xml
