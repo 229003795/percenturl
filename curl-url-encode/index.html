@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Use curl --data-urlencode to encode query values, combine parameters, choose GET or POST, and avoid shell quoting and double-encoding mistakes.">
+<title>curl URL Encode: Safely Add Query Values | PercentURL</title>
+<link rel="canonical" href="https://percenturl.com/curl-url-encode/">
+<style>
+:root{color-scheme:dark;--bg:#0f172a;--panel:#1e293b;--ink:#e2e8f0;--muted:#a8b5c7;--line:#334155;--accent:#38bdf8;--green:#34d399;--amber:#fbbf24}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:900px;margin:auto;padding:24px 20px 48px}a{color:var(--accent)}h1{font-size:clamp(1.8rem,5vw,2.45rem);line-height:1.2;margin:.25rem 0 .75rem}h2{font-size:1.35rem;margin:2.2rem 0 .5rem}.sub,.muted{color:var(--muted)}.sub{margin:.2rem 0 1.2rem}.answer,.panel,.example{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0}.answer{border-left:4px solid var(--green)}.answer strong{color:var(--green)}.tool{display:inline-block;background:var(--accent);color:#06121f;text-decoration:none;font-weight:700;padding:10px 15px;border-radius:8px;margin:.5rem 0}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}code{background:#0b1220;border-radius:4px;padding:.08rem .28rem;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1220;border-radius:8px;padding:12px;margin:.6rem 0}table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.94rem}th,td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}th{color:var(--muted)}li{margin:.4rem 0}.footer{border-top:1px solid var(--line);margin-top:2.4rem;padding-top:1rem;color:var(--muted);font-size:.9rem}.footer a{margin-right:.55rem}
+</style>
+<link rel="stylesheet" href="/assets/site-refresh.css">
+<style>
+/* This page uses the shared light theme; override the dark code colors from its standalone base styles. */
+code { background: #edf2fa; color: #24405f; }
+pre { background: #17243a; color: #eaf0f8; }
+pre code { background: transparent; color: inherit; padding: 0; }
+</style>
+</head>
+<body><main class="wrap">
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="PercentURL home"><span class="brand-mark">%</span>PercentURL</a>
+    <nav aria-label="Main navigation"><a href="/#task-hub-title">Tools</a><a href="/percent-encoding/">Guides</a><a href="/about/">About</a></nav>
+    <a class="header-cta" href="/#encoder">Open encoder <span aria-hidden="true">↗</span></a>
+  </header>
+<article>
+<p><a href="/">PercentURL</a> / Guides / curl URL Encode</p>
+<h1>curl URL Encode: Safely Add Query Values</h1>
+<p class="sub">Build a query string from raw values in the terminal. Let curl encode each value while keeping the parameter separators in place.</p>
+<section class="answer" aria-label="Quick answer"><strong>Quick answer:</strong> For a GET endpoint, pair <code>--get</code> with one <code>--data-urlencode</code> option per parameter. Quote each argument so the shell does not treat spaces or <code>&amp;</code> as command syntax.</section>
+<pre><code>curl --get --data-urlencode 'q=red &amp; blue' --data-urlencode 'page=2' 'https://api.example.test/search'</code></pre>
+<p>Here, <code>q</code> is one value: <code>red &amp; blue</code>. curl URL-encodes that value, then joins the fields as query parameters. The ampersand inside the search text is data; the separator between <code>q</code> and <code>page</code> is query structure.</p>
+<h2>What each option does</h2>
+<ul>
+<li><code>--data-urlencode 'q=red &amp; blue'</code> encodes the content after <code>=</code>. curl expects the parameter name in this form to already be URL-encoded.</li>
+<li><code>--get</code> moves the supplied data into the URL query and makes an HTTP GET request. Without it, curl's data options send an HTTP POST by default.</li>
+<li>Repeating <code>--data-urlencode</code> gives each value its own field. curl joins the fields with query separators; do not encode the whole query string as one value.</li>
+</ul>
+<p>The example uses shell quoting that works in Bash/Zsh and PowerShell. In Windows PowerShell, call <code>curl.exe</code> to avoid the older <code>curl</code> alias. For Command Prompt, use double quotes around the arguments so <code>&amp;</code> stays inside the quoted value.</p>
+<h2>GET query or POST form?</h2>
+<p>Use <code>--get</code> when the endpoint expects parameters in the URL:</p>
+<pre><code>curl --get --data-urlencode 'q=red &amp; blue' 'https://api.example.test/search'</code></pre>
+<p>For a form-style POST, omit <code>--get</code>:</p>
+<pre><code>curl --data-urlencode 'q=red &amp; blue' 'https://api.example.test/search'</code></pre>
+<p>Choose based on the API's documented method and content type. <code>--data-urlencode</code> is for URL-encoded form fields; it does not turn a request into JSON. If the API expects JSON, send the documented JSON body instead.</p>
+<h2>Common mistakes and quick fixes</h2>
+<table><thead><tr><th scope="col">Symptom</th><th scope="col">Likely cause</th><th scope="col">Fix</th></tr></thead><tbody>
+<tr><td>The command splits at <code>&amp;</code> or runs another command</td><td>The value or URL was not quoted for your shell.</td><td>Quote each argument. In Bash/Zsh and PowerShell, single quotes are convenient; in Command Prompt, use double quotes.</td></tr>
+<tr><td>The server receives POST instead of GET</td><td><code>--get</code> was omitted.</td><td>Add <code>--get</code> only when the endpoint expects a GET query.</td></tr>
+<tr><td>The server sees an unexpected extra parameter</td><td>A complete query string was passed as one field, so its internal separators became encoded data.</td><td>Pass each name/value pair as a separate <code>--data-urlencode</code> argument.</td></tr>
+<tr><td>A slash becomes <code>%252F</code></td><td>The value was already encoded as <code>%2F</code>; encoding it again escapes the percent sign.</td><td>Pass the raw slash once if it is data, or leave an intentionally encoded value alone. Do not pre-encode and then run it through <code>--data-urlencode</code>.</td></tr>
+</tbody></table>
+<h2>When you need to encode one value by hand</h2>
+<p>If you are building a command in another language or need to inspect one raw query value, encode that component alone. Keep the URL's <code>?</code>, <code>&amp;</code>, and <code>=</code> separators outside the value. The <a href="/url-encoder-online/">URL Encoder Online guide</a> explains the difference between a parameter value and a full URL; use the <a href="/#encoder">PercentURL encoder</a> for a one-off conversion. The browser tool does not send your curl request.</p>
+<h2>Sources</h2>
+<ul>
+<li><a href="https://curl.se/docs/manpage.html#--data-urlencode">curl man page: --data-urlencode</a></li>
+<li><a href="https://curl.se/docs/manpage.html#-G">curl man page: --get</a></li>
+<li><a href="https://curl.se/docs/httpscripting.html">curl: HTTP Scripting</a></li>
+<li><a href="https://curl.se/docs/url-syntax.html">curl URL syntax: spaces</a></li>
+</ul>
+</article>
+<footer class="ft">
+    <div class="ft-intro">
+      <span class="ft-mark" aria-hidden="true">%</span>
+      <div class="ft-intro-copy">
+        <strong>PercentURL</strong>
+        <p>Free URL tools that run in your browser.</p>
+        <span class="ft-privacy"><span aria-hidden="true">✓</span> Your text stays on your device</span>
+      </div>
+    </div>
+    <nav class="ft-nav" aria-label="Footer navigation">
+      <section class="ft-group" aria-labelledby="ft-tools-title">
+        <h2 id="ft-tools-title">Tools</h2>
+        <ul>
+          <li><a href="/#encoder">URL Encoder / Decoder</a></li>
+          <li><a href="/url-decoder/">URL Decoder</a></li>
+          <li><a href="/utm-builder/">UTM Builder</a></li>
+          <li><a href="/base64/">Base64</a></li>
+          <li><a href="/html-entities/">HTML Entities</a></li>
+          <li><a href="/jwt/">JWT Decoder</a></li>
+        </ul>
+      </section>
+      <section class="ft-group" aria-labelledby="ft-guides-title">
+        <h2 id="ft-guides-title">Guides</h2>
+        <ul>
+          <li><a href="/percent-encoding/">Percent-encoding</a></li>
+          <li><a href="/javascript/">URL encoding in JavaScript</a></li>
+          <li><a href="/url-encode-and-decode/">Choose an encoding mode</a></li>
+          <li><a href="/online-urlencoder/">URL encoder guide</a></li>
+          <li><a href="/curl-url-encode/">curl URL encoding</a></li>
+          <li><a href="/python-urlencode-nested-url/">Python URL encoding</a></li>
+        </ul>
+      </section>
+      <section class="ft-group" aria-labelledby="ft-about-title">
+        <h2 id="ft-about-title">About</h2>
+        <ul>
+          <li><a href="/about/">About PercentURL</a></li>
+          <li><a href="/contact/">Contact</a></li>
+        </ul>
+      </section>
+    </nav>
+    <div class="ft-bottom"><p class="copy">© 2026 PercentURL</p><nav class="ft-legal" aria-label="Legal"><a href="/privacy/">Privacy policy</a></nav></div>
+  </footer></main><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="/assets/detail-enhancements.js" defer></script>
+
+
+
+
+</body></html>

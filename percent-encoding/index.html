@@ -194,7 +194,11 @@ result: https://example.com/caf%C3%A9?q=caf%C3%A9%20%26%20tea</code></pre></div>
   </div>
 
   <!-- ⑦ related -->
-  <h2>⑦ Where to go next</h2>
+  <h2>Why should dynamic URL values be percent-encoded?</h2>
+<p>Dynamic text can contain characters that have structural meaning in a URL. If an ampersand from a search term is left raw inside a query value, a server may interpret the text after it as another parameter; spaces and non-ASCII text also need a representation the URI can carry. Encode the inserted value as its own component, then assemble it with the URL's real separators. Keep the original text until the receiving application has parsed the right component and decoded it. Percent-encoding is data formatting, not encryption or access control.</p>
+<h2>What are the reasons behind URL encoding?</h2>
+<p>Use percent-encoding to represent bytes that cannot safely appear raw in a URI component, and to keep data characters from being mistaken for delimiters such as <code>&amp;</code>, <code>=</code>, <code>?</code>, or <code>#</code>. It also gives non-ASCII text a defined byte representation. The goal is to preserve the value while the URL is parsed—not to encode every character in the complete link. Leave the scheme, host, and intended path/query separators in place, and encode only the data component that needs it.</p>
+<h2>⑦ Where to go next</h2>
   <div class="jump">
     <a href="/">→ URL Encoder tool (actually encode / decode)</a>
     <a href="/javascript/">→ URL encoding in JavaScript, with code examples</a>
@@ -259,5 +263,10 @@ result: https://example.com/caf%C3%A9?q=caf%C3%A9%20%26%20tea</code></pre></div>
   </footer>
 </div>
 <script src="/assets/detail-enhancements.js" defer></script>
+<script src="/assets/analytics-consent.js" defer></script>
+
+
+
+
 </body>
 </html>

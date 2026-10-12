@@ -34,17 +34,22 @@
 <p>Suppose the search phrase is <code>red shoes &amp; socks</code>. Encode that phrase, then add it after <code>q=</code>. Keep the real ampersand before <code>sort</code> as a separator:</p>
 <div class="example"><pre>https://example.com/search?q=red%20shoes%20%26%20socks&amp;sort=price</pre></div>
 <p>If you put the raw ampersand inside the value, a query parser can treat the text after it as another parameter. Encoding the value keeps the phrase together.</p>
+<h2>Why is replacing <code>&amp;</code> with <code>%26</code> not fixing my URL?</h2>
+<p>Encode an ampersand only when it belongs to a parameter value. If you replace every ampersand after assembling the URL, you can also erase the separators between real parameters. Start with the raw value, encode that one value, then build the query with a URL API. For example, the value <code>red &amp; blue</code> belongs as <code>q=red%20%26%20blue</code>, while the literal <code>&amp;</code> before <code>sort=recent</code> remains a separator. If the server still rejects it, inspect what the client sends and what each server layer decodes; do not encode the finished URL repeatedly.</p>
 <h2>Check for double encoding</h2>
 <p>If already encoded text is encoded again, percent escapes become ordinary encoded text. For example, <code>%20</code> can become <code>%2520</code> because the percent sign itself becomes <code>%25</code>. The receiving page may then display the escape characters instead of interpreting them as a space.</p>
 <p>Before encoding, check whether the input already contains escapes such as <code>%20</code> or <code>%2F</code>. Confirm whether those sequences are intended encoded data or literal text, then encode once when inserting the raw value into its URL component.</p>
 <h2>Spaces in a URL and form data</h2>
 <p>A space may appear as <code>%20</code> in percent-encoded URLs. In form-style query serialization, it may appear as <code>+</code>; a literal plus in that convention is commonly written <code>%2B</code>. Follow the format expected by the server or API that receives the URL.</p>
 <p>For a detailed comparison of component, full-URL, and form modes, see <a href="/url-encode-and-decode/">URL encode and decode: choose the right mode</a>.</p>
+<p>If an encoded slash (<code>%2F</code>) still returns 404, the receiving server may be rejecting or decoding it before the route runs. See <a href="/url-encoder-encoded-slash/">why an encoded slash can still return 404</a>.</p>
 <h2>Before you copy the finished link</h2>
 <ul><li>Did you encode only the value or component you intended?</li><li>Are <code>/</code>, <code>?</code>, <code>=</code>, and <code>&amp;</code> still in the right structural positions?</li><li>Did a literal percent sign become <code>%25</code>?</li><li>Did you avoid encoding the same value twice?</li><li>Does the receiving service expect <code>%20</code> or form-style <code>+</code> for spaces?</li></ul>
 <section class="panel"><h2>Encode your value now</h2><p>Use PercentURL’s browser-based URL encoder to encode one value, then review the finished URL in context before sharing or submitting it.</p><a class="tool" href="/">Open the URL Encoder / Decoder</a><p class="muted">For the underlying byte rules, read <a href="/percent-encoding/">What Is Percent-Encoding?</a></p></section>
 <section class="video-feature" aria-label="Watch: Percent-Encoding Fundamentals"><h2>Watch: Percent-Encoding Fundamentals</h2><p>See why an encoder should transform the value while preserving the URL structure.</p><div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/bwKKToP5i-o?rel=0" title="Watch: Percent-Encoding Fundamentals" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><p><a href="https://youtu.be/bwKKToP5i-o">Watch on YouTube</a></p></section>
-  <footer class="ft">
+  <p class="related-file-guide">For file bytes, use the documented upload format; this tool encodes text values. Read <a href="/url-encode-file/">when to URL encode a file</a>.</p>
+<p class="related-language-guide">Encoding a query value in code? Compare the matching APIs in <a href="/url-encode-python-java-php-csharp/">Python, Java, PHP, and C#</a>.</p>
+<footer class="ft">
     <div class="ft-intro">
       <span class="ft-mark" aria-hidden="true">%</span>
       <div class="ft-intro-copy">
@@ -85,4 +90,9 @@
     <p class="copy">© 2026 PercentURL · All processing runs in your browser.</p>
   </footer>
 </article></main><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="/assets/detail-enhancements.js" defer></script>
+<script src="/assets/analytics-consent.js" defer></script>
+
+
+
+
 </body></html>

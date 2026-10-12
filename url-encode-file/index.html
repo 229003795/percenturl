@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Learn when to upload file bytes, URL-encode a filename, or use Base64url—and what PercentURL can process.">
+<title>Should You URL Encode a File? Uploads vs Text Values</title>
+<style>
+:root{color-scheme:dark;--bg:#0f172a;--panel:#1e293b;--ink:#e2e8f0;--muted:#a8b5c7;--line:#334155;--accent:#38bdf8;--green:#34d399;--amber:#fbbf24}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:900px;margin:auto;padding:24px 20px 48px}a{color:var(--accent)}h1{font-size:clamp(1.8rem,5vw,2.45rem);line-height:1.2;margin:.25rem 0 .75rem}h2{font-size:1.35rem;margin:2.2rem 0 .5rem}.sub,.muted{color:var(--muted)}.sub{margin:.2rem 0 1.2rem}.answer,.panel,.example{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0}.answer{border-left:4px solid var(--green)}.answer strong{color:var(--green)}.tool{display:inline-block;background:var(--accent);color:#06121f;text-decoration:none;font-weight:700;padding:10px 15px;border-radius:8px;margin:.5rem 0}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}code{background:#0b1220;border-radius:4px;padding:.08rem .28rem;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1220;border-radius:8px;padding:12px;margin:.6rem 0}table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.94rem}th,td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}th{color:var(--muted)}li{margin:.4rem 0}.footer{border-top:1px solid var(--line);margin-top:2.4rem;padding-top:1rem;color:var(--muted);font-size:.9rem}.footer a{margin-right:.55rem}
+</style>
+<link rel="stylesheet" href="/assets/site-refresh.css">
+<link rel="canonical" href="https://percenturl.com/url-encode-file/">
+</head>
+<body><main class="wrap"><article>
+<p><a href="/">PercentURL</a> / File encoding</p>
+<h1>Should You URL Encode a File? Uploads vs Text Values</h1>
+<p class="sub">Choose the right place for file bytes, filenames, and small binary values instead of turning an entire file into a URL string.</p>
+<section class="answer" aria-label="Quick answer"><strong>Quick answer:</strong> Usually, do not percent-encode a file’s bytes into a URL. Send a file in the request body with the format the endpoint expects—commonly <code>multipart/form-data</code>. Percent-encode only a filename or other text value when it belongs in a URL component. Use Base64url only when the receiving API explicitly asks for that text representation. <br><a class="tool" href="/url-encoder-online/">Encode a filename or text value</a></section>
+<p>“URL encode a file” can mean three different things: encode its contents, encode its name, or upload the file to a web service. Those are different jobs. The wrong choice can produce an oversized string or a request the server does not understand.</p>
+<h2>Choose by what the server expects</h2>
+<table><thead><tr><th>Your task</th><th>Where the data goes</th><th>Use this</th></tr></thead><tbody>
+<tr><td>Upload a document, image, or other file</td><td>HTTP request body</td><td>The endpoint’s documented upload format, often <code>multipart/form-data</code></td></tr>
+<tr><td>Put a filename, search term, or label in a URL</td><td>One path or query component</td><td>Percent-encode that text value; preserve the URL’s separators</td></tr>
+<tr><td>Send bytes through an API field that accepts text only</td><td>A text field in the API’s defined payload</td><td>Use the exact encoding the API specifies, such as Base64url</td></tr>
+<tr><td>Share a file with someone</td><td>A URL that identifies a stored resource</td><td>Upload the file, then share its link; do not put the file contents in the link</td></tr>
+</tbody></table>
+<h2>Uploading a file is not URL encoding</h2>
+<p>For a browser form upload, <code>multipart/form-data</code> puts the file in a request body as a part. The part can carry a filename and a media type; it is separate from the page URL. RFC 7578 defines this format and its parts. The server’s API documentation decides whether to use multipart, a raw binary body, or another upload method.</p>
+<pre><code>&lt;form method="post" enctype="multipart/form-data"&gt;
+  &lt;input type="file" name="file"&gt;
+  &lt;button type="submit"&gt;Upload&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+<p>This form is a shape example only; it has no destination or server implementation. A real upload must use the endpoint supplied by your service.</p>
+<h2>Encode a filename only when it becomes URL text</h2>
+<p>If a URL needs a filename such as <code>quarterly report #2.csv</code>, treat the filename as one path segment or query value. Encode the text for that context, then assemble it into the URL. Do not encode <code>https://</code>, the entire path, or query separators as though they were part of the filename. See the <a href="/url-encoder-online/">URL encoder guide</a> for component boundaries.</p>
+<p>File names inside an upload header are a separate format again. Do not copy a URL-encoded filename into an upload header unless that upload protocol tells you to; follow the endpoint’s filename rules.</p>
+<h2>When Base64url is the right choice</h2>
+<p>Some APIs require binary bytes to be represented as text inside JSON or another text-only field. In that case, follow the API’s specified encoding. Base64url uses a URL- and filename-safe alphabet in place of standard Base64’s <code>+</code> and <code>/</code>; padding rules depend on the receiving format. It is still an encoding, not encryption. Percent-encoding and Base64url are not interchangeable.</p>
+<p>For example, the three bytes <code>00 7F FF</code> can be written as percent-encoded bytes <code>%00%7F%FF</code>, standard Base64 <code>AH//</code>, or Base64url <code>AH__</code>. In this specific example, the percent form occupies 9 visible characters and each Base64 form 4. The service must decode the same representation you send. For a browser-based Base64 tool, see <a href="/base64/">Base64 Encoder / Decoder</a>.</p>
+<h2>What PercentURL can encode</h2>
+<p>The PercentURL encoder accepts text; its current page does not provide a file picker or file-upload workflow. Use it for a textual filename, query value, or other text that belongs in a URL—not for a file’s raw contents. If a service requires a file, use that service’s upload endpoint and its documented request format.</p>
+<h2>Before you send the request</h2>
+<ul><li>Check the endpoint documentation for the expected method, body type, and field name.</li><li>Keep file bytes in the request body unless the API specifically requires a textual encoding.</li><li>Encode only the filename or metadata value that belongs in a URL, not the URL structure around it.</li><li>Do not treat percent-encoding or Base64url as encryption; neither hides sensitive data.</li></ul>
+<h2>References</h2>
+<ul><li><a href="https://www.rfc-editor.org/rfc/rfc7578">RFC 7578: multipart/form-data</a> — file parts, filenames, and media types.</li><li><a href="https://www.rfc-editor.org/rfc/rfc4648#section-5">RFC 4648 §5: Base64url</a> — URL- and filename-safe Base64 alphabet.</li><li><a href="https://www.rfc-editor.org/rfc/rfc3986#section-2.1">RFC 3986 §2.1</a> — percent-encoding represents octets inside URI components.</li></ul>
+</article><footer class="ft">
+    <div class="ft-intro">
+      <span class="ft-mark" aria-hidden="true">%</span>
+      <div class="ft-intro-copy">
+        <strong>PercentURL</strong>
+        <p>Free URL tools that run in your browser.</p>
+        <span class="ft-privacy"><span aria-hidden="true">✓</span> Your text stays on your device</span>
+      </div>
+    </div>
+    <nav class="ft-nav" aria-label="Footer navigation">
+      <section class="ft-group" aria-labelledby="ft-tools-title">
+        <h2 id="ft-tools-title">Tools</h2>
+        <ul>
+          <li><a href="/#encoder">URL Encoder / Decoder</a></li>
+          <li><a href="/url-decoder/">URL Decoder</a></li>
+          <li><a href="/utm-builder/">UTM Builder</a></li>
+          <li><a href="/base64/">Base64</a></li>
+          <li><a href="/html-entities/">HTML Entities</a></li>
+          <li><a href="/jwt/">JWT Decoder</a></li>
+        </ul>
+      </section>
+      <section class="ft-group" aria-labelledby="ft-guides-title">
+        <h2 id="ft-guides-title">Guides</h2>
+        <ul>
+          <li><a href="/percent-encoding/">Percent-encoding</a></li>
+          <li><a href="/javascript/">URL encoding in JavaScript</a></li>
+          <li><a href="/url-encode-and-decode/">Choose an encoding mode</a></li>
+          <li><a href="/online-urlencoder/">URL encoder guide</a></li>
+          <li><a href="/curl-url-encode/">curl URL encoding</a></li>
+          <li><a href="/python-urlencode-nested-url/">Python URL encoding</a></li>
+          <li><a href="/url-encode-file/">URL encode a file</a></li>
+          <li><a href="/mailto-url-encode/">Encode a mailto link</a></li>
+          <li><a href="/url-encode-space-search-sites/">URL spaces in search</a></li>
+        </ul>
+      </section>
+      <section class="ft-group" aria-labelledby="ft-about-title">
+        <h2 id="ft-about-title">About</h2>
+        <ul>
+          <li><a href="/about/">About PercentURL</a></li>
+          <li><a href="/contact/">Contact</a></li>
+        </ul>
+      </section>
+    </nav>
+    <div class="ft-bottom"><p class="copy">© 2026 PercentURL</p><nav class="ft-legal" aria-label="Legal"><a href="/privacy/">Privacy policy</a></nav></div>
+  </footer></main><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="/assets/detail-enhancements.js" defer></script>
+<script src="/assets/analytics-consent.js" defer></script>
+
+
+
+
+</body></html>

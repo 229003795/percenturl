@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Use an encodeURL online tool for one-off values, or learn when Node.js encodeurl is the right fit. Compare component encoding, URLSearchParams, and server-side URL handling.">
+<title>EncodeURL Online: Browser Tool or Node.js encodeurl?</title>
+<link rel="canonical" href="https://percenturl.com/encodeurl-online/">
+<style>
+:root{color-scheme:dark;--bg:#0f172a;--panel:#1e293b;--ink:#e2e8f0;--muted:#a8b5c7;--line:#334155;--accent:#38bdf8;--green:#34d399;--amber:#fbbf24}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:900px;margin:auto;padding:24px 20px 48px}a{color:var(--accent)}h1{font-size:clamp(1.8rem,5vw,2.45rem);line-height:1.2;margin:.25rem 0 .75rem}h2{font-size:1.35rem;margin:2.2rem 0 .5rem}.sub,.muted{color:var(--muted)}.sub{margin:.2rem 0 1.2rem}.answer,.panel,.example{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0}.answer{border-left:4px solid var(--green)}.answer strong{color:var(--green)}.tool{display:inline-block;background:var(--accent);color:#06121f;text-decoration:none;font-weight:700;padding:10px 15px;border-radius:8px;margin:.5rem 0}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}code{background:#0b1220;border-radius:4px;padding:.08rem .28rem;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1220;border-radius:8px;padding:12px;margin:.6rem 0}table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.94rem}th,td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}th{color:var(--muted)}li{margin:.4rem 0}.footer{border-top:1px solid var(--line);margin-top:2.4rem;padding-top:1rem;color:var(--muted);font-size:.9rem}.footer a{margin-right:.55rem}
+</style>
+<link rel="stylesheet" href="/assets/site-refresh.css">
+<style>
+/* This page uses the shared light theme; override the dark code colors from its standalone base styles. */
+code { background: #edf2fa; color: #24405f; }
+pre { background: #17243a; color: #eaf0f8; }
+pre code { background: transparent; color: inherit; padding: 0; }
+</style>
+</head>
+<body><main class="wrap">
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="PercentURL home"><span class="brand-mark">%</span>PercentURL</a>
+    <nav aria-label="Main navigation"><a href="/#task-hub-title">Tools</a><a href="/percent-encoding/">Guides</a><a href="/about/">About</a></nav>
+    <a class="header-cta" href="/#encoder">Open encoder <span aria-hidden="true">↗</span></a>
+  </header>
+<article>
+<p><a href="/">PercentURL</a> / Guides / EncodeURL Online</p>
+<h1>EncodeURL Online: Browser Tool or Node.js <code>encodeurl</code>?</h1>
+<p class="sub">Use a browser-based encoder for a one-off value. Use Node.js <code>encodeurl</code> when your server needs to encode an already-built URL string. They solve different jobs.</p>
+<section class="answer" aria-label="Quick answer"><strong>Quick answer:</strong> Need to encode text for a link? Open the <a href="/#encoder">PercentURL encoder</a> and choose <b>Text / value</b> for one component, or <b>Full URL</b> to preserve a complete link’s structure. In server code, the Node.js <code>encodeurl</code> package handles URL strings while preserving valid percent-encoded sequences; it does not parse or format the URL for you.</section>
+<p>For example, encode the single value <code>café &amp; tea</code> as <code>caf%C3%A9%20%26%20tea</code>. Keep the surrounding <code>?q=</code> structure outside that value. If you are writing Node.js code rather than encoding one item by hand, choose the API for the component you are building.</p>
+<h2>Choose the encoder for the job</h2>
+<table><thead><tr><th scope="col">What you need</th><th scope="col">Use</th><th scope="col">Why</th></tr></thead><tbody>
+<tr><td>Encode one phrase or parameter value online</td><td><a href="/#encoder">PercentURL Text / value mode</a></td><td>It treats reserved characters in the input as data. For <code>café &amp; tea</code>, the result is <code>caf%C3%A9%20%26%20tea</code>.</td></tr>
+<tr><td>Build a query string in browser or Node.js code</td><td><code>URLSearchParams</code></td><td>It serializes name/value pairs as form-style query data; spaces may appear as <code>+</code>, while a literal plus is encoded as <code>%2B</code>.</td></tr>
+<tr><td>Encode a composed URL string for server output</td><td>Node.js <code>encodeurl</code></td><td>It encodes non-URL code points as UTF-8 and preserves valid percent sequences such as <code>%20</code>. It does not parse or format URL components.</td></tr>
+<tr><td>Encode one dynamic JavaScript value</td><td><code>encodeURIComponent(value)</code></td><td>It encodes component data. Do not run it over a whole URL whose separators must remain structural.</td></tr>
+</tbody></table>
+<h2>What the Node.js <code>encodeurl</code> package does</h2>
+<p>The package maintained by PillarJS accepts a URL string and converts non-URL code points to UTF-8 percent-encoded bytes. A valid existing escape such as <code>%20</code> is left intact; an invalid percent sequence such as <code>%foo</code> is encoded as data. The package is similar to JavaScript’s <code>encodeURI</code>, but it does not parse or format the URL.</p>
+<p>That distinction matters for query values. If the text <code>red &amp; blue</code> belongs inside one parameter, a URL-level encoder may leave <code>&amp;</code> as URL syntax. Use <code>URLSearchParams</code> or encode that single value with <code>encodeURIComponent</code> so the ampersand stays data.</p>
+<pre><code>const encodeUrl = require('encodeurl');
+
+// Build and validate the URL structure first.
+const rawLocation = buildRedirectLocation(request);
+response.setHeader('Location', encodeUrl(rawLocation));</code></pre>
+<p>The application still owns URL construction and validation. Encoding does not encrypt data, approve a redirect destination, or replace checks required by your framework.</p>
+<h2>When to use PercentURL online</h2>
+<ol><li>Identify whether the input is one value or a complete URL.</li><li>For one value, use <b>Text / value</b>; for a structured link, use <b>Full URL</b>.</li><li>Encode once, then inspect the finished URL in context.</li><li>For query strings created in code, prefer the platform’s URL builder rather than concatenating raw separators.</li></ol>
+<p>The browser tool is useful for a one-off conversion; the Node.js package belongs in a server workflow. Neither is a substitute for the other when the input context differs.</p>
+<section class="panel"><h2>Try the online encoder</h2><p>Encode one value or inspect a complete URL in your browser. The tool runs locally in the page.</p><a class="tool" href="/#encoder">Open PercentURL Encoder / Decoder</a><p class="muted">For JavaScript APIs, see <a href="/javascript/">URL encoding in JavaScript</a>. For the general browser workflow, read <a href="/url-encoder-online/">URL Encoder Online</a>.</p></section>
+<h2>Sources</h2>
+<ul><li><a href="https://github.com/pillarjs/encodeurl">PillarJS encodeurl documentation</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent">MDN: encodeURIComponent()</a></li><li><a href="https://url.spec.whatwg.org/">WHATWG URL Standard</a></li></ul>  <footer class="ft">
+    <div class="ft-intro">
+      <span class="ft-mark" aria-hidden="true">%</span>
+      <div class="ft-intro-copy">
+        <strong>PercentURL</strong>
+        <p>Free browser-based tools. Your text stays in your browser.</p>
+      </div>
+    </div>
+    <nav class="ft-nav" aria-label="Footer navigation">
+      <section class="ft-group" aria-labelledby="ft-tools-title">
+        <h2 id="ft-tools-title">Tools</h2>
+        <ul>
+          <li><a href="/">URL Encoder / Decoder</a></li>
+          <li><a href="/url-decoder/">URL Decoder</a></li>
+          <li><a href="/utm-builder/">UTM Builder</a></li>
+          <li><a href="/base64/">Base64 Encoder / Decoder</a></li>
+          <li><a href="/html-entities/">HTML Entities</a></li>
+          <li><a href="/jwt/">JWT Decoder</a></li>
+        </ul>
+      </section>
+      <section class="ft-group" aria-labelledby="ft-guides-title">
+        <h2 id="ft-guides-title">Guides</h2>
+        <ul>
+          <li><a href="/url-encode-and-decode/">Choose an encoding mode</a></li>
+          <li><a href="/percent-encoding/">Percent-encoding</a></li>
+          <li><a href="/javascript/">URL encoding in JavaScript</a></li>
+          <li><a href="/online-urlencoder/">Online URL encoder guide</a></li>
+        </ul>
+      </section>
+      <section class="ft-group" aria-labelledby="ft-about-title">
+        <h2 id="ft-about-title">About</h2>
+        <ul>
+          <li><a href="/about/">About PercentURL</a></li>
+          <li><a href="/privacy/">Privacy policy</a></li>
+          <li><a href="/contact/">Contact</a></li>
+        </ul>
+      </section>
+    </nav>
+    <p class="copy">© 2026 PercentURL · All processing runs in your browser.</p>
+  </footer>
+</article></main><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="/assets/detail-enhancements.js" defer></script>
+
+<script src="/assets/analytics-consent.js" defer></script>
+
+
+
+
+</body></html>

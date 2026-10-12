@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="We entered “url encode space” in six site search boxes and compared %20 with + on three search endpoints. See the dated results and limits.">
+<title>URL Encode Space: Six Search Sites Compared</title>
+<link rel="canonical" href="https://percenturl.com/url-encode-space-search-sites/">
+<style>
+:root{color-scheme:dark;--bg:#0f172a;--panel:#1e293b;--ink:#e2e8f0;--muted:#a8b5c7;--line:#334155;--accent:#38bdf8;--green:#34d399;--amber:#fbbf24}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:900px;margin:auto;padding:24px 20px 48px}a{color:var(--accent)}h1{font-size:clamp(1.8rem,5vw,2.45rem);line-height:1.2;margin:.25rem 0 .75rem}h2{font-size:1.35rem;margin:2.2rem 0 .5rem}.sub,.muted{color:var(--muted)}.sub{margin:.2rem 0 1.2rem}.answer,.panel,.example{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0}.answer{border-left:4px solid var(--green)}.answer strong{color:var(--green)}.tool{display:inline-block;background:var(--accent);color:#06121f;text-decoration:none;font-weight:700;padding:10px 15px;border-radius:8px;margin:.5rem 0}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}code{background:#0b1220;border-radius:4px;padding:.08rem .28rem;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1220;border-radius:8px;padding:12px;margin:.6rem 0}table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.94rem}th,td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}th{color:var(--muted)}li{margin:.4rem 0}.footer{border-top:1px solid var(--line);margin-top:2.4rem;padding-top:1rem;color:var(--muted);font-size:.9rem}.footer a{margin-right:.55rem}
+</style>
+<link rel="stylesheet" href="/assets/site-refresh.css">
+<style>
+/* This page uses the shared light theme; override the dark code colors from its standalone base styles. */
+code { background: #edf2fa; color: #24405f; }
+pre { background: #17243a; color: #eaf0f8; }
+pre code { background: transparent; color: inherit; padding: 0; }
+</style>
+</head>
+<body><main class="wrap">
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="PercentURL home"><span class="brand-mark">%</span>PercentURL</a>
+    <nav aria-label="Main navigation"><a href="/#task-hub-title">Tools</a><a href="/percent-encoding/">Guides</a><a href="/about/">About</a></nav>
+    <a class="header-cta" href="/#encoder">Open encoder <span aria-hidden="true">↗</span></a>
+  </header>
+<article>
+  <nav class="nav" aria-label="Breadcrumb"><a href="/">Home</a> / URL encoding field notes</nav>
+  <h1>URL Encode Space: Six Search Sites Compared</h1>
+  <p class="sub">A dated field check of how six site search boxes represent spaces in their query URLs.</p>
+  <div class="answer"><strong>Short answer:</strong> On October 6, 2026, six tested search boxes wrote spaces as <code>+</code> in their query parameters. YouTube also normalized a tested <code>%20</code> query to <code>+</code>; the result is specific to these endpoints and this input.</div>
+  <p>On October 6, 2026, YouTube displayed the same search phrase, <code>url encode space</code>, for <code>search_query=url%20encode%20space</code> and <code>search_query=url+encode+space</code>, then normalized the <code>%20</code> address to <code>+</code>.</p>
+  <p>All six site searches—Google, YouTube, Wikipedia, Amazon, GitHub, and eBay—serialized spaces as <code>+</code> in their query parameters on October 6, 2026. This is a dated six-site sample, not an internet-wide count.</p>
+  <p>That is what these specific search endpoints did during this check. It is not a rule for every URL, path, API, or website.</p>
+  <h2>What appeared in each search URL</h2>
+  <div class="table-wrap"><table><thead><tr><th>Site</th><th>Search parameter</th><th>Address-bar form observed</th><th>Result page</th></tr></thead><tbody>
+    <tr><td>Google</td><td><code>q</code></td><td><code>q=url+encode+space</code></td><td><a href="https://www.google.com/search?q=url+encode+space">Open the observed search</a></td></tr>
+    <tr><td>YouTube</td><td><code>search_query</code></td><td><code>search_query=url+encode+space</code></td><td><a href="https://www.youtube.com/results?search_query=url+encode+space">Open the observed search</a></td></tr>
+    <tr><td>Wikipedia</td><td><code>search</code></td><td><code>search=url+encode+space</code></td><td><a href="https://zh.wikipedia.org/wiki/Special:Search?search=url+encode+space&amp;go=Go&amp;ns0=1">Open the observed search</a></td></tr>
+    <tr><td>Amazon</td><td><code>k</code></td><td><code>k=url+encode+space</code></td><td><a href="https://www.amazon.com/s?k=url+encode+space&amp;__mk_zh_CN=%E4%BA%9A%E9%A9%AC%E7%BD%91%E7%AB%99&amp;ref=nb_sb_noss">Open the observed search</a></td></tr>
+    <tr><td>GitHub</td><td><code>q</code></td><td><code>q=url+encode+space</code></td><td><a href="https://github.com/search?q=url+encode+space&amp;type=repositories">Open the observed repository search</a></td></tr>
+    <tr><td>eBay</td><td><code>_nkw</code></td><td><code>_nkw=url+encode+space</code></td><td><a href="https://www.ebay.com/sch/i.html?_nkw=url+encode+space&amp;_sacat=0&amp;_from=R40&amp;_trksid=m570.l1313">Open the observed search</a></td></tr>
+  </tbody></table></div>
+  <h2>Did <code>%20</code> and <code>+</code> show different searches?</h2>
+  <p>We opened each endpoint with the same words, changing only the two spaces:</p>
+  <div class="table-wrap"><table><thead><tr><th>Search endpoint</th><th>Entered with <code>%20</code></th><th>Entered with <code>+</code></th><th>Text shown by the site</th></tr></thead><tbody>
+    <tr><td>Google <code>q</code></td><td><code>q=url%20encode%20space</code></td><td><code>q=url+encode+space</code></td><td><code>url encode space</code> for both</td></tr>
+    <tr><td>YouTube <code>search_query</code></td><td><code>search_query=url%20encode%20space</code></td><td><code>search_query=url+encode+space</code></td><td><code>url encode space</code> for both; the <code>%20</code> address was normalized to <code>+</code></td></tr>
+    <tr><td>Wikipedia <code>search</code></td><td><code>search=url%20encode%20space</code></td><td><code>search=url+encode+space</code></td><td>Search title showed <code>url encode space</code> for both</td></tr>
+  </tbody></table></div>
+  <p>For this input on these endpoints, either spelling reached the same visible search words. The address-bar behavior was not identical: YouTube normalized <code>%20</code>, while Google and Wikipedia retained the submitted spelling.</p>
+  <h2>What this check shows—and what it does not</h2>
+  <ul><li>In this sample, a visible <code>+</code> in each site's search query corresponded to a space in the phrase displayed by the site.</li>
+  <li>This does not show that <code>+</code> means a space in every URL component. It covers only the named search query parameters and tested input.</li>
+  <li>When building a link for another service, follow that service's expected query format and verify the resulting value. A literal plus sign and a space are different input characters.</li></ul>
+  <h2>How we checked</h2>
+  <p>On October 6, 2026, we entered the exact phrase <code>url encode space</code> into each of the six sites' own search fields and recorded the resulting URL. For the paired check, we opened the same Google, YouTube, and Wikipedia search endpoints twice, once using <code>%20</code> and once using <code>+</code>, then compared the final address and visible query text.</p>
+  <p>Reddit required login or a developer token before a search could be submitted, and Stack Overflow showed an anti-bot challenge, so neither was counted.</p>
+  <p>Download the <a href="/assets/downloads/url-encode-space-observations-20261006.csv" download>dated observation CSV</a> with the source URLs and paired test inputs. This small sample does not measure search demand, rankings, or behavior on every site.</p>
+  <p>For technical context, see the <a href="https://url.spec.whatwg.org/#application/x-www-form-urlencoded">WHATWG form-urlencoded serializer</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams#percent_encoding">MDN's URLSearchParams percent-encoding reference</a>.</p>
+  <p><strong>Related tool:</strong> <a href="/#encoder">URL Encoder / Decoder</a> — choose the encoding mode expected by the service receiving your URL.</p>
+</article><footer class="ft">
+    <div class="ft-intro">
+      <span class="ft-mark" aria-hidden="true">%</span>
+      <div class="ft-intro-copy">
+        <strong>PercentURL</strong>
+        <p>Free URL tools that run in your browser.</p>
+        <span class="ft-privacy"><span aria-hidden="true">✓</span> Your text stays on your device</span>
+      </div>
+    </div>
+    <nav class="ft-nav" aria-label="Footer navigation">
+      <section class="ft-group" aria-labelledby="ft-tools-title">
+        <h2 id="ft-tools-title">Tools</h2>
+        <ul>
+          <li><a href="/#encoder">URL Encoder / Decoder</a></li>
+          <li><a href="/url-decoder/">URL Decoder</a></li>
+          <li><a href="/utm-builder/">UTM Builder</a></li>
+          <li><a href="/base64/">Base64</a></li>
+          <li><a href="/html-entities/">HTML Entities</a></li>
+          <li><a href="/jwt/">JWT Decoder</a></li>
+        </ul>
+      </section>
+      <section class="ft-group" aria-labelledby="ft-guides-title">
+        <h2 id="ft-guides-title">Guides</h2>
+        <ul>
+          <li><a href="/percent-encoding/">Percent-encoding</a></li>
+          <li><a href="/javascript/">URL encoding in JavaScript</a></li>
+          <li><a href="/url-encode-and-decode/">Choose an encoding mode</a></li>
+          <li><a href="/online-urlencoder/">URL encoder guide</a></li>
+          <li><a href="/curl-url-encode/">curl URL encoding</a></li>
+          <li><a href="/python-urlencode-nested-url/">Python URL encoding</a></li>
+          <li><a href="/url-encode-space-search-sites/">URL spaces in search</a></li>
+        </ul>
+      </section>
+      <section class="ft-group" aria-labelledby="ft-about-title">
+        <h2 id="ft-about-title">About</h2>
+        <ul>
+          <li><a href="/about/">About PercentURL</a></li>
+          <li><a href="/contact/">Contact</a></li>
+        </ul>
+      </section>
+    </nav>
+    <div class="ft-bottom"><p class="copy">© 2026 PercentURL</p><nav class="ft-legal" aria-label="Legal"><a href="/privacy/">Privacy policy</a></nav></div>
+  </footer>
+</main><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="/assets/detail-enhancements.js" defer></script>
+
+<script src="/assets/analytics-consent.js" defer></script>
+
+
+
+
+</body></html>

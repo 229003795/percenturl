@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Build a nested URL query parameter in Python with urllib.parse.urlencode. See runnable code, parse each layer once, and avoid broken separators and double decoding.">
+<title>Python urlencode: Put a Nested URL in One Query Parameter</title>
+<link rel="canonical" href="https://percenturl.com/python-urlencode-nested-url/">
+<style>
+:root{color-scheme:dark;--bg:#0f172a;--panel:#1e293b;--ink:#e2e8f0;--muted:#a8b5c7;--line:#334155;--accent:#38bdf8;--green:#34d399;--amber:#fbbf24}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:900px;margin:auto;padding:24px 20px 48px}a{color:var(--accent)}h1{font-size:clamp(1.8rem,5vw,2.45rem);line-height:1.2;margin:.25rem 0 .75rem}h2{font-size:1.35rem;margin:2.2rem 0 .5rem}.sub,.muted{color:var(--muted)}.sub{margin:.2rem 0 1.2rem}.answer,.panel,.example{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0}.answer{border-left:4px solid var(--green)}.answer strong{color:var(--green)}.tool{display:inline-block;background:var(--accent);color:#06121f;text-decoration:none;font-weight:700;padding:10px 15px;border-radius:8px;margin:.5rem 0}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}code{background:#0b1220;border-radius:4px;padding:.08rem .28rem;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1220;border-radius:8px;padding:12px;margin:.6rem 0}table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.94rem}th,td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}th{color:var(--muted)}li{margin:.4rem 0}.footer{border-top:1px solid var(--line);margin-top:2.4rem;padding-top:1rem;color:var(--muted);font-size:.9rem}.footer a{margin-right:.55rem}
+</style>
+<link rel="stylesheet" href="/assets/site-refresh.css">
+<style>
+/* This page uses the shared light theme; override the dark code colors from its standalone base styles. */
+code { background: #edf2fa; color: #24405f; }
+pre { background: #17243a; color: #eaf0f8; }
+pre code { background: transparent; color: inherit; padding: 0; }
+</style>
+</head>
+<body><main class="wrap">
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="PercentURL home"><span class="brand-mark">%</span>PercentURL</a>
+    <nav aria-label="Main navigation"><a href="/#task-hub-title">Tools</a><a href="/percent-encoding/">Guides</a><a href="/about/">About</a></nav>
+    <a class="header-cta" href="/#encoder">Open encoder <span aria-hidden="true">↗</span></a>
+  </header>
+<article>
+<p><a href="/">PercentURL</a> / Guides / Python URL encoding</p>
+<h1>Python <code>urlencode</code>: Put a Nested URL in One Query Parameter</h1>
+<p class="sub">Build the inner URL first, then use <code>urllib.parse.urlencode()</code> to add it as one value in an outer query string. Parse each layer once on the way back.</p>
+<section class="answer" aria-label="Quick answer"><strong>Quick answer:</strong> Use <code>urlencode()</code> on a mapping of outer parameter names to raw values. If one value is itself a URL, the outer encoder escapes its <code>?</code>, <code>&amp;</code>, <code>=</code>, and existing percent signs so they stay inside that single value. On receipt, parse the outer query first; do not manually decode the nested URL twice.</section>
+<p>This is useful for redirect destinations, callback URLs, and links that carry a pre-built search URL. The important boundary is the query value: your inner URL keeps its own structure, while the outer URL treats that complete inner URL as data.</p>
+<p><a class="tool" href="/#encoder">Open PercentURL Encoder / Decoder</a></p>
+
+<h2>Build and encode the two layers</h2>
+<p>First encode the inner URL’s own query values. Then build the inner URL and pass it as a value to the outer <code>urlencode()</code> call.</p>
+<pre><code>from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
+
+# Layer 1: query values that belong to the search URL.
+inner_query = urlencode({
+    "q": "tea &amp; cake",
+    "tag": "url+encode",
+})
+inner_url = urlunsplit((
+    "https", "search.example.test", "/results", inner_query, ""
+))
+
+# Layer 2: the complete inner URL is one outer parameter value.
+outer_query = urlencode({
+    "redirect_uri": inner_url,
+    "source": "docs",
+})
+outer_url = urlunsplit((
+    "https", "app.example.test", "/continue", outer_query, ""
+))
+
+print(outer_url)
+
+# Parse one layer at a time at the receiving end.
+outer_values = parse_qs(urlsplit(outer_url).query)
+received_inner_url = outer_values["redirect_uri"][0]
+inner_values = parse_qs(urlsplit(received_inner_url).query)
+print(inner_values["q"][0])     # tea &amp; cake
+print(inner_values["tag"][0])   # url+encode</code></pre>
+<p>The output is one outer <code>redirect_uri=...</code> value plus <code>source=docs</code>. Inside the nested value, <code>%2526</code> is expected: the inner query’s <code>%26</code> is percent-encoded once more while the complete inner URL is placed in the outer query. Parsing the outer query restores the inner <code>%26</code>; parsing the inner query then restores the ampersand in the search text.</p>
+
+<h2>What the encoding is protecting</h2>
+<table><thead><tr><th scope="col">Character in the inner URL</th><th scope="col">Why it changes in the outer value</th><th scope="col">What one outer parse restores</th></tr></thead><tbody>
+<tr><td><code>?</code></td><td>It begins the inner query, so it must not start the outer query’s structure.</td><td>The inner URL’s query boundary.</td></tr>
+<tr><td><code>&amp;</code> and <code>=</code></td><td>They separate inner parameters and name/value pairs.</td><td>The inner URL’s own parameter separators.</td></tr>
+<tr><td><code>+</code></td><td>Form-style query encoding uses <code>+</code> for a space; a literal plus is encoded as <code>%2B</code>.</td><td>The correct inner value after the outer query is parsed.</td></tr>
+<tr><td><code>%</code></td><td>It starts an existing percent escape such as <code>%26</code>, so the outer layer represents it as <code>%25</code>.</td><td>The original inner escape, ready for the inner parser.</td></tr>
+</tbody></table>
+
+<h2>Append a value to an existing URL safely</h2>
+<p>If the outer URL already has parameters, split and parse its query instead of concatenating a raw <code>&amp;</code>. A list of pairs preserves repeated parameter names and their order:</p>
+<pre><code>from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+
+parts = urlsplit("https://app.example.test/continue?source=docs#top")
+pairs = parse_qsl(parts.query, keep_blank_values=True)
+pairs.append(("redirect_uri", inner_url))
+updated_url = urlunsplit(parts._replace(query=urlencode(pairs)))</code></pre>
+<p>Use <code>doseq=True</code> when a mapping value is a list and the server expects one repeated query field per list item. Do not pass a nested dictionary and expect <code>urlencode()</code> to invent a bracket notation: choose the API’s documented representation and build its name/value pairs explicitly.</p>
+
+<h2>Common mistakes</h2>
+<table><thead><tr><th scope="col">Symptom</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead><tbody>
+<tr><td>The outer URL gains unexpected parameters.</td><td>The inner URL was concatenated without encoding it as one outer value.</td><td>Pass the complete inner URL as a value to the outer <code>urlencode()</code>.</td></tr>
+<tr><td>The inner query looks like <code>%2526</code> after encoding.</td><td>The percent escape is being carried through the outer query layer.</td><td>Parse the outer query once; let the inner query parser handle its own values.</td></tr>
+<tr><td>A space appears as <code>+</code> rather than <code>%20</code>.</td><td><code>urlencode()</code> uses form-style query serialization by default.</td><td>That is valid for query parameters. Use <code>quote_via=quote</code> only if the receiving format specifically requires percent-encoded spaces.</td></tr>
+<tr><td>A literal plus becomes a space.</td><td>The query was decoded with the form convention even though the plus represented data.</td><td>Build query values with <code>urlencode()</code>; parse the query with <code>parse_qs()</code> or <code>parse_qsl()</code>.</td></tr>
+</tbody></table>
+
+<h2>Validate redirect destinations separately</h2>
+<p>Encoding only preserves the parameter boundary; it does not make a destination trustworthy. If a server uses <code>redirect_uri</code> to redirect visitors, validate the parsed scheme and host against an allowlist before redirecting. Python’s <code>urlsplit()</code> separates URL components but does not validate that a URL is safe or acceptable.</p>
+<p>For a JavaScript version of the same nested-URL task, see <a href="/online-url-encode-redirect">Online URL Encode: Put a Redirect URL in a Query Parameter</a>. For a one-off value, use the <a href="/url-encoder-online/">URL Encoder Online guide</a> or the browser tool above.</p>
+
+<h2>Sources</h2>
+<ul>
+<li><a href="https://docs.python.org/3/library/urllib.parse.html">Python documentation: <code>urllib.parse</code></a> — <code>urlencode()</code>, <code>parse_qs()</code>, <code>parse_qsl()</code>, <code>urlsplit()</code>, and <code>urlunsplit()</code>.</li>
+<li><a href="https://www.rfc-editor.org/rfc/rfc3986#section-2.2">RFC 3986 §2.2: Reserved Characters</a> — reserved characters can delimit URI components.</li>
+<li><a href="https://stackoverflow.com/questions/20898803/how-to-url-encode-nested-query-strings">Stack Overflow: How to URL encode nested query strings?</a> — a recurring user question about keeping an inner URL’s parameters inside one outer value; used only for problem discovery.</li>
+</ul>
+</article><p class="related-language-guide">Need the same query-encoding decision in other languages? See <a href="/url-encode-python-java-php-csharp/">Python, Java, PHP, and C# examples for one query value</a>.</p>
+<footer class="ft">
+    <div class="ft-intro">
+      <span class="ft-mark" aria-hidden="true">%</span>
+      <div class="ft-intro-copy">
+        <strong>PercentURL</strong>
+        <p>Free URL tools that run in your browser.</p>
+        <span class="ft-privacy"><span aria-hidden="true">✓</span> Your text stays on your device</span>
+      </div>
+    </div>
+    <nav class="ft-nav" aria-label="Footer navigation">
+      <section class="ft-group" aria-labelledby="ft-tools-title">
+        <h2 id="ft-tools-title">Tools</h2>
+        <ul>
+          <li><a href="/#encoder">URL Encoder / Decoder</a></li>
+          <li><a href="/url-decoder/">URL Decoder</a></li>
+          <li><a href="/utm-builder/">UTM Builder</a></li>
+          <li><a href="/base64/">Base64</a></li>
+          <li><a href="/html-entities/">HTML Entities</a></li>
+          <li><a href="/jwt/">JWT Decoder</a></li>
+        </ul>
+      </section>
+      <section class="ft-group" aria-labelledby="ft-guides-title">
+        <h2 id="ft-guides-title">Guides</h2>
+        <ul>
+          <li><a href="/percent-encoding/">Percent-encoding</a></li>
+          <li><a href="/javascript/">URL encoding in JavaScript</a></li>
+          <li><a href="/url-encode-and-decode/">Choose an encoding mode</a></li>
+          <li><a href="/online-urlencoder/">URL encoder guide</a></li>
+          <li><a href="/curl-url-encode/">curl URL encoding</a></li>
+          <li><a href="/python-urlencode-nested-url/">Python URL encoding</a></li>
+        </ul>
+      </section>
+      <section class="ft-group" aria-labelledby="ft-about-title">
+        <h2 id="ft-about-title">About</h2>
+        <ul>
+          <li><a href="/about/">About PercentURL</a></li>
+          <li><a href="/contact/">Contact</a></li>
+        </ul>
+      </section>
+    </nav>
+    <div class="ft-bottom"><p class="copy">© 2026 PercentURL</p><nav class="ft-legal" aria-label="Legal"><a href="/privacy/">Privacy policy</a></nav></div>
+  </footer>
+</main><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="/assets/detail-enhancements.js" defer></script>
+
+<script src="/assets/analytics-consent.js" defer></script>
+
+
+
+
+</body></html>

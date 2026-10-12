@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="commission-factory-verification" content="e8792725d8f446b29fe7ba8dff2471a1">
 <title>URL Encoder / Decoder — Percent-Encoding (URL Encoding) Tool</title>
+<meta name="description" content="Encode or decode text, query parameter values, and full URLs with PercentURL. Choose an encoding mode, copy the result, and learn how percent-encoding works.">
 <style>
   :root{
     --bg:#0f172a; --panel:#1e293b; --ink:#e2e8f0; --muted:#94a3b8;
@@ -201,7 +202,14 @@
       <section class="task-group" aria-labelledby="task-encode">
         <div class="task-group-title"><span class="task-icon" aria-hidden="true">↗</span><h3 id="task-encode">Encode and build URLs</h3></div>
         <a class="task-link" href="/url-encode-and-decode/"><span><strong>Encode or decode a URL</strong><small>Choose a mode for your input</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
+        <a class="task-link" href="/mailto-url-encode/"><span><strong>Encode a mailto link</strong><small>Build a subject and multiline email body</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
         <a class="task-link" href="/url-encoder-online/"><span><strong>URL Encoder Online</strong><small>Encode text or a full URL in your browser</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
+        <a class="task-link" href="/curl-url-encode/"><span><strong>curl URL Encode</strong><small>Build query values from the terminal</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
+        <a class="task-link" href="/url-encode-space-search-sites/"><span><strong>URL encode spaces in search URLs</strong><small>Compare dated results from six site search boxes</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
+        <a class="task-link" href="/url-encode-file/"><span><strong>Should you URL encode a file?</strong><small>Choose between file upload, filename encoding, and Base64url</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
+        <a class="task-link" href="/application-x-www-form-urlencoded/"><span><strong>HTML form request bodies</strong><small>Trace URL-encoded fields, Content-Type, and server parsing</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
+        <a class="task-link" href="/url-encode-python-java-php-csharp/"><span><strong>URL encoding in four languages</strong><small>Compare Python, Java, PHP, and C# query values</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
+        <a class="task-link" href="/python-urlencode-nested-url/"><span><strong>Python URL encoding</strong><small>Put a nested URL in one query value</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
       </section>
       <section class="task-group" aria-labelledby="task-decode">
         <div class="task-group-title"><span class="task-icon teal" aria-hidden="true">↙</span><h3 id="task-decode">Decode and inspect</h3></div>
@@ -264,6 +272,13 @@
           <li><a href="/javascript/">URL encoding in JavaScript</a></li>
           <li><a href="/url-encode-and-decode/">Choose an encoding mode</a></li>
           <li><a href="/online-urlencoder/">URL encoder guide</a></li>
+          <li><a href="/curl-url-encode/">curl URL encoding</a></li>
+          <li><a href="/python-urlencode-nested-url/">Python URL encoding</a></li>
+          <li><a href="/application-x-www-form-urlencoded/">HTML form request bodies</a></li>
+          <li><a href="/url-encode-python-java-php-csharp/">URL encoding in four languages</a></li>
+          <li><a href="/url-encode-file/">URL encode a file</a></li>
+          <li><a href="/mailto-url-encode/">Encode a mailto link</a></li>
+          <li><a href="/url-encode-space-search-sites/">URL spaces in search</a></li>
         </ul>
       </section>
       <section class="ft-group" aria-labelledby="ft-about-title">
@@ -517,5 +532,10 @@ renderRows('');
 document.getElementById('tblSearch').addEventListener('input',e=>renderRows(e.target.value));
 </script>
 <script src="/assets/detail-enhancements.js" defer></script>
+<script src="/assets/analytics-consent.js" defer></script>
+
+
+
+
 </body>
 </html>

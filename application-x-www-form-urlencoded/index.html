@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>application/x-www-form-urlencoded: HTTP Body &amp; Parsing</title>
+<meta name="description" content="See where form data goes in an HTTP request, what Content-Type tells the server, and how to diagnose missing fields in an application/x-www-form-urlencoded body.">
+<link rel="canonical" href="https://percenturl.com/application-x-www-form-urlencoded/">
+<link rel="stylesheet" href="/assets/site-refresh.css">
+<style>.wrap{max-width:900px!important}</style>
+<style>
+:root{color-scheme:dark;--bg:#0f172a;--panel:#1e293b;--ink:#e2e8f0;--muted:#a8b5c7;--line:#334155;--accent:#38bdf8;--green:#34d399;--amber:#fbbf24}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:900px;margin:auto;padding:24px 20px 48px}a{color:var(--accent)}h1{font-size:clamp(1.8rem,5vw,2.45rem);line-height:1.2;margin:.25rem 0 .75rem}h2{font-size:1.35rem;margin:2.2rem 0 .5rem}h3{font-size:1.05rem;margin:1.3rem 0 .35rem}.sub{color:var(--muted);margin:.2rem 0 1.2rem}.answer{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--green);border-radius:12px;padding:16px 18px;margin:14px 0}.answer strong{color:var(--green)}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}code{color:#e6edf7;background:#0b1220;border-radius:4px;padding:.08rem .28rem;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1220;border:1px solid var(--line);border-radius:8px;padding:12px;margin:.6rem 0;max-width:100%;overflow:auto}pre code{background:none;padding:0}table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.94rem}th,td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}th{color:var(--muted)}li{margin:.4rem 0}.table-wrap{max-width:100%;overflow-x:auto}blockquote{margin:1rem 0;padding:.1rem 1rem;border-left:3px solid var(--green);background:var(--panel)}.site-header{max-width:1160px;margin:0 auto}.ft{margin-top:2.4rem}
+</style></head><body>
+<header class="site-header"><a class="brand" href="/" aria-label="PercentURL home"><span class="brand-mark" aria-hidden="true">%</span>PercentURL</a><nav aria-label="Main navigation"><a href="/#task-hub-title">Tools</a><a href="/percent-encoding/">Guides</a><a href="/about/">About</a></nav><a class="header-cta" href="/#encoder">Open encoder <span aria-hidden="true">↗</span></a></header>
+<main class="wrap"><article><p class="nav"><a href="/">PercentURL</a> / application/x-www-form-urlencoded</p><h1>What application/x-www-form-urlencoded Means in an HTTP Request</h1><p class="sub">See where form fields go, how the request labels their format, and what to inspect when the server cannot read them.</p>
+<section class="answer" aria-label="Quick answer"><p><strong>Quick answer:</strong> <code>application/x-www-form-urlencoded</code> is a form-data format. With an HTML form sent by <code>POST</code>, the browser serializes named fields into the HTTP request body and labels that body with this <code>Content-Type</code>. The server needs a matching form-body parser to turn the submitted pairs into fields your route can read.</p></section>
+<p>It is related to URL query syntax, but a POST body is not the URL query string. The query belongs to the request URL; the form fields can instead travel in the request body.</p>
+<h2>See the request, not just the encoded text</h2>
+<p>Suppose a form submits two fields:</p>
+<ul><li><code>email</code>: <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="47262b223f07223f262a372b226924282a">[email&#160;protected]</a></code></li><li><code>note</code>: <code>Tea &amp; cake + coffee</code></li></ul>
+<p>A form-style serialization produces this body:</p>
+<pre><code>email=alex%40example.com&amp;note=Tea+%26+cake+%2B+coffee</code></pre>
+<p>A POST request carries it separately from the path:</p>
+<pre><code>POST /submit HTTP/1.1
+Host: api.example.test
+Content-Type: application/x-www-form-urlencoded
+
+email=alex%40example.com&amp;note=Tea+%26+cake+%2B+coffee</code></pre>
+<p>Here, <code>Content-Type</code> labels the request body so the server can choose how to parse it. It is not the <code>Accept</code> header, which describes response formats the client can accept. The example serialization was cross-checked with Python's standard-library <code>urllib.parse.urlencode()</code>.</p>
+<p>An HTML form can select this format explicitly:</p>
+<pre><code>&lt;form action=&quot;/submit&quot; method=&quot;post&quot;
+      enctype=&quot;application/x-www-form-urlencoded&quot;&gt;
+  &lt;input name=&quot;email&quot; type=&quot;email&quot;&gt;
+  &lt;textarea name=&quot;note&quot;&gt;&lt;/textarea&gt;
+  &lt;button type=&quot;submit&quot;&gt;Send&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+<p>For HTML forms, this is the default <code>enctype</code>; the form's method is a separate choice. An omitted <code>method</code> defaults to <code>GET</code>, which places serialized fields in the action URL instead. For a POST form, the submitted field pairs go in the body. <a href="https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-algorithm" rel="noopener noreferrer">HTML Standard</a> · <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Sending_and_retrieving_form_data" rel="noopener noreferrer">MDN: Sending form data</a></p>
+<h2>Query string vs. form request body</h2>
+<div class="table-wrap"><table><thead><tr><th>Check</th><th>GET form submission</th><th>POST with <code>application/x-www-form-urlencoded</code></th></tr></thead><tbody>
+<tr><td>Where the submitted pairs appear</td><td>In the request URL after <code>?</code></td><td>In the HTTP request body</td></tr>
+<tr><td>Example location</td><td><code>/submit?email=...&amp;note=...</code></td><td><code>/submit</code>, then pairs in the body</td></tr>
+<tr><td>What identifies the body format</td><td>No form-data request body to label</td><td><code>Content-Type: application/x-www-form-urlencoded</code></td></tr>
+<tr><td>What to inspect in DevTools</td><td>Request URL / Query String Parameters</td><td>Request Payload / Form Data and Request Headers</td></tr>
+</tbody></table></div>
+<p>A URL can still have its own query while a POST body is present. They are separate inputs; inspect and parse the one your endpoint expects. An encoder that transforms one parameter value does not build the whole HTTP request or configure the server's parser.</p>
+<h3>For a JavaScript request</h3>
+<p>When code submits the form with <code>fetch()</code>, the HTML form's <code>enctype</code> is not what serializes that manually built request. Create a URL-encoded body and inspect the <code>fetch()</code> options themselves:</p>
+<pre><code>const body = new URLSearchParams([
+  [&#x27;email&#x27;, &#x27;<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b8d9d4ddc0f8ddc0d9d5c8d4dd96dbd7d5">[email&#160;protected]</a>&#x27;],
+  [&#x27;note&#x27;, &#x27;Tea &amp; cake + coffee&#x27;],
+]);
+
+fetch(&#x27;/submit&#x27;, {
+  method: &#x27;POST&#x27;,
+  headers: { &#x27;Content-Type&#x27;: &#x27;application/x-www-form-urlencoded&#x27; },
+  body,
+});</code></pre>
+<p><code>URLSearchParams</code> serializes the pairs; this example sends them in the request body. If your Network panel instead shows JSON, a query string, or no body, check the code path actually used by the submit handler. <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch" rel="noopener noreferrer">MDN: Using the Fetch API</a></p>
+<h2>Debug in request order: body, fields, then parser</h2>
+<p>The browser can send a valid body while the route still sees no parsed fields. Check these items in order:</p>
+<p>1. <strong>Confirm the request really has a body.</strong> In the browser Network panel, open the request and inspect Request Payload / Form Data. If the values appear after <code>?</code> in the Request URL, the form used GET or the client placed them in the URL. 2. <strong>Read the exact <code>Content-Type</code>.</strong> For this parser, the request must use <code>application/x-www-form-urlencoded</code> (a supported charset parameter may also be present). A JSON body needs a JSON parser; a file-upload form uses <code>multipart/form-data</code> and a multipart parser. 3. <strong>Enable the matching parser before the route.</strong> Express does not populate <code>req.body</code> from a URL-encoded body until <code>express.urlencoded()</code> middleware has handled it. 4. <strong>Send fields in the format the header declares.</strong> Do not label a JSON object as URL-encoded data. Send a form-encoded string or let a form/query builder serialize the pairs. 5. <strong>Check the exact field names and repeated fields.</strong> The parser uses submitted names, not the label or element ID. Multiple controls can share a name; their parsed shape depends on parser configuration.</p>
+<h3>If one form field is missing</h3>
+<p>When the Network panel shows the request but a particular pair is absent from Form Data, stop changing URL encoding. First inspect the control in the submitted form. A control needs a non-empty <code>name</code>; an <code>id</code> is for identification and labels, and does not name the submitted pair. Disabled controls are omitted, and unchecked checkboxes and radio buttons are omitted too. A button contributes a value only when it is the button that submitted the form. These are browser form-submission rules, so a server-side parser cannot recover a pair that the browser never sent. <a href="https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constructing-the-entry-list" rel="noopener noreferrer">HTML Standard: constructing the entry list</a></p>
+<pre><code>&lt;!-- id alone: this value is not a submitted pair --&gt;
+&lt;input id=&quot;email&quot; value=&quot;<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5e3f323b261e3b263f332e323b703d3133">[email&#160;protected]</a>&quot;&gt;
+
+&lt;!-- name supplies the key: email=alex%40example.com --&gt;
+&lt;input id=&quot;email&quot; name=&quot;email&quot; value=&quot;<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="10717c7568507568717d607c753e737f7d">[email&#160;protected]</a>&quot;&gt;
+
+&lt;!-- omitted while unchecked; included after it is checked --&gt;
+&lt;input type=&quot;checkbox&quot; name=&quot;updates&quot; value=&quot;yes&quot;&gt;</code></pre>
+<p>Use the visible Form Data list to compare expected and actual keys. If the pair is already present there but missing from <code>req.body</code>, move to the server side: confirm the route uses the matching parser, that the request <code>Content-Type</code> matches, and that middleware runs before the route. If the key exists but its value has the wrong shape, inspect repeated names and the parser option: Express documents that URL-encoded values can be strings or arrays with <code>extended: false</code>, while <code>extended: true</code> enables richer nested values. Don't assume every key is a single string. <a href="https://expressjs.com/en/5x/api/express/" rel="noopener noreferrer">Express 5 API: <code>express.urlencoded()</code></a></p>
+<p>A control can also look like it belongs to a form while sitting outside that form in the document. If it must submit, associate it explicitly with the form's <code>id</code> using the control's <code>form</code> attribute; otherwise it is not part of that form's submitted entry list. This often appears after a page layout moves a field outside its original <code>&lt;form&gt;</code> element. <a href="https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#association-of-controls-and-forms" rel="noopener noreferrer">HTML Standard: form control association</a></p>
+<p>If the form has more than one submit button, test the exact button the user clicked. A submit button can override its form's <code>action</code>, <code>method</code>, and <code>enctype</code> through <code>formaction</code>, <code>formmethod</code>, and <code>formenctype</code>. One button can therefore send a POST body while another sends a GET query or selects a different encoding. Inspect the resulting Request URL, method, and <code>Content-Type</code> for each button; don't infer them from the parent <code>&lt;form&gt;</code> alone. <a href="https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-attributes" rel="noopener noreferrer">HTML Standard: form submission attributes</a></p>
+<h3>If only large forms fail</h3>
+<p>When small submissions parse but a large form fails, inspect the parser's limits before changing serialization. Express documents a default URL-encoded body limit of <code>100kb</code> and a <code>parameterLimit</code> of <code>1000</code>; exceeding the parameter limit raises an error. Raise a limit only when the endpoint needs it, and keep a deliberate cap. Reproduce with the same request in Network, then compare its body size and number of pairs with the parser configuration. This separates an oversized request from a character-encoding problem. <a href="https://expressjs.com/en/5x/api/express/" rel="noopener noreferrer">Express 5 API: parser options</a></p>
+<h3>Express example</h3>
+<pre><code>import express from &#x27;express&#x27;;
+
+const app = express();
+
+// Register before routes that need form fields.
+app.use(express.urlencoded({ extended: false }));
+
+app.post(&#x27;/submit&#x27;, (req, res) =&gt; {
+  res.json({ email: req.body.email, note: req.body.note });
+});</code></pre>
+<p>If <code>req.body</code> is empty, check middleware order and the incoming <code>Content-Type</code> before changing the encoding. The official Express documentation describes <code>express.urlencoded()</code> as the middleware for these requests. Treat parsed values as untrusted input and validate them before use. <a href="https://expressjs.com/en/5x/api/express/" rel="noopener noreferrer">Express 5 API: <code>express.urlencoded</code></a></p>
+<h2>When this is the wrong format</h2>
+<ul><li><strong>Uploading a file:</strong> choose <code>multipart/form-data</code>; URL-encoded form data is for text fields, not file bytes. <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form" rel="noopener noreferrer">MDN: <code>&lt;form&gt;</code> encoding types</a></li><li><strong>Sending a JSON API payload:</strong> send JSON and label it <code>application/json</code>; do not convert an entire JSON document into one URL-encoded field unless the API contract specifically calls for that.</li><li><strong>Encoding a value for a URL:</strong> encode the individual value for its destination context. Do not encode a complete URL and then place that result in a form body by mistake.</li></ul>
+<p>Form encoding only represents data; it does not encrypt it, validate it, or make a request private. Use HTTPS and the endpoint's documented authentication and validation rules.</p>
+<h2>Fast diagnostic checklist</h2>
+<ul><li>Request missing? Check that the form submitted and inspect its method and action.</li><li>One key missing in Form Data? Check non-empty <code>name</code>, <code>disabled</code>, and checkbox/radio checked state.</li><li>Body present but parser result missing? Match <code>Content-Type</code> to middleware and register it before the route.</li><li>Repeated key or wrong value type? Check duplicate names and the parser's <code>extended</code> setting.</li><li>Large form fails? Compare body size and pair count with parser limits.</li><li>File selected? Use multipart handling rather than a URL-encoded text body.</li></ul>
+<p>Need to encode one URL value? Use the <a href="https://percenturl.com/url-encoder-online/" rel="noopener noreferrer">PercentURL URL encoder</a>; for an actual form submission, let the form or HTTP client serialize the named fields and configure the matching body parser on the server.</p></article></main>
+<footer class="ft"><div class="ft-intro"><span class="ft-mark" aria-hidden="true">%</span><div class="ft-intro-copy"><strong>PercentURL</strong><p>Free URL tools that run in your browser.</p><span class="ft-privacy"><span aria-hidden="true">✓</span> Your text stays on your device</span></div></div><nav class="ft-nav" aria-label="Footer navigation"><section class="ft-group" aria-labelledby="ft-tools-title"><h2 id="ft-tools-title">Tools</h2><ul><li><a href="/#encoder">URL Encoder / Decoder</a></li><li><a href="/url-decoder/">URL Decoder</a></li><li><a href="/utm-builder/">UTM Builder</a></li><li><a href="/base64/">Base64</a></li><li><a href="/html-entities/">HTML Entities</a></li><li><a href="/jwt/">JWT Decoder</a></li></ul></section><section class="ft-group" aria-labelledby="ft-guides-title"><h2 id="ft-guides-title">Guides</h2><ul><li><a href="/percent-encoding/">Percent-encoding</a></li><li><a href="/javascript/">URL encoding in JavaScript</a></li><li><a href="/url-encode-and-decode/">Choose an encoding mode</a></li><li><a href="/online-urlencoder/">URL encoder guide</a></li><li><a href="/curl-url-encode/">curl URL encoding</a></li><li><a href="/python-urlencode-nested-url/">Python URL encoding</a></li><li><a href="/url-encode-python-java-php-csharp/">URL encoding in four languages</a></li><li><a href="/application-x-www-form-urlencoded/">HTML form request bodies</a></li><li><a href="/url-encode-file/">URL encode a file</a></li><li><a href="/mailto-url-encode/">Encode a mailto link</a></li><li><a href="/url-encode-space-search-sites/">URL spaces in search</a></li></ul></section><section class="ft-group" aria-labelledby="ft-about-title"><h2 id="ft-about-title">About</h2><ul><li><a href="/about/">About PercentURL</a></li><li><a href="/contact/">Contact</a></li></ul></section></nav><div class="ft-bottom"><p class="copy">© 2026 PercentURL</p><nav class="ft-legal" aria-label="Legal"><a href="/privacy/">Privacy policy</a></nav></div></footer>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="t d">
+<title id="t">Layers that handle an encoded slash in a URL path</title>
+<desc id="d">A URL containing %2F travels through an edge, web server, and application router. A layer may preserve the escape, reject it, or decode it.</desc>
+<rect width="1200" height="560" rx="24" fill="#f7f9fd"/>
+<text x="56" y="68" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#10213b">The encoder is only the first step</text>
+<g font-family="Arial,sans-serif">
+<rect x="48" y="155" width="230" height="210" rx="18" fill="#fff" stroke="#b9c9e0" stroke-width="2"/>
+<text x="78" y="200" font-size="18" font-weight="700" fill="#245cf0">1 · URL</text>
+<text x="78" y="254" font-family="monospace" font-size="20" fill="#10213b">/files/a%2Fb</text>
+<text x="78" y="306" font-size="16" fill="#48617f">Encoded value</text>
+<path d="M294 258h57" stroke="#70839d" stroke-width="4"/>
+<path d="M351 248l18 10-18 10" fill="none" stroke="#70839d" stroke-width="4"/>
+<rect x="372" y="155" width="230" height="210" rx="18" fill="#fff" stroke="#b9c9e0" stroke-width="2"/>
+<text x="402" y="200" font-size="18" font-weight="700" fill="#245cf0">2 · EDGE / PROXY</text>
+<text x="402" y="254" font-size="17" fill="#10213b">Preserve?</text>
+<text x="402" y="287" font-size="17" fill="#10213b">Reject?</text>
+<text x="402" y="320" font-size="17" fill="#10213b">Decode?</text>
+<path d="M618 258h57" stroke="#70839d" stroke-width="4"/>
+<path d="M675 248l18 10-18 10" fill="none" stroke="#70839d" stroke-width="4"/>
+<rect x="696" y="155" width="220" height="210" rx="18" fill="#fff" stroke="#b9c9e0" stroke-width="2"/>
+<text x="726" y="200" font-size="18" font-weight="700" fill="#245cf0">3 · WEB SERVER</text>
+<text x="726" y="254" font-size="17" fill="#10213b">Route rules</text>
+<text x="726" y="287" font-size="17" fill="#10213b">Encoded slash policy</text>
+<path d="M932 258h57" stroke="#70839d" stroke-width="4"/>
+<path d="M989 248l18 10-18 10" fill="none" stroke="#70839d" stroke-width="4"/>
+<rect x="1010" y="155" width="150" height="210" rx="18" fill="#fff" stroke="#8ed4c7" stroke-width="2"/>
+<text x="1033" y="200" font-size="18" font-weight="700" fill="#07866f">4 · APP</text>
+<text x="1033" y="254" font-size="16" fill="#10213b">Router sees</text>
+<text x="1033" y="286" font-size="16" fill="#10213b">%2F or / ?</text>
+</g>
+<rect x="48" y="408" width="1112" height="82" rx="15" fill="#fff6e7" stroke="#eed39a" stroke-width="2"/>
+<text x="78" y="459" font-family="Arial,sans-serif" font-size="18" font-weight="700" fill="#8a4b08">A 404 can be produced before the application route runs.</text>
+</svg>

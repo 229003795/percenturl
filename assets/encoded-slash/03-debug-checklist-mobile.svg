@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="600" viewBox="0 0 390 600" role="img" aria-labelledby="t d">
+<title id="t">Three safe checks for encoded slash errors</title>
+<desc id="d">Compare original and encoded text, find the first layer that changes or rejects it, then test safely before adjusting only that layer.</desc>
+<rect width="390" height="600" rx="18" fill="#f7f9fd"/>
+<text x="18" y="40" font-family="Arial,sans-serif" font-size="21" font-weight="700" fill="#10213b">Debug one layer at a time</text>
+<rect x="14" y="66" width="362" height="145" rx="14" fill="#fff" stroke="#d7e2f2" stroke-width="2"/>
+<circle cx="43" cy="105" r="18" fill="#eaf0ff"/><text x="38" y="111" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#245cf0">1</text>
+<text x="70" y="105" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#10213b">Compare raw value and</text>
+<text x="70" y="128" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#10213b">one encoded segment</text>
+<text x="30" y="177" font-family="Arial,sans-serif" font-size="13" fill="#48617f">Keep the original; avoid encoding twice.</text>
+<rect x="14" y="228" width="362" height="145" rx="14" fill="#fff" stroke="#d7e2f2" stroke-width="2"/>
+<circle cx="43" cy="267" r="18" fill="#eaf0ff"/><text x="38" y="273" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#245cf0">2</text>
+<text x="70" y="267" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#10213b">Find the first layer that</text>
+<text x="70" y="290" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#10213b">rejects or changes %2F</text>
+<text x="30" y="339" font-family="Arial,sans-serif" font-size="13" fill="#48617f">Check proxy, server, and app logs.</text>
+<rect x="14" y="390" width="362" height="174" rx="14" fill="#fff" stroke="#8ed4c7" stroke-width="2"/>
+<circle cx="43" cy="429" r="18" fill="#e6f7f3"/><text x="38" y="435" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#07866f">3</text>
+<text x="70" y="429" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#10213b">Test safely, then change</text>
+<text x="70" y="452" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#10213b">only the responsible layer</text>
+<text x="30" y="501" font-family="Arial,sans-serif" font-size="13" fill="#48617f">Review route and security behavior</text>
+<text x="30" y="521" font-family="Arial,sans-serif" font-size="13" fill="#48617f">before allowing decoded slashes.</text>
+</svg>

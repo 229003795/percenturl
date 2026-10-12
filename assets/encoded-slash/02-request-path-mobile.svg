@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="720" viewBox="0 0 390 720" role="img" aria-labelledby="t d">
+<title id="t">Layers that handle an encoded slash</title>
+<desc id="d">A request with %2F passes through an edge, web server, and application router. Each may preserve, reject, or decode the path.</desc>
+<rect width="390" height="720" rx="18" fill="#f7f9fd"/>
+<text x="18" y="40" font-family="Arial,sans-serif" font-size="21" font-weight="700" fill="#10213b">The encoder is only step one</text>
+<rect x="14" y="67" width="362" height="93" rx="14" fill="#fff" stroke="#b9c9e0" stroke-width="2"/>
+<text x="30" y="100" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#245cf0">1 · URL</text>
+<text x="30" y="135" font-family="monospace" font-size="18" fill="#10213b">/files/a%2Fb</text>
+<path d="M195 168v24" stroke="#70839d" stroke-width="3"/><path d="m187 186 8 10 8-10" fill="none" stroke="#70839d" stroke-width="3"/>
+<rect x="14" y="202" width="362" height="110" rx="14" fill="#fff" stroke="#b9c9e0" stroke-width="2"/>
+<text x="30" y="237" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#245cf0">2 · EDGE / PROXY</text>
+<text x="30" y="274" font-family="Arial,sans-serif" font-size="15" fill="#10213b">Preserve, reject, or decode?</text>
+<path d="M195 320v24" stroke="#70839d" stroke-width="3"/><path d="m187 338 8 10 8-10" fill="none" stroke="#70839d" stroke-width="3"/>
+<rect x="14" y="354" width="362" height="110" rx="14" fill="#fff" stroke="#b9c9e0" stroke-width="2"/>
+<text x="30" y="389" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#245cf0">3 · WEB SERVER</text>
+<text x="30" y="426" font-family="Arial,sans-serif" font-size="15" fill="#10213b">Apply server route policy</text>
+<path d="M195 472v24" stroke="#70839d" stroke-width="3"/><path d="m187 490 8 10 8-10" fill="none" stroke="#70839d" stroke-width="3"/>
+<rect x="14" y="506" width="362" height="104" rx="14" fill="#fff" stroke="#8ed4c7" stroke-width="2"/>
+<text x="30" y="541" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#07866f">4 · APP ROUTER</text>
+<text x="30" y="578" font-family="Arial,sans-serif" font-size="15" fill="#10213b">Does it see %2F or / ?</text>
+<rect x="14" y="628" width="362" height="66" rx="13" fill="#fff6e7" stroke="#eed39a" stroke-width="2"/>
+<text x="30" y="656" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#8a4b08">A 404 may happen before app routing.</text>
+</svg>

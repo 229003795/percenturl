@@ -209,11 +209,22 @@ encodeUrl('https://example.com/café?q=café');</code></pre>
 }</code></pre>
   </div>
 
-  <p class="note">
+  <h2>Why does JavaScript URL encoding leave apostrophes unchanged?</h2>
+<p><code>encodeURIComponent()</code> intentionally leaves a small set of punctuation characters, including the apostrophe, unescaped. If a receiver requires strict RFC 3986 percent-encoding for one component, encode those remaining characters after calling it:</p>
+<div class="codebox"><pre><code>function encodeStrictComponent(value) {
+  return encodeURIComponent(value).replace(/[!'()*]/g, char =&gt;
+    "%" + char.charCodeAt(0).toString(16).toUpperCase()
+  );
+}
+
+encodeStrictComponent("O'Reilly"); // "O%27Reilly"</code></pre></div>
+<p>Apply this to one query value or path segment, not to the complete URL. See <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent">the MDN encodeURIComponent reference</a> and <a href="https://www.rfc-editor.org/rfc/rfc3986#section-2.2">RFC 3986 reserved characters</a>. If the value is going into HTML, JavaScript source, or a shell command, that output context may require its own escaping too; URL encoding does not replace context-specific escaping.</p>
+<p class="note">
     No sign-up · Unlimited use · Runs only in your browser. Want the general-purpose encoder instead? <a href="/" style="color:var(--accent)">Go here →</a>
   </p>
 
     <section class="reltools">
+
 <section class="video-feature" aria-label="Watch: encodeURI vs encodeURIComponent"><h2>Watch: encodeURI vs encodeURIComponent</h2><p>Compare the two JavaScript URL encoders and learn when to encode one value or preserve a complete URL.</p><div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/W7boOjYcMQg?rel=0" title="Watch: encodeURI vs encodeURIComponent" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><p><a href="https://youtu.be/W7boOjYcMQg">Watch on YouTube</a></p></section>
     <h2>Related tools</h2>
     <p class="rt-sub">Every tool on this site runs entirely in your browser. Pick the encoding problem you have:</p>
@@ -389,5 +400,10 @@ inp.addEventListener('input',()=>{ clearOutput(); runLive(); });
 runLive();
 </script>
 <script src="/assets/detail-enhancements.js" defer></script>
+<script src="/assets/analytics-consent.js" defer></script>
+
+
+
+
 </body>
 </html>

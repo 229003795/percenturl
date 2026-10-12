@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Compare Python, Java, PHP, and C# URL encoding for query values. See what each API does with spaces, ampersands, and literal plus signs, and when to use a path-component encoder instead.">
+<title>URL Encode in Python, Java, PHP, and C#: Which Function to Use</title>
+<style>
+:root{color-scheme:dark;--bg:#0f172a;--panel:#1e293b;--ink:#e2e8f0;--muted:#a8b5c7;--line:#334155;--accent:#38bdf8;--green:#34d399;--amber:#fbbf24}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:900px;margin:auto;padding:24px 20px 48px}a{color:var(--accent)}h1{font-size:clamp(1.8rem,5vw,2.45rem);line-height:1.2;margin:.25rem 0 .75rem}h2{font-size:1.35rem;margin:2.2rem 0 .5rem}.sub,.muted{color:var(--muted)}.sub{margin:.2rem 0 1.2rem}.answer,.panel,.example{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0}.answer{border-left:4px solid var(--green)}.answer strong{color:var(--green)}.tool{display:inline-block;background:var(--accent);color:#06121f;text-decoration:none;font-weight:700;padding:10px 15px;border-radius:8px;margin:.5rem 0}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}code{color:#e6edf7;background:#0b1220;border-radius:4px;padding:.08rem .28rem;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1220;border-radius:8px;padding:12px;margin:.6rem 0}table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.94rem}th,td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}th{color:var(--muted)}li{margin:.4rem 0}.footer{border-top:1px solid var(--line);margin-top:2.4rem;padding-top:1rem;color:var(--muted);font-size:.9rem}.footer a{margin-right:.55rem}
+</style>
+<link rel="stylesheet" href="/assets/site-refresh.css">
+<link rel="canonical" href="https://percenturl.com/url-encode-python-java-php-csharp/">
+<style>body:has(.article-visual) .video-feature{background:rgba(255,255,255,.82);border-color:#dfe6f0;color:#15243b}body:has(.article-visual) .video-feature h2{color:#15243b}body:has(.article-visual) .video-feature p{color:#66758b}</style>
+</head>
+<body><main class="wrap"><article>
+<p><a href="/">PercentURL</a> / URL encoding in Python, Java, PHP, and C#</p>
+<h1>URL Encoding in Python, Java, PHP, and C#: One Query, Four APIs</h1>
+<p class="sub">Use the right function for a query value, keep URL separators intact, and see exactly how four common language APIs handle the same input.</p>
+
+<section class="answer" aria-label="Quick answer">
+  <strong>Quick answer:</strong> For one form-style field value, use Python <code>quote_plus</code>, Java <code>URLEncoder.encode</code> with UTF-8, PHP <code>urlencode</code>, or C# <code>WebUtility.UrlEncode</code>. All four encode a space as <code>+</code>, an ampersand inside the value as <code>%26</code>, and a literal plus as <code>%2B</code>. In Python, <code>urlencode</code> builds the complete query from keys and values. Do not apply these form/query encoders to a complete URL or path segment.
+</section>
+
+<p>This comparison uses one input in all four languages to show how each form-style API handles the same characters. A path segment or an entire URL has different boundaries.</p>
+<figure class="article-visual"><picture><source type="image/webp" srcset="/assets/url-encode-python-java-php-csharp/scene-01.webp"><img src="/assets/url-encode-python-java-php-csharp/scene-01.png" width="1280" height="720" alt="Four language APIs for encoding the same URL query value" loading="lazy" decoding="async"></picture><figcaption>Python, Java, PHP, and C# query-value encoding compared side by side.</figcaption></figure>
+
+<h2>Compare the same query value</h2>
+<p><strong>Input value:</strong> <code>tea &amp; cake +</code></p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Language</th><th>Encode one query/form value</th><th>Example</th><th>Encoded value</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Python</th><td><code>urllib.parse.quote_plus</code></td><td><code>quote_plus("tea &amp; cake +")</code></td><td><code>tea+%26+cake+%2B</code></td></tr>
+    <tr><th scope="row">Java</th><td><code>URLEncoder.encode</code></td><td><code>URLEncoder.encode("tea &amp; cake +", StandardCharsets.UTF_8)</code></td><td><code>tea+%26+cake+%2B</code></td></tr>
+    <tr><th scope="row">PHP</th><td><code>urlencode</code></td><td><code>urlencode('tea &amp; cake +')</code></td><td><code>tea+%26+cake+%2B</code></td></tr>
+    <tr><th scope="row">C#</th><td><code>WebUtility.UrlEncode</code></td><td><code>WebUtility.UrlEncode("tea &amp; cake +")</code></td><td><code>tea+%26+cake+%2B</code></td></tr>
+  </tbody>
+</table></div>
+<p>This table compares one encoded value at a time. Python's <code>urlencode({"q": "tea &amp; cake +"})</code> builds the full one-pair query and returns <code>q=tea+%26+cake+%2B</code>; it encodes the key/value pair and adds the query structure. The other three functions here encode only the value. Percent-escape hex letters are case-insensitive.</p>
+<figure class="article-visual"><picture><source type="image/webp" srcset="/assets/url-encode-python-java-php-csharp/scene-02.webp"><img src="/assets/url-encode-python-java-php-csharp/scene-02.png" width="1280" height="720" alt="Encoding “tea &amp; cake +” as one query value" loading="lazy" decoding="async"></picture><figcaption>The query value tea &amp; cake + becomes tea+%26+cake+%2B in form-style encoding.</figcaption></figure>
+
+<h2>Why these three characters matter</h2>
+<ul>
+  <li><strong>Space → <code>+</code>:</strong> these APIs use form-style query serialization. Parsers for that format read a plus as a space.</li>
+  <li><strong>Ampersand → <code>%26</code>:</strong> an unescaped <code>&amp;</code> separates query parameters. Encoding it inside the value keeps it as data.</li>
+  <li><strong>Literal plus → <code>%2B</code>:</strong> this prevents a plus that belongs to the input from being read as a space.</li>
+</ul>
+<figure class="article-visual"><picture><source type="image/webp" srcset="/assets/url-encode-python-java-php-csharp/scene-03.webp"><img src="/assets/url-encode-python-java-php-csharp/scene-03.png" width="1280" height="720" alt="How spaces, ampersands, and literal plus signs are encoded" loading="lazy" decoding="async"></picture><figcaption>A space becomes +, an ampersand inside data becomes %26, and a literal plus becomes %2B.</figcaption></figure>
+
+<h2>Build the query; do not encode the whole URL</h2>
+<p>A URL contains both data and structural characters. Keep <code>?</code>, <code>&amp;</code>, and <code>=</code> as URL syntax; encode each parameter name/value with the API that builds the query, then let a URL builder combine the parts.</p>
+<pre><code>from urllib.parse import urlencode
+
+query = urlencode({"q": "tea &amp; cake +"})
+url = "https://example.com/search?" + query
+# https://example.com/search?q=tea+%26+cake+%2B</code></pre>
+<p>Calling an encoder on <code>https://example.com/search?q=...</code> as one string would also encode its scheme and separators. If the value is already encoded, encoding it again changes <code>%26</code> to <code>%2526</code>.</p>
+<figure class="article-visual"><picture><source type="image/webp" srcset="/assets/url-encode-python-java-php-csharp/scene-04.webp"><img src="/assets/url-encode-python-java-php-csharp/scene-04.png" width="1280" height="720" alt="Choose whether to encode a value, query, or full URL" loading="lazy" decoding="async"></picture><figcaption>Distinguish one encoded value, its assembled query string, and the complete URL.</figcaption></figure>
+<figure class="article-visual"><picture><source type="image/webp" srcset="/assets/url-encode-python-java-php-csharp/scene-05.webp"><img src="/assets/url-encode-python-java-php-csharp/scene-05.png" width="1280" height="720" alt="Keep URL delimiters intact and encode data values only" loading="lazy" decoding="async"></picture><figcaption>Keep URL structure such as ?, &amp;, and = intact; encode only parameter data.</figcaption></figure>
+
+<h2>When a query encoder is the wrong choice</h2>
+<div class="table-wrap"><table>
+  <thead><tr><th>Language</th><th>For one path/data component</th><th>What changes</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Python</th><td><code>urllib.parse.quote(value, safe="")</code></td><td>A space is <code>%20</code>; the empty safe set also encodes <code>/</code> when it is data inside one segment.</td></tr>
+    <tr><th scope="row">Java</th><td>Use your HTTP framework's URI/query builder for the target component.</td><td><code>URLEncoder</code> is for form data; use a builder that encodes individual components rather than applying it to a complete URI.</td></tr>
+    <tr><th scope="row">PHP</th><td><code>rawurlencode(value)</code></td><td>Follows RFC 3986 component rules; a space is <code>%20</code>.</td></tr>
+    <tr><th scope="row">C#</th><td><code>Uri.EscapeDataString(value)</code></td><td>Escapes a data component; it does not define form-style plus-as-space behavior.</td></tr>
+  </tbody>
+</table></div>
+<p>Choose based on where the data goes: a query/form value, one path segment, or a nested URL value. If your framework provides a query builder, use it to assemble the finished URL.</p>
+<figure class="article-visual"><picture><source type="image/webp" srcset="/assets/url-encode-python-java-php-csharp/scene-06.webp"><img src="/assets/url-encode-python-java-php-csharp/scene-06.png" width="1280" height="720" alt="Choose form-style query encoding or path-component encoding" loading="lazy" decoding="async"></picture><figcaption>Compare form-query space as + with path-component space as %20.</figcaption></figure>
+
+<h2>Common mistakes</h2>
+<h3>Encoding the separators with the value</h3>
+<p>Do not encode a complete URL to protect one parameter. Encode the value first, then assemble the URL. This keeps real query separators separate from characters that are part of the value.</p>
+<h3>Using <code>+</code> as a space in every URL location</h3>
+<p>A plus represents a space in form-style query data. In a path, it can be a literal plus. Use the encoder and decoder for the component and format your application expects.</p>
+<h3>Encoding an already encoded value again</h3>
+<p>If <code>%</code> is encoded a second time, <code>%26</code> becomes <code>%2526</code>. Start from the original value and encode once at the point where it enters the URL.</p>
+
+<h2>Official references</h2>
+<ul>
+  <li><a href="https://docs.python.org/3/library/urllib.parse.html">Python: <code>urllib.parse</code></a> — <code>urlencode</code>, <code>quote</code>, and <code>quote_plus</code>.</li>
+  <li><a href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/net/URLEncoder.html">Oracle Java: <code>URLEncoder</code></a> — form encoding, UTF-8, and space handling.</li>
+  <li><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html">Oracle Java: <code>URI</code></a> — URI parsing and construction.</li>
+  <li><a href="https://www.php.net/manual/en/function.urlencode.php">PHP: <code>urlencode</code></a> and <a href="https://www.php.net/manual/en/function.rawurlencode.php"><code>rawurlencode</code></a>.</li>
+  <li><a href="https://learn.microsoft.com/en-us/dotnet/api/system.net.webutility.urlencode?view=net-10.0">Microsoft: <code>WebUtility.UrlEncode</code></a> and <a href="https://learn.microsoft.com/en-us/dotnet/api/system.uri.escapedatastring?view=net-10.0"><code>Uri.EscapeDataString</code></a>.</li>
+  <li><a href="https://www.rfc-editor.org/rfc/rfc3986#section-2.1">RFC 3986 §2.1</a> — percent-encoding syntax.</li>
+</ul>
+
+<section class="video-feature" aria-label="Watch: URL Encoding in Python, Java, PHP, and C#"><h2>Watch: URL Encoding in Python, Java, PHP &amp; C#</h2><p>Compare how the same query value is encoded across four languages, and see when to choose query or path-component encoding.</p><div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/Swt2G8jGNZg?rel=0" title="URL Encoding in Python, Java, PHP &amp; C#: Which Function to Use" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><p><a href="https://youtu.be/Swt2G8jGNZg" rel="noopener noreferrer">Watch on YouTube</a></p></section>
+<p class="related-form-encoding">For browser form bodies and server parsing, see <a href="/application-x-www-form-urlencoded/">the application/x-www-form-urlencoded request guide</a>.</p>
+<p class="related-language-guide">Need a working example instead of code? Use the <a href="/">PercentURL encoder</a>. For a URL nested inside a parameter, see <a href="/python-urlencode-nested-url/">Python urlencode for a nested URL</a>; for browser JavaScript, see <a href="/javascript/">JavaScript URL encoding</a>.</p>
+</article><footer class="ft">
+    <div class="ft-intro">
+      <span class="ft-mark" aria-hidden="true">%</span>
+      <div class="ft-intro-copy">
+        <strong>PercentURL</strong>
+        <p>Free URL tools that run in your browser.</p>
+        <span class="ft-privacy"><span aria-hidden="true">✓</span> Your text stays on your device</span>
+      </div>
+    </div>
+    <nav class="ft-nav" aria-label="Footer navigation">
+      <section class="ft-group" aria-labelledby="ft-tools-title">
+        <h2 id="ft-tools-title">Tools</h2>
+        <ul>
+          <li><a href="/#encoder">URL Encoder / Decoder</a></li>
+          <li><a href="/url-decoder/">URL Decoder</a></li>
+          <li><a href="/utm-builder/">UTM Builder</a></li>
+          <li><a href="/base64/">Base64</a></li>
+          <li><a href="/html-entities/">HTML Entities</a></li>
+          <li><a href="/jwt/">JWT Decoder</a></li>
+        </ul>
+      </section>
+      <section class="ft-group" aria-labelledby="ft-guides-title">
+        <h2 id="ft-guides-title">Guides</h2>
+        <ul>
+          <li><a href="/percent-encoding/">Percent-encoding</a></li>
+          <li><a href="/javascript/">URL encoding in JavaScript</a></li>
+          <li><a href="/url-encode-and-decode/">Choose an encoding mode</a></li>
+          <li><a href="/online-urlencoder/">URL encoder guide</a></li>
+          <li><a href="/curl-url-encode/">curl URL encoding</a></li>
+          <li><a href="/python-urlencode-nested-url/">Python URL encoding</a></li>
+          <li><a href="/url-encode-python-java-php-csharp/">URL encoding in four languages</a></li>
+          <li><a href="/url-encode-file/">URL encode a file</a></li>
+          <li><a href="/mailto-url-encode/">Encode a mailto link</a></li>
+          <li><a href="/url-encode-space-search-sites/">URL spaces in search</a></li>
+        </ul>
+      </section>
+      <section class="ft-group" aria-labelledby="ft-about-title">
+        <h2 id="ft-about-title">About</h2>
+        <ul>
+          <li><a href="/about/">About PercentURL</a></li>
+          <li><a href="/contact/">Contact</a></li>
+        </ul>
+      </section>
+    </nav>
+    <div class="ft-bottom"><p class="copy">© 2026 PercentURL</p><nav class="ft-legal" aria-label="Legal"><a href="/privacy/">Privacy policy</a></nav></div>
+  </footer></main><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="/assets/detail-enhancements.js" defer></script>
+<script src="/assets/analytics-consent.js" defer></script>
+
+
+
+
+</body></html>

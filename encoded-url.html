@@ -191,6 +191,8 @@ const query = inner.searchParams.get("q"); // "tea cake"</pre></div>
 <tr><td><code>+</code></td><td>A form-style space in query data, or a literal plus in another context.</td><td>Check the serialization and parser convention.</td></tr>
 <tr><td>A broken percent escape</td><td>The percent sign is not followed by two hexadecimal digits, or the resulting bytes do not match the decoder's character encoding.</td><td>Keep the original value and locate the malformed sequence before changing it.</td></tr>
 </tbody></table>
+<h2>Why does an encoded URI with special characters still fail on the server?</h2>
+<p>Percent-encoding makes data transportable inside a URI component; it does not guarantee that every proxy, router, and application will interpret that component the same way. A reserved character such as <code>%2F</code> may affect path routing, while a query value may be decoded by the framework before your handler sees it. Encode the individual value once, preserve the URL's structural separators, and decode it once at the matching component boundary. When diagnosing a failure, compare the outgoing request target, the value after proxy processing, and the value delivered to the application. Avoid decoding the whole URL before parsing it. See <a href="https://www.rfc-editor.org/rfc/rfc3986#section-2.2">RFC 3986 §2.2</a> for reserved delimiters.</p>
 <h2>Use an online decoder carefully</h2>
 <p>For a whole link, choose a tool mode intended for a complete URL and preserve its separators. For one parameter value, select only that value and decode it once. If the content is a nested URL, parse the outer query first and the inner URL second. These steps help keep data characters from turning into URL syntax.</p>
 <p>PercentURL's browser-based tool can encode or decode text values and whole URLs. For a hands-on comparison of modes, see <a href="/url-encode-and-decode">URL Encode and Decode: choose the right mode</a>. For the byte-level notation, read <a href="/percent-encoding">Percent-encoding explained</a>; for a tool-focused guide, see <a href="/url-decoder">Decode a URL online</a>.</p>
@@ -231,14 +233,19 @@ const query = inner.searchParams.get("q"); // "tea cake"</pre></div>
 
 
 
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"9a49bec77fcd476ea5c4ead947517895","r":1,"spa":2}' crossorigin="anonymous"></script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"9a49bec77fcd476ea5c4ead947517895","r":1,"spa":2}' crossorigin="anonymous"></script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"9a49bec77fcd476ea5c4ead947517895","r":1,"spa":2}' crossorigin="anonymous"></script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"9a49bec77fcd476ea5c4ead947517895","r":1,"spa":2}' crossorigin="anonymous"></script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"9a49bec77fcd476ea5c4ead947517895","r":1,"spa":2}' crossorigin="anonymous"></script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"9a49bec77fcd476ea5c4ead947517895","r":1,"spa":2}' crossorigin="anonymous"></script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"9a49bec77fcd476ea5c4ead947517895","r":1,"spa":2}' crossorigin="anonymous"></script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"9a49bec77fcd476ea5c4ead947517895","r":1,"spa":2}' crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+<script src="/assets/analytics-consent.js" defer></script>
+
+
+
+
 </body>
 </html>
 

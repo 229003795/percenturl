@@ -1,0 +1,236 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="Create a mailto link with an encoded subject and multiline body. Learn why spaces should use %20, newlines use %0D%0A, and HTML uses &amp;amp; between fields.">
+
+<title>How to URL Encode a mailto Link: Subject and Body</title>
+
+<link rel="canonical" href="https://percenturl.com/mailto-url-encode/">
+
+<style>
+
+:root{color-scheme:dark;--bg:#0f172a;--panel:#1e293b;--ink:#e2e8f0;--muted:#a8b5c7;--line:#334155;--accent:#38bdf8;--green:#34d399;--amber:#fbbf24}
+
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:900px;margin:auto;padding:24px 20px 48px}a{color:var(--accent)}h1{font-size:clamp(1.8rem,5vw,2.45rem);line-height:1.2;margin:.25rem 0 .75rem}h2{font-size:1.35rem;margin:2.2rem 0 .5rem}.sub,.muted{color:var(--muted)}.sub{margin:.2rem 0 1.2rem}.answer,.panel,.example{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0}.answer{border-left:4px solid var(--green)}.answer strong{color:var(--green)}.tool{display:inline-block;background:var(--accent);color:#06121f;text-decoration:none;font-weight:700;padding:10px 15px;border-radius:8px;margin:.5rem 0}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}code{background:#0b1220;border-radius:4px;padding:.08rem .28rem;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1220;border-radius:8px;padding:12px;margin:.6rem 0}table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.94rem}th,td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}th{color:var(--muted)}li{margin:.4rem 0}.footer{border-top:1px solid var(--line);margin-top:2.4rem;padding-top:1rem;color:var(--muted);font-size:.9rem}.footer a{margin-right:.55rem}
+
+</style>
+
+<link rel="stylesheet" href="/assets/site-refresh.css">
+
+<style>
+
+/* This page uses the shared light theme; override the dark code colors from its standalone base styles. */
+
+code { background: #edf2fa; color: #24405f; }
+
+pre { background: #17243a; color: #eaf0f8; }
+
+pre code { background: transparent; color: inherit; padding: 0; }
+
+</style>
+
+</head>
+
+<body><main class="wrap">
+
+  <header class="site-header">
+
+    <a class="brand" href="/" aria-label="PercentURL home"><span class="brand-mark">%</span>PercentURL</a>
+
+    <nav aria-label="Main navigation"><a href="/#task-hub-title">Tools</a><a href="/percent-encoding/">Guides</a><a href="/about/">About</a></nav>
+
+    <a class="header-cta" href="/#encoder">Open encoder <span aria-hidden="true">↗</span></a>
+
+  </header>
+
+<article>
+  <nav class="nav" aria-label="Breadcrumb"><a href="/">Home</a> / URL encoding guides</nav>
+  <h1>How to URL Encode a <code>mailto:</code> Link: Subject and Body</h1>
+  <p class="sub">Build a mail link with a subject, special characters, and a multiline message without confusing message text with URL or HTML separators.</p>
+  <div class="answer"><strong>Quick answer:</strong> Keep the recipient and the <code>mailto:</code> structure intact. Percent-encode each subject/body value separately; use <code>%20</code> for spaces and <code>%0D%0A</code> for body line breaks. In HTML source, write the separator between fields as <code>&amp;amp;</code>.</div>
+  <figure class="article-visual" aria-labelledby="mailto-visual-1-caption">
+    <img src="/assets/mailto-encoding-01.png" width="1280" height="720" loading="eager" decoding="async" alt="A mailto link is built from separate subject and body values, each encoded on its own before the fields are assembled.">
+    <figcaption id="mailto-visual-1-caption">Subject and message body are separate values; encode each one before joining them into the mailto URI.</figcaption>
+  </figure>
+
+  <p>Replace <code>YOUR_EMAIL_ADDRESS</code> with the intended recipient before using the example. Encode <code>subject</code> and <code>body</code> as separate values, then assemble them after <code>mailto:YOUR_EMAIL_ADDRESS?</code>. An ampersand inside the message becomes <code>%26</code>; the ampersand between the two fields remains a query separator.</p>
+  <p><a class="tool" href="/#encoder">Open the PercentURL URL Encoder</a> to encode a subject or body value. Do not paste the entire <code>mailto:</code> link into a component encoder.</p>
+
+  <h2>Build a mail link one field at a time</h2>
+  <p>This JavaScript example normalizes all input line endings to CRLF before encoding. It uses <code>encodeURIComponent()</code> on each value—not on the address or the complete URI:</p>
+  <pre><code>const subject = "Question: plus + and &amp;";
+const body = "First line\nSecond line: hello &amp; thanks";
+
+const mailto =
+  `mailto:YOUR_EMAIL_ADDRESS?subject=${encodeURIComponent(subject)}` +
+  `&amp;body=${encodeURIComponent(body.replace(/\r\n|\r|\n/g, "\r\n"))}`;
+
+console.log(mailto);</code></pre>
+  <p>The resulting URI is:</p>
+  <figure class="article-visual" aria-labelledby="mailto-visual-2-caption">
+    <img src="/assets/mailto-encoding-02.png" width="1280" height="720" loading="lazy" decoding="async" alt="A space in a mailto value is percent-encoded as %20; a body line break is represented by %0D%0A.">
+    <figcaption id="mailto-visual-2-caption">For mailto values, use %20 for a space and %0D%0A for a CRLF body line break.</figcaption>
+  </figure>
+
+  <pre><code>mailto:YOUR_EMAIL_ADDRESS?subject=Question%3A%20plus%20%2B%20and%20%26&amp;body=First%20line%0D%0ASecond%20line%3A%20hello%20%26%20thanks</code></pre>
+  <p>The visible <code>&amp;</code> between <code>subject</code> and <code>body</code> separates fields. The two <code>%26</code> sequences belong to message text. A plus typed as data becomes <code>%2B</code>; it must not be left where a form-style parser could treat it as a space.</p>
+  <figure class="article-visual" aria-labelledby="mailto-visual-3-caption">
+    <img src="/assets/mailto-encoding-03.png" width="1280" height="720" loading="lazy" decoding="async" alt="The ampersand in Hello and thanks is message data and becomes %26 inside the encoded body value.">
+    <figcaption id="mailto-visual-3-caption">An ampersand typed as message text is data, so encode it as %26 to keep it inside the subject or body.</figcaption>
+  </figure>
+
+
+  <h2>Put the URI in an HTML link</h2>
+  <p>HTML has its own escaping layer. In an HTML attribute, write the query separator as <code>&amp;amp;</code>; the browser turns that character reference into <code>&amp;</code> in the link value. Do not replace the data's <code>%26</code> escapes:</p>
+  <pre><code>&lt;a href="mailto:YOUR_EMAIL_ADDRESS?subject=Question%3A%20plus%20%2B%20and%20%26&amp;amp;body=First%20line%0D%0ASecond%20line%3A%20hello%20%26%20thanks"&gt;
+  Email support
+&lt;/a&gt;</code></pre>
+  <figure class="article-visual" aria-labelledby="mailto-visual-5-caption">
+    <img src="/assets/mailto-encoding-05.png" width="1280" height="720" loading="lazy" decoding="async" alt="A URI field separator is written as &amp; in HTML source; the percent-encoded message data stays unchanged.">
+    <figcaption id="mailto-visual-5-caption">In static HTML source, escape the URI field separator as &amp;amp;; keep percent-encoded message characters unchanged.</figcaption>
+  </figure>
+
+  <p>There are two distinct operations here: percent-encode each header value for the URI, then HTML-escape the URI when placing it in markup. If the <code>href</code> is created in JavaScript with <code>link.href = mailto</code>, do not manually add <code>&amp;amp;</code> to the JavaScript string.</p>
+
+  <h2>Character-by-character check</h2>
+  <div class="table-wrap"><table><thead><tr><th>Input in a subject or body</th><th>URI form</th><th>Why</th></tr></thead><tbody>
+    <tr><td>space</td><td><code>%20</code></td><td>RFC 6068 recommends percent-encoding spaces this way; <code>+</code> is ambiguous with a literal plus.</td></tr>
+    <tr><td>literal plus <code>+</code></td><td><code>%2B</code></td><td>Preserves it as message data rather than a space-like form value.</td></tr>
+    <tr><td>ampersand in message text <code>&amp;</code></td><td><code>%26</code></td><td>Keeps it inside the field value instead of starting another header field.</td></tr>
+    <tr><td>line break in body</td><td><code>%0D%0A</code></td><td>RFC 6068 requires CRLF encoding for body line breaks.</td></tr>
+    <tr><td>Unicode text</td><td>UTF-8 bytes, each percent-escaped as needed</td><td>For example, <code>é</code> is <code>%C3%A9</code> in a UTF-8-based mailto URI.</td></tr>
+  </tbody></table></div>
+  <figure class="article-visual" aria-labelledby="mailto-visual-4-caption">
+    <img src="/assets/mailto-encoding-04.png" width="1280" height="720" loading="lazy" decoding="async" alt="One structural ampersand separates subject and body fields, while %26 is data inside the body value.">
+    <figcaption id="mailto-visual-4-caption">Use a literal ampersand between subject and body fields; an encoded %26 inside a value remains message text.</figcaption>
+  </figure>
+
+  <h2>Common mistakes</h2>
+  <ul>
+    <li><strong>The email opens with <code>&amp;</code> or extra fields in the body.</strong> Encode the ampersand inside the message as <code>%26</code>; keep only the field boundary as <code>&amp;</code>.</li>
+    <li><strong>The message shows a plus sign where a space belongs.</strong> For mailto values, use <code>%20</code> for spaces and <code>%2B</code> for literal plus characters.</li>
+    <li><strong>The link text is malformed in HTML.</strong> Keep URI percent-encoding and HTML character references separate; write field separators as <code>&amp;amp;</code> in static markup.</li>
+    <li><strong>Clicking the link does nothing.</strong> A mail client or browser handler must be configured. A <code>mailto:</code> URI only asks the user's software to compose a message; it does not send it.</li>
+    <li><strong>A whole link turns into percent codes.</strong> Encode only the values. Leave <code>mailto:</code>, the recipient, <code>?</code>, field names, and field separators as URI structure.</li>
+  </ul>
+
+  <h2>What the standard does—and does not—promise</h2>
+  <p>RFC 6068 defines <code>subject</code> and <code>body</code> handling and specifies CRLF for body line breaks. It describes <code>body</code> as the first <code>text/plain</code> body part and says implementations cannot be expected to understand more than subject and body. Mail apps can still differ in how they handle a link, so check the composed message before sending. A <code>mailto:</code> link is not a substitute for an HTML email form when you need reliable delivery, attachments, or a consistent experience across devices.</p>
+  <figure class="article-visual" aria-labelledby="mailto-visual-6-caption">
+    <img src="/assets/mailto-encoding-06.png" width="1280" height="720" loading="lazy" decoding="async" alt="RFC 6068 defines the mailto format, but mail clients can behave differently, so the composed draft should be reviewed.">
+    <figcaption id="mailto-visual-6-caption">RFC 6068 defines mailto syntax, but mail applications can handle links differently. Check the draft first.</figcaption>
+  </figure>
+
+  <p>Use the <a href="/javascript/">JavaScript URL encoding guide</a> for component encoding, the <a href="/url-encode-and-decode/">URL encode/decode guide</a> for general URL values, or the <a href="/url-encoder-online/">online URL encoder guide</a> for the tool workflow.</p>
+
+  <h2>Sources</h2>
+  <ul>
+    <li><a href="https://www.rfc-editor.org/rfc/rfc6068#section-2">RFC 6068 §2</a> — mailto syntax and header/body fields.</li>
+    <li><a href="https://www.rfc-editor.org/rfc/rfc6068#section-5">RFC 6068 §5</a> — spaces, plus signs, reserved characters, and CRLF body line breaks.</li>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent">MDN: <code>encodeURIComponent()</code></a> — encode one URI component value.</li>
+    <li><a href="https://stackoverflow.com/questions/37524663/line-break-in-body-of-mailto-link">Stack Overflow: Line break in body of mailto link</a> — problem discovery only; RFC 6068 is the source for the stated rule.</li>
+  </ul>
+</article><footer class="ft">
+
+    <div class="ft-intro">
+
+      <span class="ft-mark" aria-hidden="true">%</span>
+
+      <div class="ft-intro-copy">
+
+        <strong>PercentURL</strong>
+
+        <p>Free URL tools that run in your browser.</p>
+
+        <span class="ft-privacy"><span aria-hidden="true">✓</span> Your text stays on your device</span>
+
+      </div>
+
+    </div>
+
+    <nav class="ft-nav" aria-label="Footer navigation">
+
+      <section class="ft-group" aria-labelledby="ft-tools-title">
+
+        <h2 id="ft-tools-title">Tools</h2>
+
+        <ul>
+
+          <li><a href="/#encoder">URL Encoder / Decoder</a></li>
+
+          <li><a href="/url-decoder/">URL Decoder</a></li>
+
+          <li><a href="/utm-builder/">UTM Builder</a></li>
+
+          <li><a href="/base64/">Base64</a></li>
+
+          <li><a href="/html-entities/">HTML Entities</a></li>
+
+          <li><a href="/jwt/">JWT Decoder</a></li>
+
+        </ul>
+
+      </section>
+
+      <section class="ft-group" aria-labelledby="ft-guides-title">
+
+        <h2 id="ft-guides-title">Guides</h2>
+
+        <ul>
+
+          <li><a href="/percent-encoding/">Percent-encoding</a></li>
+
+          <li><a href="/javascript/">URL encoding in JavaScript</a></li>
+
+          <li><a href="/url-encode-and-decode/">Choose an encoding mode</a></li>
+
+          <li><a href="/online-urlencoder/">URL encoder guide</a></li>
+
+          <li><a href="/curl-url-encode/">curl URL encoding</a></li>
+
+          <li><a href="/python-urlencode-nested-url/">Python URL encoding</a></li>
+          <li><a href="/mailto-url-encode/">Encode a mailto link</a></li>
+          <li><a href="/url-encode-space-search-sites/">URL spaces in search</a></li>
+
+        </ul>
+
+      </section>
+
+      <section class="ft-group" aria-labelledby="ft-about-title">
+
+        <h2 id="ft-about-title">About</h2>
+
+        <ul>
+
+          <li><a href="/about/">About PercentURL</a></li>
+
+          <li><a href="/contact/">Contact</a></li>
+
+        </ul>
+
+      </section>
+
+    </nav>
+
+    <div class="ft-bottom"><p class="copy">© 2026 PercentURL</p><nav class="ft-legal" aria-label="Legal"><a href="/privacy/">Privacy policy</a></nav></div>
+
+  </footer>
+
+</main><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="/assets/detail-enhancements.js" defer></script>
+
+
+
+<script src="/assets/analytics-consent.js" defer></script>
+
+
+
+
+
+</body></html>
