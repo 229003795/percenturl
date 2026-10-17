@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Encode Hex for a URL: Raw Bytes vs Literal Text | PercentURL</title>
+<meta name="description" content="Encode hex bytes as a URL component without confusing them with literal text. Try a local hex-to-percent tool and compare reproducible UTF-8, ASCII, and invalid-byte examples.">
+<link rel="canonical" href="https://percenturl.com/encode-hex-url-bytes/">
+<link rel="stylesheet" href="/assets/site-refresh.css">
+<style>
+*{box-sizing:border-box}body{margin:0;font:16px/1.65 system-ui,sans-serif}.wrap{max-width:920px!important;margin:0 auto}h1{font-size:clamp(1.9rem,5vw,2.8rem);line-height:1.15}h2{margin-top:2rem}.answer,.lab{padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--panel);margin:18px 0}.answer{border-left:4px solid #0f9f91}.eyebrow,.muted{color:var(--muted)}label{display:block;font-weight:650;margin:.85rem 0 .3rem}textarea,select{width:100%;padding:11px;border:1px solid #b8c9df;border-radius:8px;background:#fff;color:#15243b;font:inherit}textarea{min-height:80px;font-family:ui-monospace,monospace;resize:vertical}code,pre{font-family:ui-monospace,monospace;overflow-wrap:anywhere}code{background:#eaf0fa;padding:.12rem .25rem;border-radius:4px}pre{padding:16px;background:#eaf0fa;border-radius:9px;white-space:pre-wrap}.table-scroll{overflow-x:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;border:1px solid var(--line);padding:10px;vertical-align:top}th{background:#eaf0fa}figure{margin:25px 0}img{display:block;max-width:100%;height:auto}figcaption{font-size:.9rem;color:var(--muted);margin-top:8px}#hex-error{color:#a12121;font-weight:600}output{overflow-wrap:anywhere}.footer{border-top:1px solid var(--line);padding-top:20px;margin-top:36px}a{color:#2457d6}a:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #0f9f91;outline-offset:3px}@media(max-width:600px){th,td{padding:8px;font-size:.88rem}.answer,.lab{padding:14px}}
+</style></head><body>
+<header class="site-header"><a class="brand" href="/" aria-label="PercentURL home"><span class="brand-mark" aria-hidden="true">%</span>PercentURL</a><nav aria-label="Main navigation"><a href="/#task-hub-title">Tools</a><a href="/percent-encoding/">Guides</a><a href="/about/">About</a></nav></header>
+<main class="wrap"><article>
+<p class="eyebrow">URL encoding lab · Updated October 17, 2026</p>
+<h1>Encode Hex for a URL: Are You Encoding Bytes or Text?</h1>
+<section class="answer" aria-label="Quick answer"><p><strong>If your input is a hex byte dump, parse each pair into a byte before percent-encoding it.</strong> Hex <code>E4 B8 AD</code> represents the UTF-8 bytes of <code>中</code>, so the URL component is <code>%E4%B8%AD</code>. If your input is the literal text <code>E4B8AD</code>, keep it as <code>E4B8AD</code>: its letters and digits are already unreserved URL characters.</p></section>
+<p>Choose the input type below. The tool keeps the byte representation separate from the decoded text so you can see where the two workflows diverge. It is for <strong>one component value</strong>, not for rewriting a complete URL.</p>
+<section class="lab" aria-labelledby="lab-title"><h2 id="lab-title">Hex-to-URL byte lab</h2>
+<label for="hex-mode">What is your input?</label><select id="hex-mode"><option value="hex">Hex bytes — E4 B8 AD represents three bytes</option><option value="text">Literal text — encode the characters I type as UTF-8</option></select>
+<label for="hex-input">Input</label><textarea id="hex-input" spellcheck="false" maxlength="100000" aria-describedby="hex-help">E4 B8 AD</textarea>
+<p id="hex-help" class="muted">Hex mode accepts pairs of hex digits, optional spaces, and one optional leading 0x. Processing happens in your browser; this tool sends no input to a server.</p>
+<label for="hex-bytes">Actual bytes, shown in hex</label><textarea id="hex-bytes" readonly></textarea>
+<label for="hex-output">URL component, with unreserved ASCII kept readable</label><textarea id="hex-output" readonly></textarea>
+<p><strong>UTF-8 preview:</strong> <output id="hex-preview"></output> <span id="hex-count" class="muted"></span></p><p id="hex-error" role="status" aria-live="polite"></p>
+</section>
+<h2>Two inputs that look similar can mean different data</h2>
+<p>A hexadecimal digit is a way to write a number. Two digits can describe one byte, but a string containing those digits can also be ordinary text. Neither a URL encoder nor a server can infer which meaning you intended from the characters alone. Establish that meaning before converting anything.</p>
+<figure><img src="/assets/hex-url-workflow.svg" width="1000" height="420" alt="Hex bytes E4 B8 AD become percent escapes E4 B8 AD with percent signs; the literal text E4B8AD stays E4B8AD. Two distinct inputs produce different URL components."><figcaption>Choose bytes or text first. Percent signs describe the byte transport format, not the original input type.</figcaption></figure>
+<p>For example, a device log might display a payload as <code>C3 A9</code>. That is two bytes and, if interpreted as UTF-8, one character: <code>é</code>. A product identifier printed as <code>C3A9</code> could instead be four text characters. Sending the first interpretation when the service expects the second changes the identifier.</p>
+<h2>Our reproducible byte comparison</h2>
+<p>These examples were generated from fixed inputs, checked against Python's <code>urllib.parse.quote_from_bytes(..., safe="")</code>, and checked against the JavaScript converter used above. They are test cases, not claims about how a particular server handles binary input.</p>
+<div class="table-scroll"><table><thead><tr><th>Input meaning</th><th>Actual hex bytes</th><th>URL component</th><th>UTF-8 meaning</th></tr></thead><tbody>
+<tr><td>Hex bytes <code>41</code></td><td><code>41</code></td><td><code>A</code></td><td>One letter A</td></tr>
+<tr><td>Text <code>41</code></td><td><code>34 31</code></td><td><code>41</code></td><td>Two digits</td></tr>
+<tr><td>Hex bytes <code>C3 A9</code></td><td><code>C3 A9</code></td><td><code>%C3%A9</code></td><td>é</td></tr>
+<tr><td>Text <code>C3A9</code></td><td><code>43 33 41 39</code></td><td><code>C3A9</code></td><td>Four characters</td></tr>
+<tr><td>Text <code>中</code></td><td><code>E4 B8 AD</code></td><td><code>%E4%B8%AD</code></td><td>One character, three bytes</td></tr>
+<tr><td>Hex bytes <code>00 FF</code></td><td><code>00 FF</code></td><td><code>%00%FF</code></td><td>Not a valid UTF-8 text sequence</td></tr>
+<tr><td>Text <code>%41</code></td><td><code>25 34 31</code></td><td><code>%2541</code></td><td>A literal percent sign and two digits</td></tr>
+<tr><td>Hex bytes <code>2F 3F 26</code></td><td><code>2F 3F 26</code></td><td><code>%2F%3F%26</code></td><td>Slash, question mark, ampersand as data</td></tr>
+</tbody></table></div>
+<h2>Why 41 can become A instead of %41</h2>
+<p>The tool leaves ASCII letters, digits, hyphen, period, underscore, and tilde unchanged. These are the unreserved characters in RFC 3986. The byte <code>41</code> in hexadecimal is the letter <code>A</code>, so <code>A</code> is the readable component representation. An all-byte escape display could show <code>%41</code>, but adding percent signs to every byte is not required for an ordinary unreserved character. <a href="https://www.rfc-editor.org/rfc/rfc3986#section-2.3">RFC 3986 §2.3</a></p>
+<p>This rule does not mean every decoded punctuation character can be left in place. A slash or ampersand can act as structure in a URL. This lab treats those bytes as data inside a component, so it escapes them. The <a href="/url-encode-and-decode/">encoding-mode guide</a> explains how to keep the surrounding URL separators intact.</p>
+<h2>Preserve bytes that are not valid UTF-8</h2>
+<p>A byte stream need not be text. The byte <code>FF</code> can be represented by <code>%FF</code>, but it is not a valid single UTF-8 character. The tool deliberately reports an invalid UTF-8 preview instead of silently replacing the byte with a replacement character. A server may reject, transform, or interpret that data according to its API contract. Percent-encoding alone does not make arbitrary bytes acceptable to a text endpoint.</p>
+<p>For text mode, <code>TextEncoder</code> supplies UTF-8 bytes. For the preview, <code>TextDecoder</code> runs with fatal error handling; valid text is shown in quotes, including escapes for control characters. A leading UTF-8 BOM is kept in the preview rather than discarded. <a href="https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder">TextEncoder</a> · <a href="https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/fatal">TextDecoder fatal mode</a></p>
+<h2>Repeat the conversion in Python</h2>
+<pre><code>from urllib.parse import quote_from_bytes
+
+raw = bytes.fromhex("E4 B8 AD")
+print(quote_from_bytes(raw, safe=""))  # %E4%B8%AD
+print(raw.decode("utf-8"))            # 中
+
+literal = "E4B8AD".encode("utf-8")
+print(quote_from_bytes(literal, safe=""))  # E4B8AD</code></pre>
+<p>Do not call <code>decode("utf-8")</code> unless those bytes are supposed to be UTF-8 text. For bytes such as <code>00 FF</code>, keep the raw byte representation and follow the receiving protocol. If the endpoint specifies Base64url instead, use its expected format; the <a href="/base64/">Base64 tool</a> covers that separate representation.</p>
+<h2>Questions to settle before copying the result</h2>
+<h3>Should I URL-encode a hexadecimal ID?</h3><p>If the ID is the literal text <code>deadbeef</code>, those eight characters are already unreserved. Parsing it into four bytes would change its meaning. Treat an ID as text unless the API explicitly defines it as a hex representation of bytes.</p>
+<h3>Can I just insert a percent sign before each pair?</h3><p>Only when the input really represents bytes, has complete valid pairs, and the destination expects percent-encoded byte data. Never apply that shortcut to an arbitrary text identifier or a complete URL. The lab validates pairs and keeps unreserved ASCII readable.</p>
+<h3>Should I encode the generated % signs again?</h3><p>Not at the same layer. Copy the generated component into the appropriate component position. Passing it through another value encoder changes <code>%</code> to <code>%25</code>. A builder that expects raw text should receive raw text instead; see <a href="/decode-double-encoded-url/">the double-encoding guide</a> for nested encoding layers.</p>
+<h3>Is this encryption?</h3><p>No. Hex and percent-encoding are reversible representations. Neither conceals an identifier or provides access control.</p>
+<footer class="footer"><a href="/">URL encoder</a> · <a href="/percent-encoding/">Percent-encoding reference</a> · <a href="/base64/">Base64</a> · <a href="/privacy/">Privacy</a></footer>
+</article></main><script src="/assets/hex-url.js" defer></script><script src="/assets/analytics-consent.js" defer></script></body></html>
