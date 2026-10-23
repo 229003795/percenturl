@@ -1,0 +1,30 @@
+unique
+  raw: {"sub":"alpha","exp":2000000000}
+  default: {"sub":"alpha","exp":2000000000}
+  policy: accepted by this duplicate-key check
+repeated subject
+  raw: {"sub":"alpha","sub":"beta"}
+  default: {"sub":"beta"}
+  policy: duplicate key: sub
+repeated expiry
+  raw: {"exp":100,"exp":2000000000}
+  default: {"exp":2000000000}
+  policy: duplicate key: exp
+escaped name
+  raw: {"sub":"alpha","\u0073ub":"beta"}
+  default: {"sub":"beta"}
+  policy: duplicate key: sub
+different case
+  raw: {"sub":"alpha","SUB":"beta"}
+  default: {"sub":"alpha","SUB":"beta"}
+  policy: accepted by this duplicate-key check
+nested repeat
+  raw: {"profile":{"label":"a","label":"b"}}
+  default: {"profile":{"label":"b"}}
+  policy: duplicate key: label
+separate objects
+  raw: {"left":{"label":"a"},"right":{"label":"b"}}
+  default: {"left":{"label":"a"},"right":{"label":"b"}}
+  policy: accepted by this duplicate-key check
+PASS: 7 fixtures; raw payload, synthetic HMAC, default parse and duplicate policy match.
+Fixture integrity only: issuer, audience, time and application authorization are not validated.
