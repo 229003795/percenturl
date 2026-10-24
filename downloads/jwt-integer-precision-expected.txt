@@ -1,0 +1,8 @@
+{"raw":"{\"account_id\":9007199254740991}","parsed":"9007199254740991","type":"number","safeInteger":true,"roundTrip":"{\"account_id\":9007199254740991}"}
+{"raw":"{\"account_id\":9007199254740992}","parsed":"9007199254740992","type":"number","safeInteger":false,"roundTrip":"{\"account_id\":9007199254740992}"}
+{"raw":"{\"account_id\":9007199254740993}","parsed":"9007199254740992","type":"number","safeInteger":false,"roundTrip":"{\"account_id\":9007199254740992}"}
+{"raw":"{\"account_id\":9007199254740994}","parsed":"9007199254740994","type":"number","safeInteger":false,"roundTrip":"{\"account_id\":9007199254740994}"}
+{"raw":"{\"account_id\":\"9007199254740993\"}","parsed":"9007199254740993","type":"string","safeInteger":null,"roundTrip":"{\"account_id\":\"9007199254740993\"}"}
+{"raw":"{\"account_id\":-9007199254740993}","parsed":"-9007199254740992","type":"number","safeInteger":false,"roundTrip":"{\"account_id\":-9007199254740992}"}
+{"raw":"{\"account_id\":2000000000}","parsed":"2000000000","type":"number","safeInteger":true,"roundTrip":"{\"account_id\":2000000000}"}
+PASS: 7 raw-text round trips and parsed results; collision and late-BigInt checks match.
