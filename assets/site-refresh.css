@@ -484,6 +484,34 @@ table td, table th { border-color: #e1e7f0 !important; }
 .copy-row { margin-top: 11px; }
 .copy-row .btn { flex: 0 1 auto; min-width: 130px; padding: 10px 13px; font-size: .87rem; }
 .editor-pane .outlabel { margin-bottom: 10px; }
+/* Keep both editor panes on the same header, field and action baselines. */
+.tool-card .editor-pane { display: flex; flex-direction: column; }
+.tool-card .editor-pane > label,
+.tool-card .editor-pane > .sample-label-row {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  margin: 0 0 10px;
+}
+.tool-card .editor-pane > .sample-label-row > label { min-width: 0; }
+.tool-card .editor-pane textarea {
+  display: block;
+  height: 190px;
+  margin: 0;
+  padding: 12px;
+}
+.tool-card .editor-pane > .row {
+  align-items: stretch;
+  min-height: 44px;
+  margin: 12px 0 0;
+}
+.tool-card .editor-pane > .row > .btn {
+  min-height: 44px;
+  padding: 10px 12px;
+  font-size: .9rem;
+  line-height: 1.4;
+}
+.tool-card .editor-pane > .row > .btn span { margin-right: 5px; }
 .tool-card > .note { margin: 15px 2px 0; font-size: .78rem; }
 .tool-card + .more { margin-top: 42px; }
 
@@ -541,7 +569,7 @@ table td, table th { border-color: #e1e7f0 !important; }
   .tool-card .controls { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .tool-card .target-row { align-items: flex-start; flex-direction: column; }
   .editor-grid { grid-template-columns: 1fr; }
-  .editor-pane textarea { min-height: 150px; }
+  .tool-card .editor-pane textarea { height: 150px; min-height: 150px; }
   .task-hub { margin-top:26px !important; padding:17px !important; }
   .task-hub-head { align-items:stretch; flex-direction:column; gap:12px; }
   .tool-search { flex:1 1 auto; width:100%; min-width:0; }
@@ -550,6 +578,7 @@ table td, table th { border-color: #e1e7f0 !important; }
   .popular-tool { padding:10px 11px; }
 }
 @media (max-width: 560px) {
+  .tool-card .editor-pane .field-hint { display: none; }
   .site-header { display:grid; grid-template-columns:minmax(0,1fr) auto; row-gap:10px; margin-bottom:24px; }
   .site-header nav { grid-column:1 / -1; grid-row:2; justify-content:flex-start; gap:22px; padding:2px 1px 6px; border-bottom:1px solid #e5eaf2; }
   .site-header nav a { padding:5px 0; }
