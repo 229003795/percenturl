@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Base64 Encoder / Decoder — Encode &amp; Decode Online with Live Charset Display</title>
+<title>Base64 Decode / Base64 Decrypt Online — Encoder &amp; Decoder</title>
 <meta name="description" content="Free Base64 encoder and decoder. Encode or decode online as you type, see exactly which character set is being used, and learn how the + and / in standard Base64 break inside a URL — and when to use URL-safe Base64 instead.">
 <link rel="canonical" href="https://percenturl.com/base64/">
 <style>
@@ -116,8 +116,8 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>Base64 Encoder / Decoder</h1>
-  <p class="sub">Paste Base64 to decode it immediately. Copy the text or download the exact decoded bytes. Processing stays in your browser.</p>
+  <h1>Base64 Decode / Base64 Decrypt</h1>
+  <p class="sub">Paste Base64 to decode it immediately. If you call it “Base64 decrypt”, this tool decodes the data; Base64 is encoding, not encryption. Copy the text or download the exact bytes, locally in your browser.</p>
   <p class="backhome"><a href="/">← Back to the URL Encoder</a></p>
 
   <!-- ============ BLOCK 1 ============ -->
@@ -168,7 +168,7 @@
     </div>
   </div>
   </details>
-  <p class="alias">This Base64 decode online tool also handles searches for <b>base64decode</b>, <b>b64 decode</b>, <b>base 64 converter</b> and <b>64 decode</b>. These names share this one tool, not separate decoders.</p>
+  <p class="alias">Also known as <b>base64decode</b>, <b>b64 decode</b>, <b>base 64 converter</b> or <b>64 decode</b>. These names share this one tool, not separate decoders.</p>
 <section class="more" aria-labelledby="decode-lab-title">
   <h2 id="decode-lab-title">Decode checks: bytes before assumptions</h2>
   <p>Verified October 24, 2026 with Python 3.13.15 (<code>base64.b64decode(validate=True)</code>), Node.js v24.19.0 (<code>Buffer.from(input, 'base64')</code>) and this page's decoder. Cells show decoded hexadecimal bytes, not text. These are different parsing policies; a permissive result does not certify valid input.</p>
