@@ -125,7 +125,7 @@
     }
   }
 
-  if (path === '/' || /^\/(about|privacy|contact)$/.test(path) || root.querySelector('.detail-toc')) return;
+  if (path === '/' || path === '/base64' || /^\/(about|privacy|contact)$/.test(path) || root.querySelector('.detail-toc')) return;
 
   Array.from(root.querySelectorAll('table')).forEach(function (table, index) {
     if (table.parentElement.classList.contains('responsive-table')) return;

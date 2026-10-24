@@ -108,6 +108,8 @@
     border-radius:10px;padding:10px 12px;color:var(--accent);text-decoration:none;
     font-size:.86rem;font-weight:600;display:flex;align-items:center}
   .reltools .rt-list a:hover{border-color:var(--accent);text-decoration:underline}
+  .decode-options{margin:16px 0}.decode-options summary{cursor:pointer;color:var(--accent)}
+  #in,#out{min-height:76px}#byteHash{overflow-wrap:anywhere}.lab-table{overflow-x:auto}.lab-table table{min-width:620px}button:disabled{opacity:.5;cursor:not-allowed}
   .article-visual{margin:1.5rem 0 2rem;padding:0;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:var(--panel)}.article-visual img{display:block;width:100%;height:auto}.article-visual figcaption{padding:.7rem 1rem;color:var(--muted);font-size:.88rem;line-height:1.5}
 </style>
 <link rel="stylesheet" href="/assets/site-refresh.css">
@@ -115,25 +117,31 @@
 <body>
 <div class="wrap">
   <h1>Base64 Encoder / Decoder</h1>
-  <p class="sub">Encode or decode Base64 as you type — and see exactly which character set and alphabet the tool is using. Runs entirely in your browser.</p>
+  <p class="sub">Paste Base64 to decode it immediately. Copy the text or download the exact decoded bytes. Processing stays in your browser.</p>
   <p class="backhome"><a href="/">← Back to the URL Encoder</a></p>
-
-  <p class="alias">Also searched as <b>base64 encode</b> · <b>base64 decode</b> · <b>base64 encode online</b> · <b>base64 decode online</b> · <b>base64 converter</b> · or <b>base 64</b>. It is one tool: bytes to Base64 text, and back.</p>
-
-  <div class="notice">
-    Everything runs in your browser. Nothing you type is uploaded to any server.
-  </div>
 
   <!-- ============ BLOCK 1 ============ -->
   <h2 class="blk"><span class="n">1</span>Encode or decode</h2>
-  <p class="blksub">Pick a direction, type or paste, and the result updates live.</p>
+  <p class="blksub">Paste a string below. No account or upload is needed.</p>
 
+  <label for="in" id="inLabel">Base64 to decode</label>
+  <textarea id="in" placeholder="Paste Base64 here, e.g. SGVsbG8= — decoded output updates immediately." spellcheck="false"></textarea>
+  <label for="out">Result</label>
+  <textarea id="out" readonly placeholder="Decoded text appears here."></textarea>
+  <div class="row">
+    <button class="btn copy" id="copyBtn">Copy result</button>
+    <button class="btn copy" id="downloadBytes" disabled>Download decoded bytes</button>
+  </div>
+  <div class="warn" id="warn" role="alert"></div>
+  <div class="hint" id="dirHint">Decoding Base64. Standard and URL-safe alphabets, ASCII whitespace and missing padding are accepted.</div>
+  <div class="hint" id="byteHash" aria-live="polite"></div>
+  <details class="decode-options"><summary>Options: direction, character set, alphabet and padding</summary>
   <div class="controls">
     <div class="ctrl">
       <div class="t">Direction</div>
       <div class="seg" data-k="mode">
-        <button data-v="encode" class="active">Encode</button>
-        <button data-v="decode">Decode</button>
+        <button data-v="encode">Encode</button>
+        <button data-v="decode" class="active">Decode</button>
       </div>
     </div>
     <div class="ctrl">
@@ -159,19 +167,20 @@
       </div>
     </div>
   </div>
-  <div class="hint" id="dirHint">Encoding text to Base64. Switch to Decode to go the other way.</div>
-
-  <label for="in" id="inLabel">Text to encode</label>
-  <textarea id="in" placeholder="Type or paste here — the output updates as you type."></textarea>
-
-  <label for="out">Result</label>
-  <textarea id="out" readonly placeholder="Result appears here."></textarea>
-  <div class="row">
-    <button class="btn copy" id="copyBtn">Copy result</button>
-  </div>
-
-  <div class="warn" id="warn"></div>
-
+  </details>
+  <p class="alias">This Base64 decode online tool also handles searches for <b>base64decode</b>, <b>b64 decode</b>, <b>base 64 converter</b> and <b>64 decode</b>. These names share this one tool, not separate decoders.</p>
+<section class="more" aria-labelledby="decode-lab-title">
+  <h2 id="decode-lab-title">Decode checks: bytes before assumptions</h2>
+  <p>Verified October 24, 2026 with Python 3.13.15 (<code>base64.b64decode(validate=True)</code>), Node.js v24.19.0 (<code>Buffer.from(input, 'base64')</code>) and this page's decoder. Cells show decoded hexadecimal bytes, not text. These are different parsing policies; a permissive result does not certify valid input.</p>
+  <div class="lab-table" role="region" aria-label="Base64 runtime comparison" tabindex="0"><table class="enc"><thead><tr><th>Input (escaped whitespace)</th><th>This tool</th><th>Python, validate=True</th><th>Node Buffer</th></tr></thead><tbody><tr><td><code>Zg==</code></td><td>66</td><td>66</td><td>66</td></tr><tr><td><code>Zh==</code></td><td>66 (non-zero pad bits)</td><td>66</td><td>66</td></tr><tr><td><code>Zg</code></td><td>66</td><td>REJECT</td><td>66</td></tr><tr><td><code>SGVsbG8=</code></td><td>48656c6c6f</td><td>48656c6c6f</td><td>48656c6c6f</td></tr><tr><td><code>/w==</code></td><td>ff</td><td>ff</td><td>ff</td></tr><tr><td><code>SGVsbG8_</code></td><td>48656c6c6f3f</td><td>REJECT</td><td>48656c6c6f3f</td></tr><tr><td><code>Z===</code></td><td>REJECT</td><td>REJECT</td><td>(empty)</td></tr><tr><td><code>A</code></td><td>REJECT</td><td>REJECT</td><td>(empty)</td></tr><tr><td><code>SG Vs\nbG8=</code></td><td>48656c6c6f</td><td>REJECT</td><td>48656c6c6f</td></tr></tbody></table></div>
+  <h3>Same bytes do not prove the same Base64 spelling</h3>
+  <p><code>Zg==</code> and <code>Zh==</code> both decode to byte <code>66</code>. The latter has non-zero unused pad bits. This tool accepts that alias and flags it; it does not silently claim the spelling is canonical. A byte hash also matches for both inputs, so use a spelling check separately when exact canonical tokens matter.</p>
+  <h3>Text failure is not byte loss</h3>
+  <p><code>/w==</code> produces byte <code>ff</code>, which is not valid UTF-8 text. The text result stays empty with an error, but <strong>Download decoded bytes</strong> still saves the original byte. SHA-256 is calculated over those bytes, before any character-set interpretation. Compare the displayed digest with your downloaded file, for example <code>python -c "import hashlib; print(hashlib.sha256(open('decoded.bin','rb').read()).hexdigest())"</code>.</p>
+  <h3>Run the same checks yourself</h3>
+  <p>Download the <a href="/downloads/base64-decode-regression.py" download>Python regression runner</a> and <a href="/assets/base64-decoder-core.js" download>decoder core</a> into one folder, then run <code>python base64-decode-regression.py base64-decoder-core.js</code>. Python and Node.js are required; no package installation or network call is used. The <a href="/downloads/base64-decode-results.json" download>recorded results with versions and byte hashes</a> let you compare the output. Future runtime versions may behave differently.</p>
+  <p>The tool accepts ASCII whitespace, omitted padding and URL-safe <code>- _</code>. It rejects misplaced/excess padding, illegal characters and impossible lengths. Non-zero unused pad bits are reported but accepted. These are explicit tool policies, not a claim that all decoders must behave alike.</p>
+</section>
   <!-- ============ BLOCK 2 ============ -->
   <h2 class="blk"><span class="n">2</span>Live: what the encoder is actually doing</h2>
   <p class="blksub">Base64 does not encode text — it encodes <em>bytes</em>. The character set decides what those bytes are, so the same visible text can produce different Base64. This readout shows the choice being made.</p>
@@ -318,9 +327,10 @@
   </footer>
 </div>
 
+<script src="/assets/base64-decoder-core.js"></script>
 <script>
 const B64STD = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-const state = { mode:'encode', charset:'utf-8', alphabet:'standard', padding:'pad' };
+const state = { mode:'decode', charset:'utf-8', alphabet:'standard', padding:'pad' };
 
 const inEl   = document.getElementById('in');
 const outEl  = document.getElementById('out');
@@ -377,25 +387,29 @@ function bytesToB64(bytes, urlSafe, pad){
 }
 
 function b64ToBytes(str){
-  let s = str.replace(/[\s\r\n]+/g, '');
-  if(!s) return [];
-  s = s.replace(/-/g, '+').replace(/_/g, '/');
-  const rem = s.length % 4;
-  if(rem === 1) throw { msg:'This is not valid Base64: a length of 4n+1 is impossible. A character was probably dropped when copying.' };
-  if(rem) s += '='.repeat(4 - rem);
-  if(!/^[A-Za-z0-9+/]*={0,2}$/.test(s))
-    throw { msg:'This is not valid Base64. Valid characters are A-Z a-z 0-9 + / = (or - _ for URL-safe). If it contains %20 it is percent-encoded; if it is all 0-9 a-f it is probably hex.' };
-  const out = [];
-  for(let i = 0; i < s.length; i += 4){
-    const n = (B64STD.indexOf(s[i]) << 18) | (B64STD.indexOf(s[i+1]) << 12) |
-              ((s[i+2] === '=' ? 0 : B64STD.indexOf(s[i+2])) << 6) |
-              (s[i+3] === '=' ? 0 : B64STD.indexOf(s[i+3]));
-    out.push((n >> 16) & 255);
-    if(s[i+2] !== '=') out.push((n >> 8) & 255);
-    if(s[i+3] !== '=') out.push(n & 255);
-  }
-  return out;
+  try { return Array.from(Base64Decoder.decode(str).bytes); }
+  catch(e) { throw {msg:e.message}; }
 }
+let decodedBytes = null, hashGeneration = 0;
+function updateByteDownload(bytes, valid){
+  decodedBytes = valid ? new Uint8Array(bytes) : null;
+  document.getElementById('downloadBytes').disabled = !decodedBytes || !inEl.value || state.mode !== 'decode';
+  const target = document.getElementById('byteHash'), generation = ++hashGeneration;
+  target.textContent = '';
+  if (!decodedBytes || state.mode !== 'decode' || !inEl.value) return;
+  target.textContent = 'Decoded bytes: ' + decodedBytes.length + '. Computing SHA-256…';
+  if (!globalThis.crypto?.subtle) { target.textContent = 'Decoded bytes: ' + decodedBytes.length + '. SHA-256 unavailable in this browser context.'; return; }
+  crypto.subtle.digest('SHA-256', decodedBytes).then(hash => {
+    if(generation !== hashGeneration) return;
+    target.textContent = 'Decoded bytes: ' + bytes.length + ' · SHA-256: ' + Array.from(new Uint8Array(hash), b=>b.toString(16).padStart(2,'0')).join('');
+  }).catch(()=>{if(generation === hashGeneration) target.textContent = 'SHA-256 unavailable; byte download is still available.';});
+}
+document.getElementById('downloadBytes').addEventListener('click',()=>{
+  if(!decodedBytes || state.mode !== 'decode') return;
+  const url = URL.createObjectURL(new Blob([decodedBytes], {type:'application/octet-stream'}));
+  const link = document.createElement('a'); link.href=url; link.download='decoded.bin'; link.click();
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+});
 
 /* ---------- live run ---------- */
 function run(){
@@ -411,6 +425,7 @@ function run(){
       output = raw ? bytesToText(bytes, state.charset) : '';
     }
     warnEl.classList.remove('show');
+    if(state.mode === 'decode' && Base64Decoder.decode(raw).nonCanonical){warnEl.textContent='Non-canonical Base64: unused pad bits are non-zero. The bytes are decoded, but this spelling is an alias.';warnEl.classList.add('show');}
   }catch(e){
     warnEl.textContent = '⚠️ ' + (e.msg || String(e));
     warnEl.classList.add('show');
@@ -419,6 +434,7 @@ function run(){
     } else { bytes = []; }
   }
 
+  updateByteDownload(bytes, state.mode === 'decode' && (()=>{try{b64ToBytes(raw);return true;}catch(_){return false;}})());
   outEl.value = output;
 
   document.getElementById('roCharset').textContent = state.charset === 'utf-8' ? 'UTF-8'
@@ -429,7 +445,7 @@ function run(){
   document.getElementById('roLen').textContent = output.length;
 
   renderBytes(bytes);
-  renderLive(output);
+  renderLive(state.mode === 'decode' ? bytesToB64(bytes, false, true) : output);
 }
 
 /* character -> bytes table (for the INPUT, so the charset choice is visible) */

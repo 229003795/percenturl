@@ -1,0 +1,92 @@
+{
+  "node": "v24.19.0",
+  "rows": [
+    {
+      "input": "Zg==",
+      "page": {
+        "hex": "66",
+        "nonCanonical": false,
+        "sha256": "252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111"
+      },
+      "nodeHex": "66",
+      "pythonHex": "66"
+    },
+    {
+      "input": "Zh==",
+      "page": {
+        "hex": "66",
+        "nonCanonical": true,
+        "sha256": "252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111"
+      },
+      "nodeHex": "66",
+      "pythonHex": "66"
+    },
+    {
+      "input": "Zg",
+      "page": {
+        "hex": "66",
+        "nonCanonical": false,
+        "sha256": "252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111"
+      },
+      "nodeHex": "66",
+      "pythonHex": "REJECT"
+    },
+    {
+      "input": "SGVsbG8=",
+      "page": {
+        "hex": "48656c6c6f",
+        "nonCanonical": false,
+        "sha256": "185f8db32271fe25f561a6fc938b2e264306ec304eda518007d1764826381969"
+      },
+      "nodeHex": "48656c6c6f",
+      "pythonHex": "48656c6c6f"
+    },
+    {
+      "input": "/w==",
+      "page": {
+        "hex": "ff",
+        "nonCanonical": false,
+        "sha256": "a8100ae6aa1940d0b663bb31cd466142ebbdbd5187131b92d93818987832eb89"
+      },
+      "nodeHex": "ff",
+      "pythonHex": "ff"
+    },
+    {
+      "input": "SGVsbG8_",
+      "page": {
+        "hex": "48656c6c6f3f",
+        "nonCanonical": false,
+        "sha256": "0da72197e898ebe1814471a76048ed137a089f595c1e7038f2b70e98645e7652"
+      },
+      "nodeHex": "48656c6c6f3f",
+      "pythonHex": "REJECT"
+    },
+    {
+      "input": "Z===",
+      "page": {
+        "error": true
+      },
+      "nodeHex": "",
+      "pythonHex": "REJECT"
+    },
+    {
+      "input": "A",
+      "page": {
+        "error": true
+      },
+      "nodeHex": "",
+      "pythonHex": "REJECT"
+    },
+    {
+      "input": "SG Vs\nbG8=",
+      "page": {
+        "hex": "48656c6c6f",
+        "nonCanonical": false,
+        "sha256": "185f8db32271fe25f561a6fc938b2e264306ec304eda518007d1764826381969"
+      },
+      "nodeHex": "48656c6c6f",
+      "pythonHex": "REJECT"
+    }
+  ],
+  "python": "3.13.15"
+}
