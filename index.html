@@ -93,8 +93,9 @@
 </style>
 <link rel="stylesheet" href="/assets/site-refresh.css">
 <link rel="canonical" href="https://percenturl.com/">
+<link rel="stylesheet" href="/assets/home-polish.css">
 </head>
-<body>
+<body class="home-tool">
 <div class="wrap">
   <header class="site-header">
     <a class="brand" href="/" aria-label="PercentURL home"><span class="brand-mark">%</span>PercentURL</a>
@@ -116,11 +117,29 @@
   <div class="target-row">
     <div class="t">What are you encoding?</div>
     <div class="seg" data-k="target">
-      <button data-v="component" class="active">Component (a piece of text / one parameter value)</button>
-      <button data-v="url">Full URL (splits scheme / host / path / query / fragment)</button>
+      <button data-v="component" class="active" aria-label="Component (a piece of text / one parameter value)">Text / parameter</button>
+      <button data-v="url" aria-label="Full URL (splits scheme / host / path / query / fragment)">Complete URL</button>
     </div>
   </div>
 
+  <div class="editor-grid">
+    <div class="editor-pane input-pane">
+      <label for="in">Input <span class="field-hint">Text or a complete URL</span></label>
+      <textarea id="in" placeholder="Paste a URL, or any text you need to encode / decode…"></textarea>
+      <div class="row action-row">
+        <button class="btn encode" id="encBtn"><span aria-hidden="true">↗</span> URL Encode</button>
+        <button class="btn decode" id="decBtn"><span aria-hidden="true">↙</span> URL Decode</button>
+      </div>
+      <div class="errbox" id="errbox"></div>
+    </div>
+    <div class="editor-pane output-pane">
+      <label class="outlabel" for="out">Output <span class="tag" id="modeTag">encoded</span></label>
+      <textarea id="out" readonly placeholder="Your result will appear here…"></textarea>
+      <div class="row copy-row"><button class="btn copy" id="copyBtn" disabled><span aria-hidden="true">▢</span> Copy result</button></div>
+    </div>
+  </div>
+
+  <details class="encoding-settings"><summary>Encoding settings <span>Character set, spaces &amp; batch mode</span></summary><div class="settings-body">
   <!-- batch mode -->
   <div class="batch" id="batchToggle">
     <span class="dot"></span>
@@ -165,22 +184,7 @@
     · With <b>batch</b> on, every line is treated as its own item, and a bad line is reported on its own.
   </p></details>
 
-  <div class="editor-grid">
-    <div class="editor-pane input-pane">
-      <label for="in">Input <span class="field-hint">Text or a complete URL</span></label>
-      <textarea id="in" placeholder="Paste a URL, or any text you need to encode / decode…"></textarea>
-      <div class="row action-row">
-        <button class="btn encode" id="encBtn"><span aria-hidden="true">↗</span> URL Encode</button>
-        <button class="btn decode" id="decBtn"><span aria-hidden="true">↙</span> URL Decode</button>
-      </div>
-      <div class="errbox" id="errbox"></div>
-    </div>
-    <div class="editor-pane output-pane">
-      <label class="outlabel" for="out">Output <span class="tag" id="modeTag">encoded</span></label>
-      <textarea id="out" readonly placeholder="Your result will appear here…"></textarea>
-      <div class="row copy-row"><button class="btn copy" id="copyBtn" disabled><span aria-hidden="true">▢</span> Copy result</button></div>
-    </div>
-  </div>
+  </div></details>
 
   <p class="note">
     No sign-up · Unlimited use · No watermark · Runs only in your browser.
