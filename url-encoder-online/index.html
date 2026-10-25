@@ -48,6 +48,42 @@
 <p>A space may appear as <code>%20</code> in percent-encoded URLs. In form-style query serialization, it may appear as <code>+</code>; a literal plus in that convention is commonly written <code>%2B</code>. Follow the format expected by the server or API that receives the URL.</p>
 <p>For a detailed comparison of component, full-URL, and form modes, see <a href="/#url-modes">URL encode and decode: choose the right mode</a>.</p>
 <p>If an encoded slash (<code>%2F</code>) still returns 404, the receiving server may be rejecting or decoding it before the route runs. See <a href="/url-encoder-encoded-slash/">why an encoded slash can still return 404</a>.</p>
+<section id="nested-redirect"><h2>Why a redirect URL needs two encoding steps</h2>
+<p>A redirect link often contains another complete URL as a query value. The inner URL has its own <code>?</code>, <code>&amp;</code>, and <code>=</code> characters. If those characters are pasted raw into the outer query, the outer parser may mistake them for its own separators.</p>
+<p>For example, this is ambiguous because the inner <code>&amp;sort=recent</code> can be read as a second outer parameter:</p>
+<div class="example"><pre>https://login.example/authorize?client_id=abc&amp;redirect_uri=https://shop.example/search?q=tea&amp;sort=recent</pre></div>
+<p>Encode the complete inner URL as the value of <code>redirect_uri</code>, while leaving the outer <code>?</code> and <code>&amp;</code> separators readable:</p>
+<div class="example"><pre>https://login.example/authorize?client_id=abc&amp;redirect_uri=https%3A%2F%2Fshop.example%2Fsearch%3Fq%3Dtea%26sort%3Drecent</pre></div>
+<p>Now the outer URL has two parameters: <code>client_id</code> and <code>redirect_uri</code>. The encoded <code>%26</code> belongs to the inner link; the literal outer <code>&amp;</code> separates outer parameters.</p>
+<h2>Encode the inner link in the right order</h2>
+<ol>
+<li>Build the inner URL with its own parameters.</li>
+<li>Serialize the inner URL to text.</li>
+<li>Add that string to the outer URL with <code>URLSearchParams</code> or a component encoder.</li>
+<li>Read the outer parameter first; parse its returned value as the inner URL.</li>
+</ol>
+<div class="example"><pre>const inner = new URL("https://shop.example/search");
+inner.searchParams.set("q", "tea &amp; cake");
+inner.searchParams.set("sort", "recent");
+
+const outer = new URL("https://login.example/authorize");
+outer.searchParams.set("client_id", "abc");
+outer.searchParams.set("redirect_uri", inner.href);
+
+console.log(outer.href);</pre></div>
+<p><code>URLSearchParams</code> serializes the outer parameter value for you. Spaces in its form-style query serialization may appear as <code>+</code>; an encoder for a generic URL component commonly uses <code>%20</code>. Use the convention expected by the receiving endpoint.</p>
+<h2>Why can a redirect break when Nginx uses <code>$request_uri</code>?</h2>
+<p>Nginx defines <code>$request_uri</code> as the full original request URI, including its arguments. It is already a complete request-target, not a single query value. If you insert it into another redirect parameter, its <code>?</code>, <code>&amp;</code>, and <code>=</code> can be read as the outer URL's structure unless the inner URI is encoded as one value. With <code>proxy_pass</code> variables, Nginx also passes a specified URI as-is, replacing the original request URI; the exact result depends on the location and rewrite configuration. Check whether the destination is meant to receive the original request or a nested URL, encode only the nested value, and inspect the outgoing <code>Location</code> header before changing configuration. See the <a href="https://nginx.org/en/docs/http/ngx_http_core_module.html">Nginx core variables</a> and <a href="https://nginx.org/en/docs/http/ngx_http_proxy_module.html">proxy_pass documentation</a>.</p>
+<h2>Decode one layer at a time</h2>
+<p>Parse the outer URL to get <code>redirect_uri</code>, then parse that value as a URL to read the inner search parameters:</p>
+<div class="example"><pre>const receivedOuter = new URL(outer.href);
+const redirectText = receivedOuter.searchParams.get("redirect_uri");
+const receivedInner = new URL(redirectText);
+
+console.log(receivedInner.searchParams.get("q")); // "tea &amp; cake"
+console.log(receivedInner.searchParams.get("sort")); // "recent"</pre></div>
+<p>Each parser handles its own URL boundary. Avoid decoding the complete outer URL before parsing it: turning encoded inner separators into literal characters too early can change which parameters the outer URL appears to contain.</p>
+<p>For the matching Python API, see <a href="/python-urlencode-nested-url/">the nested URL query example</a>.</p></section>
 <h2>Before you copy the finished link</h2>
 <ul><li>Did you encode only the value or component you intended?</li><li>Are <code>/</code>, <code>?</code>, <code>=</code>, and <code>&amp;</code> still in the right structural positions?</li><li>Did a literal percent sign become <code>%25</code>?</li><li>Did you avoid encoding the same value twice?</li><li>Does the receiving service expect <code>%20</code> or form-style <code>+</code> for spaces?</li></ul>
 <section class="panel"><h2>Encode your value now</h2><p>Use PercentURL’s browser-based URL encoder to encode one value, then review the finished URL in context before sharing or submitting it.</p><a class="tool" href="/">Open the URL Encoder / Decoder</a><p class="muted">For the underlying byte rules, read <a href="/percent-encoding/">What Is Percent-Encoding?</a></p></section>
