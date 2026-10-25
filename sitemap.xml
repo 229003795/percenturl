@@ -9,7 +9,7 @@
   </url>
   <url>
     <loc>https://percenturl.com/base64/</loc>
-    <lastmod>2026-10-24</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://percenturl.com/html-entities/</loc>
@@ -29,6 +29,7 @@
   </url>
   <url>
     <loc>https://percenturl.com/url-decoder/</loc>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://percenturl.com/encodeurl-online/</loc>
@@ -83,7 +84,7 @@
   </url>
   <url>
     <loc>https://percenturl.com/base-32-encoder-url-padding/</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-25</lastmod>
   </url>
   <url>
     <loc>https://percenturl.com/base32hex-non-base32-digit-found/</loc>
@@ -108,5 +109,9 @@
   <url>
     <loc>https://percenturl.com/jwt-token-decode-integer-precision/</loc>
     <lastmod>2026-10-24</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/base32-decode/</loc>
+    <lastmod>2026-10-25</lastmod>
   </url>
 </urlset>

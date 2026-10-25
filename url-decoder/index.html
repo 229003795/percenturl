@@ -151,6 +151,18 @@
   <p class="note">Use <b>%20 only</b> for a URL path, or <b>+ also means space</b> for a query/form value. <a href="#plus" style="color:var(--accent)">Why the difference?</a></p>
 
   <!-- ① -->
+
+<section class="more" aria-label="URL decoding names and examples">
+<h2>Decrypt URL or decode link: restore percent-encoded text</h2>
+<p>If you call this “decrypt URL”, the operation here is decoding, not decryption. Paste <code>caf%C3%A9%20%26%20tea</code> to read <code>café &amp; tea</code>. This tool does not unlock encrypted data or bypass a protected link.</p>
+<h2>Decode URL online: inspect one layer at a time</h2>
+<p>A decoded <code>%2520</code> becomes <code>%20</code> after one pass. Check whether another layer is intended before converting it to a space. Keep the original link when inspecting reserved characters.</p>
+<h2>HTTP decode: percent escapes are one format</h2>
+<p>This tool decodes URL percent escapes. It does not decompress an HTTP response, decode every HTTP header format, or turn encrypted traffic into plaintext. The sequence <code>%2B</code> becomes a literal plus; treat <code>+</code> as a space only for form-style input.</p>
+<h2>Encode URI component: the opposite direction</h2>
+<p>To create a parameter value instead of reading it, use <a href="/url-encoder-online/">URL encoder online</a>. For JavaScript's <code>encodeURIComponent</code> API and its differences from <code>encodeURI</code>, see the <a href="/javascript/">JavaScript encoding guide</a>. Do not encode a whole link as though it were one value.</p>
+</section>
+
   <h2>① What decoding actually does</h2>
   <p class="sub">Three steps, none of them magic.</p>
   <figure class="article-visual"><picture><source type="image/webp" srcset="/assets/percent-encoding/04-decoding.webp"><img src="/assets/percent-encoding/04-decoding.png" width="1672" height="941" alt="Decoding caf%C3%A9 by reading percent escapes as UTF-8 bytes and rebuilding café." loading="lazy" decoding="async"></picture><figcaption>Read each %XX escape as a byte, then decode the byte sequence as UTF-8.</figcaption></figure>

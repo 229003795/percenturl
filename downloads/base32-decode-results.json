@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-25",
+  "node": "v24.19.0",
+  "fixtureRows": [
+    {
+      "input": "MY======",
+      "expectedHex": "66",
+      "actualHex": "66",
+      "error": null
+    },
+    {
+      "input": "MZXQ====",
+      "expectedHex": "666f",
+      "actualHex": "666f",
+      "error": null
+    },
+    {
+      "input": "MZXW6===",
+      "expectedHex": "666f6f",
+      "actualHex": "666f6f",
+      "error": null
+    },
+    {
+      "input": "MZXW6YQ=",
+      "expectedHex": "666f6f62",
+      "actualHex": "666f6f62",
+      "error": null
+    },
+    {
+      "input": "MZXW6YTB",
+      "expectedHex": "666f6f6261",
+      "actualHex": "666f6f6261",
+      "error": null
+    },
+    {
+      "input": "MZXW6YTBOI======",
+      "expectedHex": "666f6f626172",
+      "actualHex": "666f6f626172",
+      "error": null
+    },
+    {
+      "input": "mzxw6",
+      "expectedHex": "666f6f",
+      "actualHex": "666f6f",
+      "error": null
+    },
+    {
+      "input": "74======",
+      "expectedHex": "ff",
+      "actualHex": "ff",
+      "error": null
+    },
+    {
+      "input": "MZ======",
+      "expectedHex": null,
+      "actualHex": null,
+      "error": "Non-zero trailing pad bits (rejected by this tool)."
+    },
+    {
+      "input": "A",
+      "expectedHex": null,
+      "actualHex": null,
+      "error": "Invalid Base32 length."
+    },
+    {
+      "input": "MZXW6==",
+      "expectedHex": null,
+      "actualHex": null,
+      "error": "Incorrect padding length."
+    },
+    {
+      "input": "MZX W6===",
+      "expectedHex": null,
+      "actualHex": null,
+      "error": "Remove whitespace before decoding."
+    },
+    {
+      "input": "M0======",
+      "expectedHex": null,
+      "actualHex": null,
+      "error": "Character outside the selected Base32 alphabet: 0"
+    }
+  ],
+  "pythonCrosscheckCases": 257,
+  "alphabetAndPaddingChecks": 1028
+}

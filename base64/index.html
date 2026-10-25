@@ -183,6 +183,16 @@
   <p>The tool accepts ASCII whitespace, omitted padding and URL-safe <code>- _</code>. It rejects misplaced/excess padding, illegal characters and impossible lengths. Non-zero unused pad bits are reported but accepted. These are explicit tool policies, not a claim that all decoders must behave alike.</p>
 </section>
   <!-- ============ BLOCK 2 ============ -->
+
+<section class="more" aria-label="Base64 names and examples">
+<h2>Base 64: base64decode, b64 decode, and 64 decode</h2>
+<p>These names use the same decoder above. Paste <code>SGVsbG8=</code> to get <code>Hello</code>. The spacing in “base 64” does not change the format.</p>
+<h2>Base 64 converter: base 64 to text</h2>
+<p>Decode bytes first, then interpret them as text. For <code>/w==</code>, the byte is <code>ff</code>; it is not valid UTF-8 text. Use the byte download instead of replacing the original bytes with a question mark.</p>
+<h2>B64 encode and base64 encode online</h2>
+<p>Switch the same tool to Encode for the opposite direction: <code>Hello</code> becomes <code>SGVsbG8=</code>. Use Base64url when the receiving protocol requires that alphabet. For Base32 input, use the <a href="/base32-decode/">Base32 decoder</a>.</p>
+</section>
+
   <h2 class="blk"><span class="n">2</span>Live: what the encoder is actually doing</h2>
   <p class="blksub">Base64 does not encode text — it encodes <em>bytes</em>. The character set decides what those bytes are, so the same visible text can produce different Base64. This readout shows the choice being made.</p>
 
