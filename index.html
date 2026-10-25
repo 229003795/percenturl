@@ -243,7 +243,7 @@
     <p>Encode a single query value with component encoding so characters such as <code>&amp;</code> and <code>=</code> stay inside that value. For a complete URL, preserve its separators and encode only its data parts. To read an encoded string, decode it once as UTF-8.</p>
     <h3>Why a space can be <code>%20</code> or <code>+</code></h3>
 <p><code>%20</code> is the percent-encoded UTF-8 byte for a space. A plus sign is a space marker in the form-encoding convention, but in an ordinary URL a literal <code>+</code> can mean plus. To represent an actual plus in form data, encode it as <code>%2B</code>.</p>
-<table><thead><tr><th>Original value</th><th>Percent style</th><th>Form style</th></tr></thead><tbody>
+<table class="ct"><thead><tr><th>Original value</th><th>Percent style</th><th>Form style</th></tr></thead><tbody>
 <tr><td><code>a b</code></td><td><code>a%20b</code></td><td><code>a+b</code></td></tr>
 <tr><td><code>a+b</code></td><td><code>a%2Bb</code></td><td><code>a%2Bb</code></td></tr>
 </tbody></table>
