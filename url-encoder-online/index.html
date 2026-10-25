@@ -21,6 +21,10 @@
 <ol><li>Identify the exact text that will become a URL value or path segment.</li><li>Paste only that text into the encoder.</li><li>Encode it, then copy the result.</li><li>Insert the result into the intended part of your URL.</li><li>Review the finished link to make sure its separators remain in the right places.</li></ol>
 <figure class="article-visual"><img src="/assets/percent-encoding/10-encode-one-value.svg" alt="Encode only the search value, then assemble it into a URL while keeping the URL separators intact"><figcaption>Encode the data value first; keep the URL punctuation that separates its parts.</figcaption></figure>
 <p>Encoding changes how text is represented; it does not validate that the completed URL points to the right page or that the receiving service accepts the value. Keep the original value until you have checked the link.</p>
+<h2>Why use an online URLencoder that runs locally</h2>
+<p>An online URLencoder is only useful if you can trust it with the text you paste. PercentURL encodes entirely in your browser tab, so the value never leaves your device. That matters when the text is a search phrase, an email, a file name, or anything you would not paste into a server you do not control.</p>
+<ul><li><strong>Private:</strong> input is processed on your device; nothing is sent over the network to encode it.</li><li><strong>Instant:</strong> there is no upload step and no round trip to wait for.</li><li><strong>No install:</strong> open the page and encode—no app, no account, no extension.</li><li><strong>Portable:</strong> the same tool works on a phone, tablet, or desktop browser.</li></ul>
+<figure class="article-visual"><img src="/assets/percent-encoding/11-local-encoding.svg" alt="A browser locally encodes text on your device without uploading it to a remote server"><figcaption>PercentURL processes the text in the browser, avoiding an upload for the encoding step.</figcaption></figure>
 <h2>Example matrix: encode a value before building a URL</h2>
 <p>These examples encode each input as one component. They do not encode a complete link.</p>
 <table><thead><tr><th scope="col">Input value</th><th scope="col">Encoded value</th><th scope="col">What to notice</th></tr></thead><tbody>
@@ -42,7 +46,7 @@
 <p>Before encoding, check whether the input already contains escapes such as <code>%20</code> or <code>%2F</code>. Confirm whether those sequences are intended encoded data or literal text, then encode once when inserting the raw value into its URL component.</p>
 <h2>Spaces in a URL and form data</h2>
 <p>A space may appear as <code>%20</code> in percent-encoded URLs. In form-style query serialization, it may appear as <code>+</code>; a literal plus in that convention is commonly written <code>%2B</code>. Follow the format expected by the server or API that receives the URL.</p>
-<p>For a detailed comparison of component, full-URL, and form modes, see <a href="/url-encode-and-decode/">URL encode and decode: choose the right mode</a>.</p>
+<p>For a detailed comparison of component, full-URL, and form modes, see <a href="/#url-modes">URL encode and decode: choose the right mode</a>.</p>
 <p>If an encoded slash (<code>%2F</code>) still returns 404, the receiving server may be rejecting or decoding it before the route runs. See <a href="/url-encoder-encoded-slash/">why an encoded slash can still return 404</a>.</p>
 <h2>Before you copy the finished link</h2>
 <ul><li>Did you encode only the value or component you intended?</li><li>Are <code>/</code>, <code>?</code>, <code>=</code>, and <code>&amp;</code> still in the right structural positions?</li><li>Did a literal percent sign become <code>%25</code>?</li><li>Did you avoid encoding the same value twice?</li><li>Does the receiving service expect <code>%20</code> or form-style <code>+</code> for spaces?</li></ul>

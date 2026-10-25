@@ -206,7 +206,7 @@
     <div class="task-groups" id="taskGroups">
       <section class="task-group" aria-labelledby="task-encode">
         <div class="task-group-title"><span class="task-icon" aria-hidden="true">↗</span><h3 id="task-encode">Encode and build URLs</h3></div>
-        <a class="task-link" href="/url-encode-and-decode/"><span><strong>Encode or decode a URL</strong><small>Choose a mode for your input</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
+        <a class="task-link" href="/#url-modes"><span><strong>Encode or decode a URL</strong><small>Choose a mode for your input</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
         <a class="task-link" href="/mailto-url-encode/"><span><strong>Encode a mailto link</strong><small>Build a subject and multiline email body</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
         <a class="task-link" href="/url-encoder-online/"><span><strong>URL Encoder Online</strong><small>Encode text or a full URL in your browser</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
         <a class="task-link" href="/curl-url-encode/"><span><strong>curl URL Encode</strong><small>Build query values from the terminal</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
@@ -227,7 +227,7 @@
         <a class="task-link featured" href="/percent-encoding/"><span><strong>Percent-encoding guide</strong><small>Learn what %20 and %XX mean</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
         <a class="task-link" href="/javascript/"><span><strong>URL encoding in JavaScript</strong><small>Pick the right built-in function</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
         <a class="task-link" href="/encode-hex-url-bytes/"><span><strong>Encode hex bytes for a URL</strong><small>Compare raw bytes with literal text</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
-        <a class="task-link" href="/online-urlencoder/"><span><strong>URL encoder guide</strong><small>Learn how browser-based encoding works</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
+        <a class="task-link" href="/url-encoder-online/"><span><strong>URL encoder guide</strong><small>Learn how browser-based encoding works</small></span><span class="task-arrow" aria-hidden="true">↗</span></a>
       </section>
     </div>
     <p class="tool-search-empty" id="toolSearchEmpty" hidden>No matching tools. Try “URL”, “Base64”, or “guide”.</p>
@@ -236,6 +236,27 @@
     </p>
   </section>
 
+
+
+  <section class="more task-hub" id="url-modes" aria-labelledby="url-modes-title">
+    <div class="task-hub-head"><div><p class="tool-kicker">URL ENCODE AND DECODE</p><h2 id="url-modes-title">Choose the right encoding mode</h2><p class="more-sub">Keep URL separators intact, encode values once, and match the receiving format.</p></div></div>
+    <p>Encode a single query value with component encoding so characters such as <code>&amp;</code> and <code>=</code> stay inside that value. For a complete URL, preserve its separators and encode only its data parts. To read an encoded string, decode it once as UTF-8.</p>
+    <h3>Why a space can be <code>%20</code> or <code>+</code></h3>
+<p><code>%20</code> is the percent-encoded UTF-8 byte for a space. A plus sign is a space marker in the form-encoding convention, but in an ordinary URL a literal <code>+</code> can mean plus. To represent an actual plus in form data, encode it as <code>%2B</code>.</p>
+<table><thead><tr><th>Original value</th><th>Percent style</th><th>Form style</th></tr></thead><tbody>
+<tr><td><code>a b</code></td><td><code>a%20b</code></td><td><code>a+b</code></td></tr>
+<tr><td><code>a+b</code></td><td><code>a%2Bb</code></td><td><code>a%2Bb</code></td></tr>
+</tbody></table>
+<p>When decoding, treat <code>+</code> as a space only when the data uses form encoding. Otherwise leave it as a plus sign.</p>
+<p class="related-form-encoding">For browser form bodies and missing submitted fields, see <a href="/application-x-www-form-urlencoded/">the application/x-www-form-urlencoded request guide</a>.</p>
+<h2 id="common-errors">Common errors and what to do</h2>
+<div class="panel"><h3>A URL becomes unreadable after encoding</h3><p>You likely encoded the entire address as one component. Its colon, slashes, question mark, and ampersands became data too. Encode each path segment or query name/value separately, then join them with the URL separators.</p></div>
+<div class="panel"><h3>A value is split at an ampersand</h3><p>Encode the ampersand inside the value as <code>%26</code>. Keep the real ampersands that separate query parameters.</p></div>
+<div class="panel"><h3>The output contains <code>%2520</code></h3><p>This usually means <code>%20</code> was encoded again: the percent sign became <code>%25</code>. Use the original text, or decode one layer before encoding once for the intended context.</p></div>
+<div class="panel warning"><h3>Decoding reports an invalid percent escape</h3><p>A percent sign must be followed by two hexadecimal digits, such as <code>%20</code>. Check for a truncated escape like <code>%2</code> or a stray <code>%</code>. Do not silently replace malformed data if exact recovery matters.</p></div>
+
+    <p>Need to inspect an encoded value? Use the <a href="/url-decoder/">URL decoder</a>. For a value-by-value example matrix, see <a href="/url-encoder-online/">URL encoder online</a>.</p>
+  </section>
 
   <!-- percent-encoding character reference table -->
   <section class="more task-hub" aria-labelledby="related-guides-title"><div class="task-hub-head"><div><p class="tool-kicker">TROUBLESHOOTING LABS</p><h2 id="related-guides-title">Related troubleshooting guides</h2><p class="more-sub">Reproduce a specific failure with tested examples and runnable code.</p></div></div><div class="task-groups"><section class="task-group" aria-labelledby="related-group-0"><div class="task-group-title"><span class="task-icon " aria-hidden="true">↗</span><h3 id="related-group-0">Base32 formats</h3></div><a class="task-link" href="/base-32-encoder-url-padding/"><span><strong>Base32 padding</strong><small>Keep padding separate from URL parameters</small></span><span class="task-arrow" aria-hidden="true">↗</span></a><a class="task-link" href="/base32hex-non-base32-digit-found/"><span><strong>Base32hex alphabet mismatch</strong><small>Diagnose errors and silently wrong decoded bytes</small></span><span class="task-arrow" aria-hidden="true">↗</span></a><a class="task-link" href="/crockford-base32-check-symbol-mismatch/"><span><strong>Crockford check symbols</strong><small>Understand why stripping = breaks validation</small></span><span class="task-arrow" aria-hidden="true">↗</span></a></section><section class="task-group" aria-labelledby="related-group-1"><div class="task-group-title"><span class="task-icon teal" aria-hidden="true">↙</span><h3 id="related-group-1">Text & bytes</h3></div><a class="task-link" href="/ascii-encoder-unicodeencodeerror-data-loss/"><span><strong>ASCII conversion errors</strong><small>See how ignore and replace lose data</small></span><span class="task-arrow" aria-hidden="true">↗</span></a><a class="task-link" href="/base64-to-string-invalid-utf8/"><span><strong>Base64 and invalid UTF-8</strong><small>Keep original bytes when text decoding fails</small></span><span class="task-arrow" aria-hidden="true">↗</span></a></section><section class="task-group" aria-labelledby="related-group-2"><div class="task-group-title"><span class="task-icon amber" aria-hidden="true">i</span><h3 id="related-group-2">JWT parsing</h3></div><a class="task-link" href="/jwt-token-decode-duplicate-claims/"><span><strong>Duplicate JWT claims</strong><small>Catch repeated names before parsing hides them</small></span><span class="task-arrow" aria-hidden="true">↗</span></a><a class="task-link" href="/jwt-token-decode-integer-precision/"><span><strong>JWT integer precision</strong><small>Find numeric IDs that change after JSON.parse</small></span><span class="task-arrow" aria-hidden="true">↗</span></a></section></div></section>
