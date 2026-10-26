@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "include": [
+    "/url-parser",
+    "/url-parser/",
+    "/url-parser.html",
+    "/html-to-url-encoding",
+    "/html-to-url-encoding/",
+    "/html-to-url-encoding.html"
+  ],
+  "exclude": []
+}
