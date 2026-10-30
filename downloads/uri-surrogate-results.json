@@ -1,0 +1,92 @@
+{
+  "runDate": "2026-10-30",
+  "node": "v24.19.0",
+  "rows": [
+    {
+      "name": "plain",
+      "units": "0041",
+      "invalid": [],
+      "direct": "A",
+      "repaired": "A",
+      "form": "q=A"
+    },
+    {
+      "name": "pair",
+      "units": "d83d de00",
+      "invalid": [],
+      "direct": "%F0%9F%98%80",
+      "repaired": "%F0%9F%98%80",
+      "form": "q=%F0%9F%98%80"
+    },
+    {
+      "name": "high",
+      "units": "d800",
+      "invalid": [
+        0
+      ],
+      "direct": "URIError",
+      "repaired": "%EF%BF%BD",
+      "form": "q=%EF%BF%BD"
+    },
+    {
+      "name": "low",
+      "units": "dc00",
+      "invalid": [
+        0
+      ],
+      "direct": "URIError",
+      "repaired": "%EF%BF%BD",
+      "form": "q=%EF%BF%BD"
+    },
+    {
+      "name": "reversed",
+      "units": "dc00 d800",
+      "invalid": [
+        0,
+        1
+      ],
+      "direct": "URIError",
+      "repaired": "%EF%BF%BD%EF%BF%BD",
+      "form": "q=%EF%BF%BD%EF%BF%BD"
+    },
+    {
+      "name": "slice-half",
+      "units": "d83d",
+      "invalid": [
+        0
+      ],
+      "direct": "URIError",
+      "repaired": "%EF%BF%BD",
+      "form": "q=%EF%BF%BD"
+    },
+    {
+      "name": "replacement",
+      "units": "fffd",
+      "invalid": [],
+      "direct": "%EF%BF%BD",
+      "repaired": "%EF%BF%BD",
+      "form": "q=%EF%BF%BD"
+    },
+    {
+      "name": "inside",
+      "units": "0041 d800 0042",
+      "invalid": [
+        1
+      ],
+      "direct": "URIError",
+      "repaired": "A%EF%BF%BDB",
+      "form": "q=A%EF%BF%BDB"
+    },
+    {
+      "name": "two-high",
+      "units": "d800 d800",
+      "invalid": [
+        0,
+        1
+      ],
+      "direct": "URIError",
+      "repaired": "%EF%BF%BD%EF%BF%BD",
+      "form": "q=%EF%BF%BD%EF%BF%BD"
+    }
+  ]
+}
