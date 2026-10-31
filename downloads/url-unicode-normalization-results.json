@@ -1,0 +1,167 @@
+{
+  "date": "2026-10-31",
+  "node": "v24.19.0",
+  "unicode": "17.0",
+  "rows": [
+    {
+      "name": "accent",
+      "left": {
+        "codePoints": "U+0063 U+0061 U+0066 U+00E9",
+        "raw": "caf%C3%A9",
+        "NFC": "caf%C3%A9",
+        "NFKC": "caf%C3%A9"
+      },
+      "right": {
+        "codePoints": "U+0063 U+0061 U+0066 U+0065 U+0301",
+        "raw": "cafe%CC%81",
+        "NFC": "caf%C3%A9",
+        "NFKC": "caf%C3%A9"
+      },
+      "equal": {
+        "raw": false,
+        "NFC": true,
+        "NFKC": true
+      }
+    },
+    {
+      "name": "angstrom",
+      "left": {
+        "codePoints": "U+00C5",
+        "raw": "%C3%85",
+        "NFC": "%C3%85",
+        "NFKC": "%C3%85"
+      },
+      "right": {
+        "codePoints": "U+0041 U+030A",
+        "raw": "A%CC%8A",
+        "NFC": "%C3%85",
+        "NFKC": "%C3%85"
+      },
+      "equal": {
+        "raw": false,
+        "NFC": true,
+        "NFKC": true
+      }
+    },
+    {
+      "name": "hangul",
+      "left": {
+        "codePoints": "U+AC00",
+        "raw": "%EA%B0%80",
+        "NFC": "%EA%B0%80",
+        "NFKC": "%EA%B0%80"
+      },
+      "right": {
+        "codePoints": "U+1100 U+1161",
+        "raw": "%E1%84%80%E1%85%A1",
+        "NFC": "%EA%B0%80",
+        "NFKC": "%EA%B0%80"
+      },
+      "equal": {
+        "raw": false,
+        "NFC": true,
+        "NFKC": true
+      }
+    },
+    {
+      "name": "fullwidth",
+      "left": {
+        "codePoints": "U+FF21",
+        "raw": "%EF%BC%A1",
+        "NFC": "%EF%BC%A1",
+        "NFKC": "A"
+      },
+      "right": {
+        "codePoints": "U+0041",
+        "raw": "A",
+        "NFC": "A",
+        "NFKC": "A"
+      },
+      "equal": {
+        "raw": false,
+        "NFC": false,
+        "NFKC": true
+      }
+    },
+    {
+      "name": "ligature",
+      "left": {
+        "codePoints": "U+FB00",
+        "raw": "%EF%AC%80",
+        "NFC": "%EF%AC%80",
+        "NFKC": "ff"
+      },
+      "right": {
+        "codePoints": "U+0066 U+0066",
+        "raw": "ff",
+        "NFC": "ff",
+        "NFKC": "ff"
+      },
+      "equal": {
+        "raw": false,
+        "NFC": false,
+        "NFKC": true
+      }
+    },
+    {
+      "name": "roman",
+      "left": {
+        "codePoints": "U+2163",
+        "raw": "%E2%85%A3",
+        "NFC": "%E2%85%A3",
+        "NFKC": "IV"
+      },
+      "right": {
+        "codePoints": "U+0049 U+0056",
+        "raw": "IV",
+        "NFC": "IV",
+        "NFKC": "IV"
+      },
+      "equal": {
+        "raw": false,
+        "NFC": false,
+        "NFKC": true
+      }
+    },
+    {
+      "name": "nbsp",
+      "left": {
+        "codePoints": "U+0061 U+00A0 U+0062",
+        "raw": "a%C2%A0b",
+        "NFC": "a%C2%A0b",
+        "NFKC": "a%20b"
+      },
+      "right": {
+        "codePoints": "U+0061 U+0020 U+0062",
+        "raw": "a%20b",
+        "NFC": "a%20b",
+        "NFKC": "a%20b"
+      },
+      "equal": {
+        "raw": false,
+        "NFC": false,
+        "NFKC": true
+      }
+    },
+    {
+      "name": "case",
+      "left": {
+        "codePoints": "U+0041",
+        "raw": "A",
+        "NFC": "A",
+        "NFKC": "A"
+      },
+      "right": {
+        "codePoints": "U+0061",
+        "raw": "a",
+        "NFC": "a",
+        "NFKC": "a"
+      },
+      "equal": {
+        "raw": false,
+        "NFC": false,
+        "NFKC": false
+      }
+    }
+  ]
+}

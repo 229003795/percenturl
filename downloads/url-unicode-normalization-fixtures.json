@@ -1,0 +1,58 @@
+[
+  {
+    "name": "accent",
+    "a": "caf\u00e9",
+    "b": "cafe\u0301",
+    "nfcEqual": true,
+    "nfkcEqual": true
+  },
+  {
+    "name": "angstrom",
+    "a": "\u00c5",
+    "b": "A\u030a",
+    "nfcEqual": true,
+    "nfkcEqual": true
+  },
+  {
+    "name": "hangul",
+    "a": "\uac00",
+    "b": "\u1100\u1161",
+    "nfcEqual": true,
+    "nfkcEqual": true
+  },
+  {
+    "name": "fullwidth",
+    "a": "\uff21",
+    "b": "A",
+    "nfcEqual": false,
+    "nfkcEqual": true
+  },
+  {
+    "name": "ligature",
+    "a": "\ufb00",
+    "b": "ff",
+    "nfcEqual": false,
+    "nfkcEqual": true
+  },
+  {
+    "name": "roman",
+    "a": "\u2163",
+    "b": "IV",
+    "nfcEqual": false,
+    "nfkcEqual": true
+  },
+  {
+    "name": "nbsp",
+    "a": "a\u00a0b",
+    "b": "a b",
+    "nfcEqual": false,
+    "nfkcEqual": true
+  },
+  {
+    "name": "case",
+    "a": "A",
+    "b": "a",
+    "nfcEqual": false,
+    "nfkcEqual": false
+  }
+]
