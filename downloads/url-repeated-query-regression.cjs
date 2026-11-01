@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const core=require('../assets/url-repeated-query.js');
+const fixtures=require('./url-repeated-query-fixtures.json');
+const rows=fixtures.map(f=>{const actual=core.inspect(f.pairs);assert.equal(actual.encoded,f.expectedEncoded);assert.deepEqual(actual.roundTripPairs,f.pairs);for(const r of actual.readings){const values=f.pairs.filter(p=>p[0]===r.key).map(p=>p[1]);assert.deepEqual(r.all,values);assert.equal(r.first,values[0]);assert.equal(r.objectValue,values.at(-1));assert.equal(new URLSearchParams(actual.viaSet).getAll(r.key).length,1);}return {name:f.name,pairs:f.pairs,...actual};});
+for(const bad of [null,[[1,'x']],[['q','\uD800']]])assert.throws(()=>core.inspect(bad));
+const parsed=new URLSearchParams('tag=a&%74ag=b');assert.deepEqual(parsed.getAll('tag'),['a','b']);
+assert.deepEqual(new URLSearchParams('tag').getAll('tag'),['']);assert.deepEqual(new URLSearchParams('tag=').getAll('tag'),['']);
+const result={date:'2026-11-01',node:process.version,fixtureCount:rows.length,checks:['exact serialized spelling','ordered pair round trip','first/all/last readings','set collapses repeated names','invalid input rejects','parsed percent-encoded key aliases','bare name and empty value parse equally'],rows};
+fs.writeFileSync(path.join(__dirname,'url-repeated-query-results.json'),JSON.stringify(result,null,2)+'\n');console.log('PASS '+rows.length+' fixtures, ordered round trips and alias/empty-input controls; '+process.version);

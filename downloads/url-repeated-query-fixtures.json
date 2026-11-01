@@ -1,0 +1,154 @@
+[
+  {
+    "name": "reserved-and-empty",
+    "pairs": [
+      [
+        "tag",
+        "a&b"
+      ],
+      [
+        "tag",
+        "c+d"
+      ],
+      [
+        "tag",
+        ""
+      ]
+    ],
+    "expectedEncoded": "tag=a%26b&tag=c%2Bd&tag="
+  },
+  {
+    "name": "identical-values",
+    "pairs": [
+      [
+        "tag",
+        "x"
+      ],
+      [
+        "tag",
+        "x"
+      ]
+    ],
+    "expectedEncoded": "tag=x&tag=x"
+  },
+  {
+    "name": "interleaved",
+    "pairs": [
+      [
+        "tag",
+        "a"
+      ],
+      [
+        "page",
+        "2"
+      ],
+      [
+        "tag",
+        "b"
+      ]
+    ],
+    "expectedEncoded": "tag=a&page=2&tag=b"
+  },
+  {
+    "name": "empty-first",
+    "pairs": [
+      [
+        "q",
+        ""
+      ],
+      [
+        "q",
+        "next"
+      ]
+    ],
+    "expectedEncoded": "q=&q=next"
+  },
+  {
+    "name": "unicode-values",
+    "pairs": [
+      [
+        "q",
+        "caf\u00e9"
+      ],
+      [
+        "q",
+        "cafe\u0301"
+      ]
+    ],
+    "expectedEncoded": "q=caf%C3%A9&q=cafe%CC%81"
+  },
+  {
+    "name": "case-sensitive-keys",
+    "pairs": [
+      [
+        "Tag",
+        "a"
+      ],
+      [
+        "tag",
+        "b"
+      ]
+    ],
+    "expectedEncoded": "Tag=a&tag=b"
+  },
+  {
+    "name": "empty-name",
+    "pairs": [
+      [
+        "",
+        "a"
+      ],
+      [
+        "",
+        "b"
+      ]
+    ],
+    "expectedEncoded": "=a&=b"
+  },
+  {
+    "name": "literal-percent-name",
+    "pairs": [
+      [
+        "%74ag",
+        "a"
+      ],
+      [
+        "tag",
+        "b"
+      ]
+    ],
+    "expectedEncoded": "%2574ag=a&tag=b"
+  },
+  {
+    "name": "proto-name",
+    "pairs": [
+      [
+        "__proto__",
+        "first"
+      ],
+      [
+        "__proto__",
+        "last"
+      ]
+    ],
+    "expectedEncoded": "__proto__=first&__proto__=last"
+  },
+  {
+    "name": "numeric-key-order",
+    "pairs": [
+      [
+        "2",
+        "b"
+      ],
+      [
+        "1",
+        "a"
+      ],
+      [
+        "2",
+        "c"
+      ]
+    ],
+    "expectedEncoded": "2=b&1=a&2=c"
+  }
+]

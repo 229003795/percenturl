@@ -1,0 +1,455 @@
+{
+  "date": "2026-11-01",
+  "node": "v24.19.0",
+  "fixtureCount": 10,
+  "checks": [
+    "exact serialized spelling",
+    "ordered pair round trip",
+    "first/all/last readings",
+    "set collapses repeated names",
+    "invalid input rejects",
+    "parsed percent-encoded key aliases",
+    "bare name and empty value parse equally"
+  ],
+  "rows": [
+    {
+      "name": "reserved-and-empty",
+      "pairs": [
+        [
+          "tag",
+          "a&b"
+        ],
+        [
+          "tag",
+          "c+d"
+        ],
+        [
+          "tag",
+          ""
+        ]
+      ],
+      "encoded": "tag=a%26b&tag=c%2Bd&tag=",
+      "roundTripPairs": [
+        [
+          "tag",
+          "a&b"
+        ],
+        [
+          "tag",
+          "c+d"
+        ],
+        [
+          "tag",
+          ""
+        ]
+      ],
+      "readings": [
+        {
+          "key": "tag",
+          "first": "a&b",
+          "all": [
+            "a&b",
+            "c+d",
+            ""
+          ],
+          "objectValue": "",
+          "count": 3
+        }
+      ],
+      "viaSet": "tag=",
+      "viaObject": "tag="
+    },
+    {
+      "name": "identical-values",
+      "pairs": [
+        [
+          "tag",
+          "x"
+        ],
+        [
+          "tag",
+          "x"
+        ]
+      ],
+      "encoded": "tag=x&tag=x",
+      "roundTripPairs": [
+        [
+          "tag",
+          "x"
+        ],
+        [
+          "tag",
+          "x"
+        ]
+      ],
+      "readings": [
+        {
+          "key": "tag",
+          "first": "x",
+          "all": [
+            "x",
+            "x"
+          ],
+          "objectValue": "x",
+          "count": 2
+        }
+      ],
+      "viaSet": "tag=x",
+      "viaObject": "tag=x"
+    },
+    {
+      "name": "interleaved",
+      "pairs": [
+        [
+          "tag",
+          "a"
+        ],
+        [
+          "page",
+          "2"
+        ],
+        [
+          "tag",
+          "b"
+        ]
+      ],
+      "encoded": "tag=a&page=2&tag=b",
+      "roundTripPairs": [
+        [
+          "tag",
+          "a"
+        ],
+        [
+          "page",
+          "2"
+        ],
+        [
+          "tag",
+          "b"
+        ]
+      ],
+      "readings": [
+        {
+          "key": "tag",
+          "first": "a",
+          "all": [
+            "a",
+            "b"
+          ],
+          "objectValue": "b",
+          "count": 2
+        },
+        {
+          "key": "page",
+          "first": "2",
+          "all": [
+            "2"
+          ],
+          "objectValue": "2",
+          "count": 1
+        }
+      ],
+      "viaSet": "tag=b&page=2",
+      "viaObject": "tag=b&page=2"
+    },
+    {
+      "name": "empty-first",
+      "pairs": [
+        [
+          "q",
+          ""
+        ],
+        [
+          "q",
+          "next"
+        ]
+      ],
+      "encoded": "q=&q=next",
+      "roundTripPairs": [
+        [
+          "q",
+          ""
+        ],
+        [
+          "q",
+          "next"
+        ]
+      ],
+      "readings": [
+        {
+          "key": "q",
+          "first": "",
+          "all": [
+            "",
+            "next"
+          ],
+          "objectValue": "next",
+          "count": 2
+        }
+      ],
+      "viaSet": "q=next",
+      "viaObject": "q=next"
+    },
+    {
+      "name": "unicode-values",
+      "pairs": [
+        [
+          "q",
+          "café"
+        ],
+        [
+          "q",
+          "café"
+        ]
+      ],
+      "encoded": "q=caf%C3%A9&q=cafe%CC%81",
+      "roundTripPairs": [
+        [
+          "q",
+          "café"
+        ],
+        [
+          "q",
+          "café"
+        ]
+      ],
+      "readings": [
+        {
+          "key": "q",
+          "first": "café",
+          "all": [
+            "café",
+            "café"
+          ],
+          "objectValue": "café",
+          "count": 2
+        }
+      ],
+      "viaSet": "q=cafe%CC%81",
+      "viaObject": "q=cafe%CC%81"
+    },
+    {
+      "name": "case-sensitive-keys",
+      "pairs": [
+        [
+          "Tag",
+          "a"
+        ],
+        [
+          "tag",
+          "b"
+        ]
+      ],
+      "encoded": "Tag=a&tag=b",
+      "roundTripPairs": [
+        [
+          "Tag",
+          "a"
+        ],
+        [
+          "tag",
+          "b"
+        ]
+      ],
+      "readings": [
+        {
+          "key": "Tag",
+          "first": "a",
+          "all": [
+            "a"
+          ],
+          "objectValue": "a",
+          "count": 1
+        },
+        {
+          "key": "tag",
+          "first": "b",
+          "all": [
+            "b"
+          ],
+          "objectValue": "b",
+          "count": 1
+        }
+      ],
+      "viaSet": "Tag=a&tag=b",
+      "viaObject": "Tag=a&tag=b"
+    },
+    {
+      "name": "empty-name",
+      "pairs": [
+        [
+          "",
+          "a"
+        ],
+        [
+          "",
+          "b"
+        ]
+      ],
+      "encoded": "=a&=b",
+      "roundTripPairs": [
+        [
+          "",
+          "a"
+        ],
+        [
+          "",
+          "b"
+        ]
+      ],
+      "readings": [
+        {
+          "key": "",
+          "first": "a",
+          "all": [
+            "a",
+            "b"
+          ],
+          "objectValue": "b",
+          "count": 2
+        }
+      ],
+      "viaSet": "=b",
+      "viaObject": "=b"
+    },
+    {
+      "name": "literal-percent-name",
+      "pairs": [
+        [
+          "%74ag",
+          "a"
+        ],
+        [
+          "tag",
+          "b"
+        ]
+      ],
+      "encoded": "%2574ag=a&tag=b",
+      "roundTripPairs": [
+        [
+          "%74ag",
+          "a"
+        ],
+        [
+          "tag",
+          "b"
+        ]
+      ],
+      "readings": [
+        {
+          "key": "%74ag",
+          "first": "a",
+          "all": [
+            "a"
+          ],
+          "objectValue": "a",
+          "count": 1
+        },
+        {
+          "key": "tag",
+          "first": "b",
+          "all": [
+            "b"
+          ],
+          "objectValue": "b",
+          "count": 1
+        }
+      ],
+      "viaSet": "%2574ag=a&tag=b",
+      "viaObject": "%2574ag=a&tag=b"
+    },
+    {
+      "name": "proto-name",
+      "pairs": [
+        [
+          "__proto__",
+          "first"
+        ],
+        [
+          "__proto__",
+          "last"
+        ]
+      ],
+      "encoded": "__proto__=first&__proto__=last",
+      "roundTripPairs": [
+        [
+          "__proto__",
+          "first"
+        ],
+        [
+          "__proto__",
+          "last"
+        ]
+      ],
+      "readings": [
+        {
+          "key": "__proto__",
+          "first": "first",
+          "all": [
+            "first",
+            "last"
+          ],
+          "objectValue": "last",
+          "count": 2
+        }
+      ],
+      "viaSet": "__proto__=last",
+      "viaObject": "__proto__=last"
+    },
+    {
+      "name": "numeric-key-order",
+      "pairs": [
+        [
+          "2",
+          "b"
+        ],
+        [
+          "1",
+          "a"
+        ],
+        [
+          "2",
+          "c"
+        ]
+      ],
+      "encoded": "2=b&1=a&2=c",
+      "roundTripPairs": [
+        [
+          "2",
+          "b"
+        ],
+        [
+          "1",
+          "a"
+        ],
+        [
+          "2",
+          "c"
+        ]
+      ],
+      "readings": [
+        {
+          "key": "2",
+          "first": "b",
+          "all": [
+            "b",
+            "c"
+          ],
+          "objectValue": "c",
+          "count": 2
+        },
+        {
+          "key": "1",
+          "first": "a",
+          "all": [
+            "a"
+          ],
+          "objectValue": "a",
+          "count": 1
+        }
+      ],
+      "viaSet": "2=c&1=a",
+      "viaObject": "1=a&2=c"
+    }
+  ]
+}
