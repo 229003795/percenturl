@@ -1,0 +1,62 @@
+[
+  {
+    "name": "literal-parent",
+    "input": "/files/../item",
+    "expectedPath": "/item"
+  },
+  {
+    "name": "encoded-parent",
+    "input": "/files/%2E%2E/item",
+    "expectedPath": "/item"
+  },
+  {
+    "name": "lowercase-parent",
+    "input": "/files/%2e%2e/item",
+    "expectedPath": "/item"
+  },
+  {
+    "name": "mixed-left",
+    "input": "/files/.%2E/item",
+    "expectedPath": "/item"
+  },
+  {
+    "name": "mixed-right",
+    "input": "/files/%2e./item",
+    "expectedPath": "/item"
+  },
+  {
+    "name": "literal-current",
+    "input": "/files/./item",
+    "expectedPath": "/files/item"
+  },
+  {
+    "name": "encoded-current",
+    "input": "/files/%2E/item",
+    "expectedPath": "/files/item"
+  },
+  {
+    "name": "double-encoded",
+    "input": "/files/%252E%252E/item",
+    "expectedPath": "/files/%252E%252E/item"
+  },
+  {
+    "name": "three-dots",
+    "input": "/files/.../item",
+    "expectedPath": "/files/.../item"
+  },
+  {
+    "name": "dot-suffix",
+    "input": "/files/..;v/item",
+    "expectedPath": "/files/..;v/item"
+  },
+  {
+    "name": "dots-in-name",
+    "input": "/files/report..txt/item",
+    "expectedPath": "/files/report..txt/item"
+  },
+  {
+    "name": "encoded-slash",
+    "input": "/files/%2F../item",
+    "expectedPath": "/files/%2F../item"
+  }
+]

@@ -1,0 +1,105 @@
+{
+  "date": "2026-11-02",
+  "node": "v24.19.0",
+  "fixtureCount": 12,
+  "localHttpRequestCount": 24,
+  "method": "Loopback Node HTTP server records req.url. Compare http.get(URL object) with http.get({path: original}). These are two request-construction modes, not two servers or browsers.",
+  "rows": [
+    {
+      "name": "literal-parent",
+      "input": "/files/../item",
+      "expectedPath": "/item",
+      "parsedPath": "/item",
+      "receivedViaURL": "/item",
+      "receivedViaRawPath": "/files/../item"
+    },
+    {
+      "name": "encoded-parent",
+      "input": "/files/%2E%2E/item",
+      "expectedPath": "/item",
+      "parsedPath": "/item",
+      "receivedViaURL": "/item",
+      "receivedViaRawPath": "/files/%2E%2E/item"
+    },
+    {
+      "name": "lowercase-parent",
+      "input": "/files/%2e%2e/item",
+      "expectedPath": "/item",
+      "parsedPath": "/item",
+      "receivedViaURL": "/item",
+      "receivedViaRawPath": "/files/%2e%2e/item"
+    },
+    {
+      "name": "mixed-left",
+      "input": "/files/.%2E/item",
+      "expectedPath": "/item",
+      "parsedPath": "/item",
+      "receivedViaURL": "/item",
+      "receivedViaRawPath": "/files/.%2E/item"
+    },
+    {
+      "name": "mixed-right",
+      "input": "/files/%2e./item",
+      "expectedPath": "/item",
+      "parsedPath": "/item",
+      "receivedViaURL": "/item",
+      "receivedViaRawPath": "/files/%2e./item"
+    },
+    {
+      "name": "literal-current",
+      "input": "/files/./item",
+      "expectedPath": "/files/item",
+      "parsedPath": "/files/item",
+      "receivedViaURL": "/files/item",
+      "receivedViaRawPath": "/files/./item"
+    },
+    {
+      "name": "encoded-current",
+      "input": "/files/%2E/item",
+      "expectedPath": "/files/item",
+      "parsedPath": "/files/item",
+      "receivedViaURL": "/files/item",
+      "receivedViaRawPath": "/files/%2E/item"
+    },
+    {
+      "name": "double-encoded",
+      "input": "/files/%252E%252E/item",
+      "expectedPath": "/files/%252E%252E/item",
+      "parsedPath": "/files/%252E%252E/item",
+      "receivedViaURL": "/files/%252E%252E/item",
+      "receivedViaRawPath": "/files/%252E%252E/item"
+    },
+    {
+      "name": "three-dots",
+      "input": "/files/.../item",
+      "expectedPath": "/files/.../item",
+      "parsedPath": "/files/.../item",
+      "receivedViaURL": "/files/.../item",
+      "receivedViaRawPath": "/files/.../item"
+    },
+    {
+      "name": "dot-suffix",
+      "input": "/files/..;v/item",
+      "expectedPath": "/files/..;v/item",
+      "parsedPath": "/files/..;v/item",
+      "receivedViaURL": "/files/..;v/item",
+      "receivedViaRawPath": "/files/..;v/item"
+    },
+    {
+      "name": "dots-in-name",
+      "input": "/files/report..txt/item",
+      "expectedPath": "/files/report..txt/item",
+      "parsedPath": "/files/report..txt/item",
+      "receivedViaURL": "/files/report..txt/item",
+      "receivedViaRawPath": "/files/report..txt/item"
+    },
+    {
+      "name": "encoded-slash",
+      "input": "/files/%2F../item",
+      "expectedPath": "/files/%2F../item",
+      "parsedPath": "/files/%2F../item",
+      "receivedViaURL": "/files/%2F../item",
+      "receivedViaRawPath": "/files/%2F../item"
+    }
+  ]
+}
