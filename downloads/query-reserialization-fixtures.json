@@ -1,0 +1,12 @@
+[
+  "https://example.com/?q=a%20b~",
+  "https://example.com/?x=1&x=2",
+  "https://example.com/?empty=",
+  "https://example.com/?flag",
+  "https://example.com/?z=%2F&a=1",
+  "https://example.com/?space=%20",
+  "https://example.com/?tilde=~",
+  "https://example.com/?mixed=a%2Bb+c",
+  "https://example.com/?name=John+Doe",
+  "https://example.com/?b=2&a=1"
+]

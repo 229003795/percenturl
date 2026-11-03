@@ -1,0 +1,11 @@
+{
+  "runtime": "Node v24.19.0",
+  "fixtureCount": 10,
+  "operation": "URLSearchParams.sort()",
+  "assertion": "decoded pairs are unchanged while search serialization may change",
+  "observations": [
+    {"input":"?q=a%20b~","after":"?q=a+b%7E","decoded":[["q","a b~"]]},
+    {"input":"?z=%2F&a=1","after":"?a=1&z=%2F","decoded":[["z","/"],["a","1"]]},
+    {"input":"?flag","after":"?flag=","decoded":[["flag",""]]}
+  ]
+}
