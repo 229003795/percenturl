@@ -1,0 +1,1 @@
+(function(root){'use strict';function inspect(input){var u=new URL(input);return {input:input,href:u.href,hostname:u.hostname,pathname:u.pathname,hostIsPunycode:/^xn--/.test(u.hostname)};}var api={inspect:inspect};if(typeof module!=='undefined')module.exports=api;else root.IdnHostnameLab=api;})(globalThis);

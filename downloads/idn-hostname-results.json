@@ -1,0 +1,1 @@
+{"runtime":"Node v24.19.0","fixtureCount":4,"observations":[{"input":"https://例え.テスト/path","hostname":"xn--r8jz45g.xn--zckzah","pathname":"/path"},{"input":"https://example.com/%E8%B7%AF","hostname":"example.com","pathname":"/%E8%B7%AF"}]}
