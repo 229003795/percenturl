@@ -1,0 +1,7 @@
+[
+  {"input":"https://Example.com:443/","serialized":"https://example.com/"},
+  {"input":"https://example.com/a%2Fb","serialized":"https://example.com/a%2Fb"},
+  {"input":"https://example.com/?q=a%20b~","serialized":"https://example.com/?q=a%20b~"},
+  {"input":"https://example.com/?flag","serialized":"https://example.com/?flag"},
+  {"input":"https://例え.テスト/path","serialized":"https://xn--r8jz45g.xn--zckzah/path"}
+]
