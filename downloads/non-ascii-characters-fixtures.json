@@ -1,0 +1,1 @@
+[{"input":"é","codePoint":"U+00E9","bytes":"C3 A9","encoded":"%C3%A9"},{"input":"€","codePoint":"U+20AC","bytes":"E2 82 AC","encoded":"%E2%82%AC"},{"input":"中","codePoint":"U+4E2D","bytes":"E4 B8 AD","encoded":"%E4%B8%AD"},{"input":"A","codePoint":"U+0041","bytes":"41","encoded":"A"}]
