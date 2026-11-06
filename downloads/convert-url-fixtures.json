@@ -1,0 +1,6 @@
+[
+  {"input":"https://example.com/a path","mode":"encode","result":"https://example.com/a%20path"},
+  {"input":"https://example.com/?q=a b","mode":"encode","result":"https://example.com/?q=a%20b"},
+  {"input":"https://example.com/#a b","mode":"encode","result":"https://example.com/#a%20b"},
+  {"input":"https://example.com/a%20path?q=a%20b#top","mode":"decode","result":"https://example.com/a path?q=a b#top"}
+]
