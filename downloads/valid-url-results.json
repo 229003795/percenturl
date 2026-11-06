@@ -1,0 +1,1 @@
+{"runtime":"Node v24.19.0","fixtureCount":6,"assertion":"observed validity matches expected validity for malformed escapes, whitespace, port, IDN and query examples","status":"passed"}

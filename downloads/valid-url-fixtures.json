@@ -1,0 +1,8 @@
+[
+  {"input":"https://example.com/a%20b","valid":true},
+  {"input":"https://example.com/a%2","valid":false},
+  {"input":"https://example.com/a b","valid":false},
+  {"input":"https://example.com:bad/","valid":false},
+  {"input":"https://例え.テスト/path","valid":true},
+  {"input":"https://example.com/?tag=c%2Bd#top","valid":true}
+]
