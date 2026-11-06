@@ -1,0 +1,6 @@
+[
+  {"input":"é","bytes":"C3 A9","encoded":"%C3%A9"},
+  {"input":"€","bytes":"E2 82 AC","encoded":"%E2%82%AC"},
+  {"input":"東京","bytes":"E6 9D B1 E4 BA AC","encoded":"%E6%9D%B1%E4%BA%AC"},
+  {"input":"+","bytes":"2B","encoded":"%2B"}
+]
