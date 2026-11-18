@@ -1,0 +1,3 @@
+input,encoded,decoded
+a;b,a%3Bb,a;b
+role=admin;scope=read,role%3Dadmin%3Bscope%3Dread,role=admin;scope=read
