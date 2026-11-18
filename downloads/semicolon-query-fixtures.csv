@@ -1,3 +1,11 @@
-input,encoded,decoded
-a;b,a%3Bb,a;b
-role=admin;scope=read,role%3Dadmin%3Bscope%3Dread,role=admin;scope=read
+input,encoded,expected_decoded,expected_query
+a;b,a%3Bb,a;b,note=a%3Bb
+role=admin;scope=read,role%3Dadmin%3Bscope%3Dread,role=admin;scope=read,note=role%3Dadmin%3Bscope%3Dread
+"a;b",a%3Bb,a;b,note=a%3Bb
+a,b,a%2Cb,a,b,note=a%2Cb
+a b,a%20b,a b,note=a+b
+,,empty string,note=
+flag,flag,flag,note=flag
+"",,empty string,note=
+a;b;a,a%3Bb%3Ba,a;b;a,note=a%3Bb%3Ba
+one;two;three,one%3Btwo%3Bthree,one;two;three,note=one%3Btwo%3Bthree
