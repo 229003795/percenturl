@@ -1,0 +1,6 @@
+input,encoded,expected_decoded,expected_query
+https://api.test,https%3A%2F%2Fapi.test,https://api.test,next=https%3A%2F%2Fapi.test
+host:8443,host%3A8443,host:8443,next=host%3A8443
+time:12:30,time%3A12%3A30,time:12:30,next=time%3A12%3A30
+key:value,key%3Avalue,key:value,next=key%3Avalue
+:, %3A,:,next=%3A
