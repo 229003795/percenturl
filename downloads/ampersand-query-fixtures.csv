@@ -1,0 +1,6 @@
+input,encoded,expected_decoded,expected_query
+sales & support,sales%20%26%20support,sales & support,note=sales%20%26%20support
+a&b,a%26b,a&b,note=a%26b
+a&&b,a%26%26b,a&&b,note=a%26%26b
+one&two&three,one%26two%26three,one&two&three,note=one%26two%26three
+&,&%26,&,note=%26
