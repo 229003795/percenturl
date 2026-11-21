@@ -1,0 +1,6 @@
+input,encoded,expected_decoded,expected_query
+a=b,a%3Db,a=b,token=a%3Db
+a=b=c,a%3Db%3Dc,a=b=c,token=a%3Db%3Dc
+=,+%3D,=,token=%3D
+key=value,key%3Dvalue,key=value,token=key%3Dvalue
+==,=%3D%3D,==,token=%3D%3D
