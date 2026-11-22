@@ -1,0 +1,11 @@
+fixture,raw_value,expected_query,expected_decoded
+inner-question,next?page=2,q=next%3Fpage%3D2,next?page=2
+inner-equals,next?page=2&x=1,q=next%3Fpage%3D2%26x%3D1,next?page=2&x=1
+literal-question,?,q=%3F,?
+empty,,q=,
+unicode-question,café?x=1,q=caf%C3%A9%3Fx%3D1,café?x=1
+double-question,a??b,q=a%3F%3Fb,a??b
+ampersand-boundary,a?b&q=2,q=a%3Fb%26q%3D2,a?b&q=2
+fragment-like,next?page=2#part,q=next%3Fpage%3D2%23part,next?page=2#part
+space-question,a b?,q=a%20b%3F,a b?
+encoded-input,%3F,q=%253F,%3F
