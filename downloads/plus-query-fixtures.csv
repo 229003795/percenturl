@@ -1,0 +1,11 @@
+fixture,raw_value,expected_query,expected_decoded
+literal-plus,c++,q=c%2B%2B,c++
+plus-and-space,c++ guide,q=c%2B%2B%20guide,c++ guide
+encoded-plus,%2B,q=%252B,%2B
+space-only, ,q=%20, 
+mixed,a+b c,q=a%2Bb%20c,a+b c
+empty,,q=,
+two-pluses,+++,q=%2B%2B%2B,+++
+unicode-plus,café+,q=caf%C3%A9%2B,café+
+form-looking,one+two,q=one%2Btwo,one+two
+percent-text,100%+done,q=100%25%2Bdone,100%+done
