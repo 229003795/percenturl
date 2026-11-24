@@ -120,31 +120,116 @@
     <loc>https://percenturl.com/usage-policy/</loc>
     <lastmod>2026-10-12</lastmod>
   </url>
-<url><loc>https://percenturl.com/encode-uri-component-lone-surrogate/</loc><lastmod>2026-10-30</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-unicode-normalization/</loc><lastmod>2026-10-31</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-repeated-query-parameters/</loc><lastmod>2026-11-01</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-dot-segments/</loc><lastmod>2026-11-02</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-query-reserialization/</loc><lastmod>2026-11-03</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-idn-hostnames/</loc><lastmod>2026-11-04</lastmod></url>
-<url><loc>https://percenturl.com/valid-url/</loc><lastmod>2026-11-06</lastmod></url>
-<url><loc>https://percenturl.com/url-format/</loc><lastmod>2026-11-06</lastmod></url>
-<url><loc>https://percenturl.com/convert-url/</loc><lastmod>2026-11-06</lastmod></url>
-<url><loc>https://percenturl.com/url-encode/</loc><lastmod>2026-11-06</lastmod></url>
-<url><loc>https://percenturl.com/encode-utf-8/</loc><lastmod>2026-11-06</lastmod></url>
-<url><loc>https://percenturl.com/non-ascii-characters/</loc><lastmod>2026-11-07</lastmod></url>
-<url><loc>https://percenturl.com/query-parameters/</loc><lastmod>2026-11-09</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-nested-url/</loc><lastmod>2026-11-10</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-json-query/</loc><lastmod>2026-11-11</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-cookie-value/</loc><lastmod>2026-11-12</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-ipv6-address/</loc><lastmod>2026-11-13</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-matrix-parameters/</loc><lastmod>2026-11-14</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-fragment/</loc><lastmod>2026-11-15</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-basic-auth/</loc><lastmod>2026-11-16</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-comma-query-value/</loc><lastmod>2026-11-17</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-semicolon-query-value/</loc><lastmod>2026-11-18</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-colon-query-value/</loc><lastmod>2026-11-19</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-ampersand-query-value/</loc><lastmod>2026-11-20</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-equals-query-value/</loc><lastmod>2026-11-21</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-question-mark-query-value/</loc><lastmod>2026-11-22</lastmod></url></urlset>
-<url><loc>https://percenturl.com/url-encode-question-mark-query-value/</loc><lastmod>2026-11-22</lastmod></url>
-<url><loc>https://percenturl.com/url-encode-plus-query-value/</loc><lastmod>2026-11-23</lastmod></url></urlset>
+  <url>
+    <loc>https://percenturl.com/encode-uri-component-lone-surrogate/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-unicode-normalization/</loc>
+    <lastmod>2026-10-31</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-repeated-query-parameters/</loc>
+    <lastmod>2026-11-01</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-dot-segments/</loc>
+    <lastmod>2026-11-02</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-query-reserialization/</loc>
+    <lastmod>2026-11-03</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-idn-hostnames/</loc>
+    <lastmod>2026-11-04</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/valid-url/</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-format/</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/convert-url/</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode/</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/encode-utf-8/</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/non-ascii-characters/</loc>
+    <lastmod>2026-11-07</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/query-parameters/</loc>
+    <lastmod>2026-11-09</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-nested-url/</loc>
+    <lastmod>2026-11-10</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-json-query/</loc>
+    <lastmod>2026-11-11</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-cookie-value/</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-ipv6-address/</loc>
+    <lastmod>2026-11-13</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-matrix-parameters/</loc>
+    <lastmod>2026-11-14</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-fragment/</loc>
+    <lastmod>2026-11-15</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-basic-auth/</loc>
+    <lastmod>2026-11-16</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-comma-query-value/</loc>
+    <lastmod>2026-11-17</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-semicolon-query-value/</loc>
+    <lastmod>2026-11-18</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-colon-query-value/</loc>
+    <lastmod>2026-11-19</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-ampersand-query-value/</loc>
+    <lastmod>2026-11-20</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-equals-query-value/</loc>
+    <lastmod>2026-11-21</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-question-mark-query-value/</loc>
+    <lastmod>2026-11-22</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-plus-query-value/</loc>
+    <lastmod>2026-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://percenturl.com/url-encode-percent-query-value/</loc>
+    <lastmod>2026-11-24</lastmod>
+  </url>
+</urlset>

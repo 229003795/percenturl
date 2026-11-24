@@ -1,0 +1,10 @@
+fixture,raw_value,expected_query,expected_decoded
+literal-percent,100%,q=100%25,100%
+percent-and-space,50% off,q=50%25%20off,50% off
+percent-as-text,a%20b,q=a%2520b,a%20b
+already-escaped,50%2520off,q=50%252520off,50%2520off
+trailing-percent,50%off%,q=50%25off%25,50%off%
+percent-sign-only,%,q=%25,%
+double-percent,%%,q=%25%25,%%
+unicode-percent,café%,q=caf%C3%A9%25,café%
+percent-plus-space,% + %,q=%25%20%2B%20%25,% + %
