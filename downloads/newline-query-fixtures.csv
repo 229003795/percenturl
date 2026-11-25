@@ -1,0 +1,9 @@
+fixture,raw_value(escaped),expected_query,expected_decoded(escaped),note
+single-lf,line1\nline2,line1%0Aline2,line1\nline2,single LF
+crlf,line1\r\nline2,line1%0D%0Aline2,line1\r\nline2,CRLF pair
+single-cr,line1\rline2,line1%0Dline2,line1\rline2,single CR
+tab,col1\tcol2,col1%09col2,col1\tcol2,horizontal tab
+leading-lf,\nstart,%0Astart,\nstart,leading LF
+trailing-crlf,end\r\n,end%0D%0A,end\r\n,trailing CRLF
+literal-backslash-n,line1\\nline2,line1%5Cnline2,line1\\nline2,literal backslash-n (not a newline)
+mixed,a\nb\tc\rd,a%0Ab%09c%0Dd,a\nb\tc\rd,LF + tab + CR
