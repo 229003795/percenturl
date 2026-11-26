@@ -1,0 +1,6 @@
+lower,upper,decoded_lower,decoded_upper,decode_equal,raw_equal,hmac_lower,hmac_upper,hmac_equal
+%2f,%2F,"/","/",true,false,5791ca8fe9dcf9b36807b60c3e5435fca2684ae7b297b34b2cf1dc331c2772cd,7362c01732192e1c315dfef2f4c4056e69f5b6b8671d070e5c6743d87ca3acb8,false
+%3a,%3A,":",":",true,false,5dfab3e87a69750e3e70c5a372a3d85a81ceb1130c557202f753704db495e272,6642cd4944d22400bd3dad9a2bd3e90c4605eb04d538bc79d2ce24b366d0011b,false
+%7e,%7E,"~","~",true,false,9467ed3561f7c7c1303f049e5cdd015ae0a3ff6d2bcf56870bd151439a2721b9,127aa99edfc92a1dbc2fef37585577f5ba91cba26c276ae041fc7afe19a33948,false
+%2b,%2B,"+","+",true,false,052c65c973bba617a2de6f96265badc7a86eb3f5c395b79d36ed91fd639f3b87,0128c4f91b50e677ec2d1071a3f392fd199efe1a46c71550028d14b06e78a87d,false
+%4a,%4A,"J","J",true,false,efdc473c0c1509808b4bbcfccaeffebcd30b18c5f7a24eb6a8cafd1803bc3860,6371014c38cd5f66212345c9abf41e63fdcf6a65750dfbd875e7d7041b890008,false
