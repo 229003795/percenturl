@@ -1,0 +1,7 @@
+raw_url,path_decoded,query_decoded,reason
+/c+guide,c+guide,,path literal plus
+/c%2Bguide,c+guide,,percent plus decodes to plus
+/c%20guide,c guide,,percent space
+/a+b?x=c+d,a+b,x=c d,path literal, query form-space
+/a+b?x=c%2Bd,a+b,x=c+d,%2B literal plus in query
+/search/c++?q=a+b,search/c++,q=a b,two path pluses, query spaces
